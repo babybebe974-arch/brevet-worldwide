@@ -460,69 +460,72 @@ function badge(val) {
 }
 
 async function corriger(sIdx, ei, qi, qid) {
-  var s = SUJETS[sIdx];
+  var s   = SUJETS[sIdx];
   var exo = s.exos[ei];
-  var q = exo.questions[qi];
+  var q   = exo.questions[qi];
   var ans = document.getElementById('ans_' + qid).value.trim();
   if (!ans) { alert("Écris ta réponse d'abord !"); return; }
 
   var panel = document.getElementById('panel_' + qid);
-  var btn = document.getElementById('panel_' + qid).previousElementSibling;
+  var btn   = document.querySelector('[onclick*="' + qid + '"]');
   panel.classList.add('show');
-  panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction en cours...</div>';
+  panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction IA en cours...</div>';
   if (btn) btn.disabled = true;
 
   var disc = exo.type === 'svt' ? 'SVT (Sciences de la Vie et de la Terre)'
            : exo.type === 'pc'  ? 'Physique-Chimie'
            : 'Technologie';
   var qTexteClean = q.texte.split('\n').join(' ').substring(0,300);
-  var pts = exo.pts;
+  var pts = q.pts_question || exo.pts;
+  var matchPts = (q.texte||'').match(/\((\d+(?:[,.]\d+)?)\s*pts?\)/i);
+  if (!q.pts_question && matchPts) pts = parseFloat(matchPts[1].replace(',','.'));
 
-  var system = 'Tu es correcteur au brevet des collèges (DNB) en SCIENCES — ' + disc + ', session ' + s.annee + ', ' + s.session + '.'
-    + ' Sujet : ' + s.titre + '.'
-    + ' Exercice : ' + exo.label + ' — ' + pts + ' points maximum.'
-    + ' Question : ' + qTexteClean
-    + ' MÉTHODE ATTENDUE AU DNB SCIENCES :'
-    + ' PC : ecrire la formule avant application, remplacer les valeurs avec unites, calculer, convertir, conclure.'
-    + ' SVT : extraire infos des documents, vocabulaire scientifique precis, raisonnement obs-hypothese-conclusion.'
-    + ' Technologie : identifier le besoin, analyser la chaine energie/information, justifier les choix techniques.'
-    + ' TA MISSION :'
-    + ' 1. NOTER sur ' + pts + ' points avec détail si possible.'
-    + ' 2. VÉRIFIER si le cours est su : définitions, lois, formules, vocabulaire scientifique.'
-    + ' 3. ÉVALUER la démarche : raisonnement structuré, conclusion explicite, exploitation des documents.'
-    + ' 4. REPÉRER les erreurs typiques : unité oubliée, formule mal appliquée, conclusion absente.'
-    + ' 5. DONNER des pistes précises : quelle notion revoir, quelle méthode améliorer.'
-    + ' Réponds UNIQUEMENT en JSON valide sans markdown :'
-    + ' {"note":X,"sur":' + pts + ',"cours_su":"OK/Partiel/Non — explication","methode":"OK/Partiel/Non — explication","commentaire":"analyse 3-5 lignes","pistes":"conseils précis"}';
+  var methodeSpec = exo.type === 'pc'
+    ? 'formule avant application, valeurs avec unites, calcul detaille, conversion, conclusion'
+    : exo.type === 'svt'
+    ? 'extraction documents, vocabulaire scientifique precis, raisonnement obs-hypothese-conclusion'
+    : 'besoin identifie, chaine energie/information, justification choix techniques';
+
+  var system = 'Tu es correcteur expert DNB SCIENCES ' + disc + ', exigeant et bienveillant.'
+    + ' Sujet : ' + s.titre + ', session ' + s.annee + '. Exercice : ' + exo.label + '.'
+    + ' METHODE ' + disc + ' : ' + methodeSpec + '.'
+    + ' BAREME UNIVERSEL pour cette question (' + pts + ' pts) :'
+    + ' 1/3 BONNE REPONSE (resultat/element correct) — 1/3 REDACTION (phrase complete, vocabulaire precis) — 1/3 JUSTIFICATION (demarche, formule, etapes visibles).'
+    + ' Reponse sans justif = 1/3 max. Reponse sans redaction = 2/3 max. Justif sans resultat = 1/3. Tout correct = max.'
+    + ' Reponds UNIQUEMENT en JSON valide sans markdown :'
+    + ' {"note":X,"sur":' + pts + ',"cours_su":"Oui/Partiel/Non","transfert":"Oui/Partiel/Non","methode":"Oui/Partiel/Non",'
+    + '"detail_bareme":"reponse X/' + Math.round(pts/3*10)/10 + ' - redaction X/' + Math.round(pts/3*10)/10 + ' - justification X/' + Math.round(pts/3*10)/10 + '",'
+    + '"correction_experte":"correction modele complete avec formules, calculs, unites, conclusion.",'
+    + '"analyse_eleve":"ce qui est juste, ce qui manque, erreurs identifiees.",'
+    + '"pistes":"2-3 conseils precis."}';
 
   var prompt = 'Question : ' + qTexteClean
     + '\nCorrection attendue : ' + q.rep.substring(0,300)
     + '\nRéponse élève : ' + ans;
 
   try {
-    var txt = await callIA(prompt, system);
+    var txt  = await callIA(prompt, system);
     var json = safeJSON(txt);
 
     if (!STORE[s.id]) STORE[s.id] = [];
-    STORE[s.id].push({
-      exo: exo.label, qi: qi+1,
-      question: q.texte.substring(0,80),
-      reponseEleve: ans,
-      cours_su: json ? json.cours_su : '',
-      methode: json ? json.methode : '',
-      pistes: json ? json.pistes : '',
-      correctionIA: json ? json.commentaire : txt,
-      correctionOff: q.rep, pts: pts,
-      note: json ? json.note : null
-    });
-    try { localStorage.setItem(_STORE_KEY, JSON.stringify(STORE)); } catch(e) {}
+    STORE[s.id].push({ exo: exo.label, qi: qi+1, question: q.texte.substring(0,80),
+      reponseEleve: ans, correctionIA: json ? (json.analyse_eleve||json.commentaire) : txt,
+      correctionOff: q.rep, pts: pts, note: json ? json.note : null });
+    try { localStorage.setItem(_STORE_KEY, JSON.stringify(STORE)); } catch(e2) {}
 
     panel.innerHTML = '<div class="corr-ia">'
-      + (json ? '<div class="corr-note">✓ ' + json.note + ' / ' + (json.sur||pts) + '</div>' : '')
-      + (json && json.cours_su ? '<div class="corr-conseil">📚 <strong>Cours :</strong> ' + json.cours_su + '</div>' : '')
-      + (json && json.methode  ? '<div class="corr-conseil">✏️ <strong>Méthode :</strong> ' + json.methode + '</div>' : '')
-      + '<div class="corr-txt">' + (json ? json.commentaire : txt) + '</div>'
-      + (json && json.pistes   ? '<div class="corr-conseil" style="color:#5eaacf">🎯 <strong>Pistes :</strong> ' + json.pistes + '</div>' : '')
+      + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">'
+      +   '<div class="corr-note">✓ ' + (json ? json.note : '?') + ' / ' + pts + '</div>'
+      +   '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">'
+      +     '<span style="font-size:10px;color:#9090a8;">Cours</span>' + badge(json ? json.cours_su : '?')
+      +     '<span style="font-size:10px;color:#9090a8;margin-left:6px;">Transfert</span>' + badge(json ? json.transfert : '?')
+      +     '<span style="font-size:10px;color:#9090a8;margin-left:6px;">Méthode</span>' + badge(json ? json.methode : '?')
+      +   '</div>'
+      + '</div>'
+      + (json && json.detail_bareme ? '<div style="margin-bottom:10px;"><div style="font-size:10px;color:#f5a623;font-weight:700;text-transform:uppercase;margin-bottom:5px;">📊 Barème 1/3</div><div style="background:rgba(245,166,35,.06);border-left:3px solid #f5a623;padding:8px 13px;font-size:12px;font-family:monospace;line-height:1.8;">' + esc(json.detail_bareme) + '</div></div>' : '')
+      + '<div style="margin-bottom:10px;"><div style="font-size:10px;color:#5eaacf;font-weight:700;text-transform:uppercase;margin-bottom:5px;">📝 Correction modèle</div><div style="background:rgba(94,170,207,.06);border-left:3px solid #5eaacf;padding:10px 13px;font-size:13px;line-height:1.7;">' + esc(json ? (json.correction_experte||json.commentaire||'') : txt) + '</div></div>'
+      + '<div style="margin-bottom:10px;"><div style="font-size:10px;color:#5ecfb1;font-weight:700;text-transform:uppercase;margin-bottom:5px;">🔍 Analyse</div><div class="corr-txt" style="font-size:13px;">' + esc(json ? (json.analyse_eleve||json.commentaire||txt) : txt) + '</div></div>'
+      + (json && json.pistes ? '<div><div style="font-size:10px;color:#9090a8;font-weight:700;text-transform:uppercase;margin-bottom:5px;">🎯 Pour progresser</div><div class="corr-conseil" style="font-size:13px;">' + esc(json.pistes) + '</div></div>' : '')
       + '</div>'
       + '<div class="corr-off"><strong>📖 CORRECTION OFFICIELLE</strong><br>' + esc(q.rep) + '</div>'
       + '<button class="btn-copy" onclick="copier(this)">📋 Copier</button>';
