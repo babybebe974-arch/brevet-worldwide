@@ -130,93 +130,20 @@ textarea.rep::placeholder{color:var(--muted);}
 .faibles-box h4{color:var(--acc2);font-size:12px;font-family:'Syne',sans-serif;margin-bottom:6px;}
 .faibles-box li{font-size:12px;color:var(--dim);padding:2px 0;}
 </style>
+<script src="monetization.js"></script>
+<script src="proxy-client.js"></script>
 <style>
-/* ===== PAYWALL ===== */
-#paywall-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(9,9,15,0.97);z-index:9999;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);font-family:'DM Sans',sans-serif;}
-.pw-box{background:#111118;border:1px solid #2a2a38;border-top:3px solid #e8c87a;border-radius:16px;padding:36px 32px;max-width:460px;width:90%;text-align:center;}
-.pw-icon{font-size:2.5rem;margin-bottom:12px;}
-.pw-title{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:#e8c87a;margin-bottom:8px;}
-.pw-sub{font-size:14px;color:#9090a8;margin-bottom:24px;line-height:1.6;}
-.pw-trial-active{background:rgba(94,207,177,.1);border:1px solid rgba(94,207,177,.3);color:#5ecfb1;border-radius:20px;padding:5px 16px;font-size:12px;display:inline-block;margin-bottom:20px;font-family:'DM Mono',monospace;}
-.pw-offers{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:20px;}
-.pw-offer{background:#1a1a24;border:1px solid #2a2a38;border-radius:12px;padding:16px 20px;text-align:center;text-decoration:none;flex:1;min-width:140px;cursor:pointer;transition:border-color .2s;}
-.pw-offer:hover{border-color:#e8c87a;}
-.pw-offer .o-flag{font-size:1.5rem;display:block;margin-bottom:4px;}
-.pw-offer .o-region{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;color:#e8e8f0;display:block;}
-.pw-offer .o-price{font-size:12px;color:#9090a8;display:block;margin-top:2px;}
-.pw-offer .o-cta{margin-top:10px;display:block;background:#e8c87a;color:#09090f;border-radius:6px;padding:6px 14px;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;}
-.pw-sep{color:#5a5a72;font-size:12px;margin:4px 0 16px;}
-.pw-code-row{display:flex;gap:8px;}
-.pw-code-input{flex:1;background:#1a1a24;border:1px solid #2a2a38;border-radius:8px;color:#e8e8f0;font-family:'DM Mono',monospace;font-size:13px;padding:10px 14px;outline:none;}
-.pw-code-input:focus{border-color:#e8c87a;}
-.pw-code-btn{background:#e8c87a;color:#09090f;border:none;border-radius:8px;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;padding:10px 20px;cursor:pointer;}
-.pw-code-btn:hover{opacity:.85;}
-.pw-err{color:#e87a7a;font-size:12px;margin-top:8px;min-height:16px;}
-.pw-logo{font-family:'Syne',sans-serif;font-size:10px;color:#5a5a72;margin-top:20px;letter-spacing:.08em;}
+#trial-banner{width:100%;height:40px;background:#e8c87a;display:none;align-items:center;justify-content:center;gap:24px;position:sticky;top:0;z-index:9999;font-family:Arial,sans-serif;}
+#trial-banner .tb-left{font-size:13px;font-weight:700;color:#09090f;}
+#trial-banner .tb-btn{background:#09090f;color:#e8c87a;border:none;border-radius:6px;padding:5px 14px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;}
+#trial-banner .tb-btn:hover{opacity:.8;}
 </style>
 </head>
 <body>
-<div id="paywall-overlay" style="display:none">
-  <div class="pw-box">
-    <div class="pw-icon">🎓</div>
-    <div class="pw-title">Hub Brevet 2026</div>
-    <div class="pw-sub">Votre période d'essai de <strong style="color:#e8c87a">48h</strong> est expirée.<br>Choisissez votre accès annuel pour continuer.</div>
-    <div class="pw-offers">
-      <a class="pw-offer" href="https://wise.com/pay/r/UeBUFQoUY_B5FYE" target="_blank">
-        <span class="o-flag">🇷🇪</span>
-        <span class="o-region">La Réunion</span>
-        <span class="o-price">29 € / an</span>
-        <span class="o-cta">Payer via Wise →</span>
-      </a>
-      <a class="pw-offer" href="https://wa.me/23058459402?text=Abonnement%20Hub%20Brevet%202026%20%E2%80%94%20990%20Rs" target="_blank">
-        <span class="o-flag">🇲🇺</span>
-        <span class="o-region">Maurice</span>
-        <span class="o-price">990 Rs / an</span>
-        <span class="o-cta">Payer via Juice →</span>
-      </a>
-    </div>
-    <div class="pw-sep">— Code d'accès reçu par email —</div>
-    <div class="pw-code-row">
-      <input type="text" class="pw-code-input" id="pwCodeInput" placeholder="Votre code d'accès…" onkeydown="if(event.key==='Enter')pwUnlock()">
-      <button class="pw-code-btn" onclick="pwUnlock()">Valider</button>
-    </div>
-    <div class="pw-err" id="pwErr"></div>
-    <div class="pw-logo">SMART LEARN · HUB BREVET 2026</div>
-  </div>
+<div id="trial-banner">
+  <span class="tb-left">🆓 Essai gratuit — <span id="tbDays">J-2</span> jours restants</span>
+  <button class="tb-btn" onclick="window.location.href='https://wise.com/pay/r/UeBUFQoUY_B5FYE'">💳 Débloquer l'accès (29€/an)</button>
 </div>
-<script>
-(function(){
-  var MASTER='Entrepotes974NawalWassil';
-  var KEY_TS='brevet_trial_start';
-  var KEY_OK='brevet_access';
-  var TRIAL=48*60*60*1000;
-  function hasAccess(){
-    if(localStorage.getItem(KEY_OK)==='1') return true;
-    if(!localStorage.getItem(KEY_TS)){localStorage.setItem(KEY_TS,Date.now()+'');return true;}
-    return (Date.now()-parseInt(localStorage.getItem(KEY_TS)))<TRIAL;
-  }
-  function showWall(){
-    var el=document.getElementById('paywall-overlay');
-    if(el){el.style.display='flex';document.body.style.overflow='hidden';}
-  }
-  window.pwUnlock=function(){
-    var v=document.getElementById('pwCodeInput').value.trim();
-    var e=document.getElementById('pwErr');
-    if(v===MASTER){
-      localStorage.setItem(KEY_OK,'1');
-      document.getElementById('paywall-overlay').style.display='none';
-      document.body.style.overflow='';
-    } else {
-      e.textContent='❌ Code invalide — vérifiez votre email ou contactez-nous.';
-      setTimeout(function(){e.textContent='';},4000);
-    }
-  };
-  function init(){if(!hasAccess())showWall();}
-  if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}
-  else{init();}
-  setInterval(function(){if(!hasAccess())showWall();},5*60*1000);
-})();
-</script>
 
 <div class="page-header">
   <div class="page-header-inner">
@@ -844,6 +771,27 @@ function initApp() {
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp);
 else initApp();
+</script>
+<script>
+(function(){
+  var KEY_TS='brevet_trial_start';
+  var KEY_OK='brevet_access';
+  var TRIAL=48*60*60*1000;
+  function tick(){
+    if(localStorage.getItem(KEY_OK)==='1')return;
+    var ts=localStorage.getItem(KEY_TS);
+    if(!ts){localStorage.setItem(KEY_TS,Date.now()+'');ts=Date.now();}
+    else ts=parseInt(ts);
+    var rem=TRIAL-(Date.now()-ts);
+    if(rem<=0)return;
+    var days=Math.ceil(rem/86400000);
+    var el=document.getElementById('tbDays');
+    if(el)el.textContent='J-'+days;
+    document.getElementById('trial-banner').style.display='flex';
+  }
+  tick();
+  setInterval(tick,60000);
+})();
 </script>
 </body>
 </html>
