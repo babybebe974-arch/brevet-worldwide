@@ -1,35 +1,32 @@
-const TRACKER_URL = 'https://script.google.com/macros/s/AKfycbxDHkyI8wlinBQ1BRIsg7dcz4AYWbY87SY5UDr6KVu4uHylWQs4fLfdd3a98PEwdL-A/exec';
+// ============================================================
+// SMART LEARN — TRACKER v4.0
+// Envoie les stats au proxy Apps Script via URLSearchParams
+// ============================================================
 
-function getUserId() {
-  let id = localStorage.getItem('app_user_id');
-  if (!id) {
-    id = crypto.randomUUID ? crypto.randomUUID() : 'user_' + Date.now() + '_' + Math.random();
-    localStorage.setItem('app_user_id', id);
+(function() {
+  var PROXY = 'https://script.google.com/macros/s/AKfycbxxQCRDZvKAb9fuXkDslK7LYMXjcIrIi-_EpA8DWT1-tTelSpYcMxPkiSPG5bKheLTY/exec';
+
+  function track(action, data) {
+    try {
+      var payload = Object.assign({
+        action:    action,
+        userId:    localStorage.getItem('user_id') || 'anon',
+        sessionId: sessionStorage.getItem('session_id') || 'sess',
+        source:    document.title || window.location.pathname,
+        timestamp: new Date().toISOString(),
+        estPayant: localStorage.getItem('brevet_paid') === 'true'
+      }, data || {});
+
+      fetch(PROXY, {
+        method: 'POST',
+        body: new URLSearchParams({ data: JSON.stringify(payload) })
+      }).catch(function() {}); // silencieux
+    } catch(e) {}
   }
-  return id;
-}
 
-function isPaid() {
-  return localStorage.getItem('code_valide') === 'true';
-}
+  // Tracker page view
+  track('page_view', { page: window.location.pathname });
 
-function trackAction(action, matiere, type, note) {
-  fetch(TRACKER_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    body: JSON.stringify({
-      userId: getUserId(),
-      action: action,
-      matiere: matiere,
-      type: type,
-      estPayant: isPaid(),
-      note: note || ''
-    })
-  }).catch(e => console.warn('tracker failed', e));
-}
-
-// Première visite : tracer le début de l'essai
-if (!localStorage.getItem('trial_started')) {
-  trackAction('trial_start', '', '', '');
-  localStorage.setItem('trial_started', 'true');
-}
+  // Exposer globalement
+  window.track = track;
+})();

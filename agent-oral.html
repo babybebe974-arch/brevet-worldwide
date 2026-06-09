@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🎤 Oral Blanc Brevet · IA + Fiche de révision</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="monetization.js"></script>
-<script src="proxy-client.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#09090f;--bg2:#111118;--bg3:#181820;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);--text:#f0ede8;--muted:rgba(240,237,232,0.45);--gold:#e8c87a;--teal:#5ecfb1;--red:#f55a5a;--green:#7ecf8a;--blue:#6ab4f5;--purple:#a98af5;--r:14px;--r-sm:8px;}
@@ -83,32 +81,30 @@ textarea{font-family:'DM Sans',sans-serif;}
 <div class="toast" id="toast"></div>
 
 <script>
-const DEEPSEEK_KEY = 'sk-REMPLACEZ_PAR_VOTRE_CLE_API_DEEPSEEK';
-const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
+const PROXY = 'https://script.google.com/macros/s/AKfycbxxQCRDZvKAb9fuXkDslK7LYMXjcIrIi-_EpA8DWT1-tTelSpYcMxPkiSPG5bKheLTY/exec';
 
 async function callIA(prompt, system) {
   const timeout = new Promise((_, reject) =>
     setTimeout(() => reject(new Error('⏱ Timeout (45s) — réessaie dans quelques secondes.')), 45000)
   );
-  const req = fetch(DEEPSEEK_URL, {
+  const payload = JSON.stringify({
+    userId: localStorage.getItem('user_id') || 'anon',
+    action: 'correction_ia',
+    prompt: prompt,
+    system: system,
+    estPayant: false,
+    sessionId: sessionStorage.getItem('session_id') || 'sess',
+    joursRestantsEssai: 3,
+    source: 'agent-oral',
+    matiere: 'oral'
+  });
+  const req = fetch(PROXY, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + DEEPSEEK_KEY
-    },
-    body: JSON.stringify({
-      model: 'deepseek-chat',
-      messages: [
-        { role: 'system', content: system },
-        { role: 'user', content: prompt }
-      ]
-    })
-  }).then(r => {
-    if (!r.ok) throw new Error('DeepSeek HTTP ' + r.status);
-    return r.json();
-  }).then(d => {
-    if (d.choices && d.choices[0] && d.choices[0].message) return d.choices[0].message.content;
-    throw new Error(d.error?.message || 'Réponse inattendue');
+    body: new URLSearchParams({ data: payload })
+  }).then(r => r.json())
+  .then(d => {
+    if (d.success && d.content) return d.content;
+    throw new Error(d.error || 'Réponse inattendue');
   });
   return Promise.race([req, timeout]);
 }
@@ -164,42 +160,6 @@ function renderOralInterface() {
   document.getElementById('oral-body').innerHTML = html;
 }
 
-// ===== API DEEPSEEK (centralisé pour l'agent oral) =====
-const DEEPSEEK_KEY = 'sk-REMPLACEZ_PAR_VOTRE_CLE_API_DEEPSEEK';
-const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
-
-async function callIA(prompt, system) {
-  const timeout = new Promise((_, reject) =>
-    setTimeout(() => reject(new Error('⏱ Timeout (45s) — réessaie dans quelques secondes.')), 45000)
-  );
-  const req = fetch(DEEPSEEK_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + DEEPSEEK_KEY
-    },
-    body: JSON.stringify({
-      model: 'deepseek-chat',
-      messages: [
-        { role: 'system', content: system },
-        { role: 'user', content: prompt }
-      ]
-    })
-  }).then(r => {
-    if (!r.ok) throw new Error('DeepSeek HTTP ' + r.status);
-    return r.json();
-  }).then(d => {
-    if (d.choices && d.choices[0] && d.choices[0].message) return d.choices[0].message.content;
-    throw new Error(d.error?.message || 'Réponse inattendue');
-  });
-  return Promise.race([req, timeout]);
-}
-
-function safeJSON(t) {
-  try { return JSON.parse(t.replace(/```json|```/g, '').trim()); }
-  catch(e) { return null; }
-}
-
 async function analyserExposeEtGenererQuestions() {
   const exposeText = document.getElementById('expose-text')?.value;
   if (!exposeText || exposeText.trim().length < 100) {
@@ -223,11 +183,6 @@ async function analyserExposeEtGenererQuestions() {
   const fbDiv = document.getElementById('expose-feedback');
   fbDiv.style.display = 'block';
   fbDiv.innerHTML = `<strong>✨ Analyse IA de votre exposé</strong><br><br>${evaluationExpose.feedback}<br><br><strong>📊 Note estimée : ${evaluationExpose.note}/20</strong>`;
-  
-  // TRACKER : début de session oral
-  if (typeof trackAction === 'function') {
-    trackAction('oral_session', 'oral', 'expose', null);
-  }
   
   afficherQuestions();
   showToast("✓ Questions générées ! Répondez, l'IA corrigera chaque réponse.", "ok");
@@ -389,11 +344,6 @@ async function corrigerReponse(type, idx) {
     feedback = note >= 7 ? "Bonne réponse !" : (note >= 5 ? "Réponse correcte mais à approfondir." : "Revoir la réponse modèle ci-dessous.");
   }
   
-  // TRACKER : correction IA dans l'oral
-  if (typeof trackAction === 'function') {
-    trackAction('correction_ia', 'oral', type === 'c' ? 'expose_question' : 'culture_question', note);
-  }
-  
   const fbDiv = document.getElementById(`fb-${type}-${idx}`);
   const scoreSpan = document.getElementById(`score-${type}-${idx}`);
   fbDiv.style.display = 'block';
@@ -502,45 +452,5 @@ function updateChrono() { const m = Math.floor(chronoSecs / 60); const s = chron
 function goHome() { document.getElementById('oral-page').style.display = 'none'; document.getElementById('home').style.display = 'flex'; if (chronoInterval) clearInterval(chronoInterval); running = false; }
 function showToast(msg, type) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 3000); }
 </script>
-
-<!-- ========== TRACKER ========== -->
-<script>
-const TRACKER_URL = 'https://script.google.com/macros/s/AKfycbxDHkyI8wlinBQ1BRIsg7dcz4AYWbY87SY5UDr6KVu4uHylWQs4fLfdd3a98PEwdL-A/exec';
-
-function getUserId() {
-  let id = localStorage.getItem('app_user_id');
-  if (!id) {
-    id = crypto.randomUUID ? crypto.randomUUID() : 'user_' + Date.now() + '_' + Math.random();
-    localStorage.setItem('app_user_id', id);
-  }
-  return id;
-}
-
-function isPaid() {
-  return localStorage.getItem('code_valide') === 'true';
-}
-
-function trackAction(action, matiere, type, note) {
-  fetch(TRACKER_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    body: JSON.stringify({
-      userId: getUserId(),
-      action: action,
-      matiere: matiere,
-      type: type,
-      estPayant: isPaid(),
-      note: note || ''
-    })
-  }).catch(e => console.warn('tracker failed', e));
-}
-
-// Première visite : tracer le début de l'essai
-if (!localStorage.getItem('trial_started')) {
-  trackAction('trial_start', '', '', '');
-  localStorage.setItem('trial_started', 'true');
-}
-</script>
-
 </body>
 </html>

@@ -3,806 +3,353 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Automatismes Histoire-Géo-EMC — Brevet 2026</title>
+<title>Histoire-Géo — 10 sujets DNB</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#09090f;--s1:#111118;--s2:#1a1a24;--br:#2a2a38;--acc:#f5a623;--acc2:#c4831a;--teal:#5ecfb1;--gold:#e8c87a;--red:#e87a7a;--blue-w:#7eb8f5;--pink-n:#f59eb8;--text:#e8e8f0;--dim:#9090a8;--muted:#5a5a72;}
+:root {
+  --bg:#09090f; --s1:#111118; --s2:#1a1a24; --br:#2a2a38;
+  --teal:#5ecfb1; --gold:#e8c87a; --red:#e87a7a;
+  --amber:#f5a623; --amber-dim:#c4841a;
+  --text:#e8e8f0; --dim:#9090a8; --muted:#5a5a72;
+}
 *{box-sizing:border-box;margin:0;padding:0;}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
-.page-header{background:linear-gradient(135deg,#0a0a1a 0%,#101028 100%);border-bottom:2px solid var(--acc);padding:20px 24px;}
-.page-header-inner{max-width:960px;margin:0 auto;display:flex;align-items:center;gap:16px;flex-wrap:wrap;}
-.page-back{color:var(--dim);text-decoration:none;font-size:13px;}
-.page-back:hover{color:var(--acc);}
-.page-title{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;flex:1;}
-.page-title span{color:var(--acc);}
-.eleve-bar{display:flex;gap:8px;background:var(--s2);border-radius:50px;padding:4px;width:fit-content;}
-.eleve-btn{padding:7px 22px;border-radius:50px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;background:transparent;color:var(--dim);}
-.eleve-btn.e1{background:var(--blue-w);color:#09090f;}
-.eleve-btn.e2{background:var(--pink-n);color:#09090f;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;}
 
-/* WARNING SPACED LEARNING */
-.warning-box{background:rgba(232,200,122,.1);border-left:4px solid var(--gold);border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--gold);}
-.warning-box strong{color:var(--gold);font-family:'Syne',sans-serif;}
-.warning-box p{margin:4px 0;}
-.warning-box .close-warning{float:right;cursor:pointer;font-size:16px;opacity:0.7;transition:opacity .2s;}
-.warning-box .close-warning:hover{opacity:1;}
+.landing{max-width:960px;margin:0 auto;padding:48px 24px 80px;}
+.eyebrow{font-family:'DM Mono',monospace;font-size:11px;color:var(--amber);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.eyebrow::before{content:'';width:24px;height:1px;background:var(--amber);}
+.h1{font-family:'Syne',sans-serif;font-size:clamp(32px,6vw,54px);font-weight:800;line-height:1.08;margin-bottom:14px;}
+.h1 em{font-style:normal;color:var(--amber);}
+.sub{color:var(--dim);font-size:15px;max-width:520px;margin-bottom:24px;}
+.pills{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:40px;}
+.pill{display:flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--br);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--dim);}
+.pill span{color:var(--text);font-weight:500;}
 
-.container{max-width:960px;margin:0 auto;padding:24px;}
-.phase{display:none;}.phase.active{display:block;}
-.stats-bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
-.stat{background:var(--s1);border:1px solid var(--br);border-radius:10px;padding:10px 16px;display:flex;flex-direction:column;gap:2px;}
-.stat-val{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;color:var(--acc);}
-.stat-label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:.06em;font-family:'DM Mono',monospace;}
-.section-title{font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:var(--acc);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px;display:flex;align-items:center;gap:8px;}
-.section-title::after{content:'';flex:1;height:1px;background:var(--br);}
-.chapitres-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:7px;max-height:340px;overflow-y:auto;padding:2px;margin-bottom:14px;}
-.ch-item{display:flex;align-items:center;gap:8px;background:var(--s1);border:1px solid var(--br);border-radius:8px;padding:8px 12px;cursor:pointer;font-size:12px;user-select:none;}
-.ch-item:hover{border-color:var(--acc);}
-.ch-item.selected{border-color:var(--acc);background:rgba(232,200,122,.08);}
-.ch-item.faible{border-color:rgba(232,66,74,.4);}
-.ch-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);min-width:24px;}
-.ch-warn{margin-left:auto;font-size:10px;color:var(--acc2);}
-.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-.btn{padding:7px 16px;border-radius:8px;border:1px solid var(--br);background:var(--s2);color:var(--dim);font-size:12px;cursor:pointer;}
-.btn:hover{border-color:var(--acc);color:var(--acc);}
-.btn-primary{background:var(--acc);border-color:var(--acc);color:#09090f;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;padding:10px 28px;border-radius:10px;}
-.btn-primary:hover{opacity:.85;}
-.btn-primary:disabled{opacity:.4;cursor:not-allowed;}
-.info-strip{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px;}
-.pill{background:var(--s2);border:1px solid var(--br);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--dim);display:flex;align-items:center;gap:6px;}
-.pill b{color:var(--text);}
-.timer-bar{display:flex;align-items:center;justify-content:space-between;background:var(--s1);border:1px solid var(--br);border-radius:10px;padding:10px 16px;margin-bottom:20px;}
-.timer-val{font-family:'DM Mono',monospace;font-size:1.4rem;color:var(--acc);}
-.timer-val.urgent{color:var(--red);animation:blink 1s infinite;}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
-.prog-bar{flex:1;height:5px;background:var(--br);border-radius:3px;margin:0 16px;overflow:hidden;}
-.prog-fill{height:100%;background:var(--acc);border-radius:3px;transition:width .3s;}
-.q-card{background:var(--s1);border:1px solid var(--br);border-radius:12px;padding:20px;margin-bottom:12px;animation:fi .3s ease;}
-@keyframes fi{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.q-meta{display:flex;gap:7px;margin-bottom:10px;flex-wrap:wrap;}
-.q-badge{font-size:10px;padding:2px 8px;border-radius:4px;font-family:'DM Mono',monospace;}
-.q-badge.ch{background:rgba(232,200,122,.1);border:1px solid rgba(232,200,122,.2);color:var(--acc);}
-.q-badge.tp-r{background:rgba(232,66,74,.1);border:1px solid rgba(232,66,74,.2);color:var(--acc2);}
-.q-badge.tp-n{background:rgba(94,207,177,.1);border:1px solid rgba(94,207,177,.2);color:var(--teal);}
-.q-badge.tp-p{background:rgba(232,200,122,.08);border:1px solid rgba(232,200,122,.15);color:var(--acc);}
-.q-text{font-size:15px;font-weight:500;margin-bottom:12px;line-height:1.5;}
-textarea.rep{width:100%;background:var(--s2);border:1px solid var(--br);border-radius:8px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;padding:10px 14px;resize:vertical;min-height:60px;outline:none;}
-textarea.rep:focus{border-color:var(--acc);}
-textarea.rep::placeholder{color:var(--muted);}
-.q-btns{display:flex;gap:8px;margin-top:8px;}
-.btn-verif{background:var(--acc);color:#09090f;border:none;border-radius:7px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;padding:7px 18px;cursor:pointer;}
-.btn-verif:disabled{opacity:.4;cursor:not-allowed;}
-.feedback{display:none;margin-top:10px;border-radius:8px;overflow:hidden;}
-.feedback.show{display:block;}
-.fb-ok{padding:10px 14px;background:rgba(94,207,177,.1);border-left:3px solid var(--teal);font-size:13px;color:var(--teal);font-weight:600;}
-.fb-mid{padding:10px 14px;background:rgba(232,200,122,.1);border-left:3px solid var(--gold);font-size:13px;color:var(--gold);font-weight:600;}
-.fb-bad{padding:10px 14px;background:rgba(232,66,74,.1);border-left:3px solid var(--acc2);font-size:13px;color:var(--acc2);font-weight:600;}
-.fb-rep{background:var(--s2);padding:10px 14px;font-size:13px;border-top:1px solid var(--br);}
-.fb-rep strong{color:var(--gold);display:block;margin-bottom:3px;font-size:11px;}
-.btn-next{background:var(--acc);color:#09090f;border:none;border-radius:7px;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;padding:7px 18px;cursor:pointer;margin-top:8px;}
-.resultats-card{background:var(--s1);border:1px solid var(--br);border-radius:14px;padding:2rem;text-align:center;}
-.score-grand{font-family:'Syne',sans-serif;font-size:4rem;font-weight:800;margin:12px 0;}
-.score-grand.ex{color:var(--teal);}.score-grand.bi{color:var(--gold);}.score-grand.ef{color:var(--acc2);}
-.faibles-box{background:var(--s2);border:1px solid rgba(232,66,74,.3);border-radius:8px;padding:12px;margin:12px 0;text-align:left;}
-.faibles-box h4{color:var(--acc2);font-size:12px;font-family:'Syne',sans-serif;margin-bottom:6px;}
-.faibles-box li{font-size:12px;color:var(--dim);padding:2px 0;}
-.part-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
-.ptab{padding:5px 14px;border-radius:20px;border:1px solid var(--br);background:var(--s2);color:var(--dim);font-size:11px;cursor:pointer;font-family:'Syne',sans-serif;}
-.ptab.active{border-color:var(--acc);color:var(--acc);}
+.sujets-list{display:flex;flex-direction:column;gap:8px;max-width:720px;}
+.sitem{display:flex;align-items:center;gap:12px;background:var(--s1);border:1px solid var(--br);border-radius:10px;padding:12px 16px;transition:border-color .2s;}
+.sitem:hover{border-color:var(--teal);}
+.sitem-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);min-width:60px;white-space:nowrap;}
+.sitem-info{flex:1;}
+.sitem-titre{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:2px;}
+.sitem-sub{font-size:11px;color:var(--dim);}
+.sitem-tags{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;}
+.ctag{font-size:10px;padding:2px 7px;border-radius:4px;background:var(--s2);border:1px solid var(--br);color:var(--dim);}
+.ctag.y25{border-color:#f5a62344;color:var(--amber);}
+.ctag.y24{border-color:#e8c87a44;color:var(--gold);}
+.ctag.y23{border-color:#5ecfb144;color:var(--teal);}
+.ctag.y22{border-color:#a07af544;color:#a07af5;}
+.sitem-btns{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+.card-dl{display:flex;align-items:center;gap:5px;color:var(--amber);font-size:11px;font-family:'Syne',sans-serif;font-weight:700;text-decoration:none;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);border-radius:5px;padding:4px 10px;transition:background .2s;}
+.card-dl:hover{background:rgba(245,166,35,.16);}
+.card-open{background:var(--amber);color:#09090f;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;border:none;border-radius:5px;padding:5px 12px;cursor:pointer;transition:background .2s;}
+.card-open:hover{background:var(--amber-dim);}
+
+.sujet-view{display:none;max-width:900px;margin:0 auto;padding:24px;}
+.sujet-view.active{display:block;}
+.sv-header{display:flex;align-items:center;gap:14px;margin-bottom:28px;flex-wrap:wrap;}
+.back-btn{display:flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--br);color:var(--dim);font-size:13px;padding:7px 14px;border-radius:7px;cursor:pointer;transition:.2s;text-decoration:none;}
+.back-btn:hover{border-color:var(--amber);color:var(--amber);}
+.sv-titre{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;flex:1;}
+.sv-dl{display:flex;align-items:center;gap:6px;background:var(--amber);color:#09090f;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;padding:8px 16px;border-radius:7px;text-decoration:none;white-space:nowrap;}
+.sv-dl:hover{background:var(--amber-dim);}
+.sv-warn{font-size:11px;color:var(--red);margin-top:4px;text-align:right;}
+
+.exo-header{display:flex;align-items:center;gap:8px;padding:14px 0 6px;border-top:1px solid var(--br);margin-top:8px;}
+.exo-badge{font-size:11px;font-weight:700;font-family:'Syne',sans-serif;padding:3px 10px;border-radius:4px;}
+.exo-badge.hist{background:rgba(245,166,35,.1);color:var(--amber);border:1px solid rgba(245,166,35,.3);}
+.exo-badge.geo{background:rgba(94,207,177,.1);color:var(--teal);border:1px solid rgba(94,207,177,.3);}
+.exo-badge.emc{background:rgba(160,122,245,.1);color:#a07af5;border:1px solid rgba(160,122,245,.3);}
+.exo-pts{font-size:12px;color:var(--muted);}
+
+.qblock{background:var(--s1);border:1px solid var(--br);border-radius:10px;padding:16px 18px 18px;margin-bottom:12px;}
+.qnum{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;color:var(--amber);background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);border-radius:4px;padding:2px 7px;margin-bottom:8px;}
+.qtexte{font-size:14px;color:var(--text);margin-bottom:10px;line-height:1.55;}
+textarea{width:100%;background:var(--s2);border:1px solid var(--br);border-radius:7px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:9px 12px;resize:vertical;min-height:52px;outline:none;transition:border-color .2s;}
+textarea:focus{border-color:var(--amber);}
+textarea::placeholder{color:var(--muted);}
+.qbtns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.btn-corriger{background:var(--amber);color:#09090f;border:none;border-radius:6px;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;padding:6px 14px;cursor:pointer;transition:.15s;}
+.btn-corriger:hover{background:var(--amber-dim);}
+.btn-corriger:disabled{opacity:.4;cursor:not-allowed;}
+.btn-off{background:var(--s2);color:var(--dim);border:1px solid var(--br);border-radius:6px;font-size:11px;padding:5px 10px;cursor:pointer;}
+.btn-off:hover{border-color:var(--gold);color:var(--gold);}
+
+.corr-panel{display:none;margin-top:10px;}
+.corr-panel.show{display:block;}
+.corr-ia{background:var(--s2);border-left:3px solid var(--amber);border-radius:0 7px 7px 0;padding:12px 14px;font-size:13px;}
+.corr-note{color:var(--amber);font-weight:700;font-size:15px;margin-bottom:6px;}
+.corr-txt{color:var(--text);white-space:pre-wrap;}
+.corr-conseil{color:var(--dim);font-size:12px;margin-top:8px;}
+.corr-off{margin-top:8px;background:rgba(232,122,122,.06);border-left:3px solid var(--red);border-radius:0 7px 7px 0;padding:10px 14px;font-size:13px;}
+.corr-off strong{color:var(--red);display:block;margin-bottom:4px;font-size:11px;}
+.corr-off-toggle{display:none;margin-top:8px;background:rgba(232,200,122,.06);border-left:3px solid var(--gold);border-radius:0 7px 7px 0;padding:10px 14px;font-size:13px;}
+.corr-off-toggle.show{display:block;}
+.corr-off-toggle strong{color:var(--gold);display:block;margin-bottom:4px;font-size:11px;}
+.btn-copy{background:var(--s2);border:1px solid var(--br);color:var(--dim);font-size:11px;padding:4px 10px;border-radius:5px;cursor:pointer;margin-top:6px;}
+.btn-copy:hover{border-color:var(--amber);color:var(--amber);}
+.loading{color:var(--amber);font-style:italic;font-size:13px;padding:8px 0;}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--amber);animation:p 1.2s ease-in-out infinite;margin-right:6px;}
+@keyframes p{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+.erreur{color:var(--red);font-size:13px;padding:8px 0;}
+
+.export-zone{margin-top:20px;padding:12px 16px;background:var(--s2);border:1px dashed var(--br);border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.export-zone p{font-size:12px;color:var(--dim);}
+.btn-pdf{background:var(--s2);border:1px solid var(--gold);color:var(--gold);font-family:'Syne',sans-serif;font-weight:700;font-size:11px;padding:7px 14px;border-radius:6px;cursor:pointer;}
+.btn-pdf:hover{background:rgba(232,200,122,.1);}
 </style>
+<script src="monetization.js"></script>
+<script src="proxy-client.js"></script>
 </head>
 <body>
-<div class="page-header">
-  <div class="page-header-inner">
-    <a href="index.html" class="page-back">← Hub</a>
-    <div class="page-title"><span>Automatismes</span> Histoire-Géo-EMC</div>
-    <span style="font-size:1.5rem">🌍</span>
-    <div class="eleve-bar">
-      <button class="eleve-btn e1" id="btn1">👤 Élève 1</button>
-      <button class="eleve-btn" id="btn2">👤 Élève 2</button>
-    </div>
-  </div>
-</div>
-<div class="container">
-  <div class="phase active" id="phaseSelect">
-    
-    <!-- ⚠️ WARNING SPACED LEARNING ⚠️ -->
-    <div class="warning-box" id="warningBox">
-      <span class="close-warning" onclick="document.getElementById('warningBox').style.display='none';">&times;</span>
-      <strong>🧠 Mode Spaced Learning (révision circulaire)</strong>
-      <p>✅ Pour activer la <strong>répétition espacée</strong> (révision des leçons anciennes + nouvelles) :</p>
-      <p>👉 <strong>Sélectionnez TOUS les chapitres que vous avez déjà vus depuis le début de l'année</strong> (même les anciens).</p>
-      <p>📌 L'ordinateur piochera automatiquement : <strong>20 cartes des chapitres choisis + 10 cartes des erreurs + 10 cartes d'autres chapitres</strong>.</p>
-      <p>💡 <strong>Plus vous sélectionnez de chapitres, plus la révision est efficace !</strong></p>
-    </div>
 
-    <div class="stats-bar" style="margin-top:8px">
-      <div class="stat"><div class="stat-val" id="stCartes">0</div><div class="stat-label">Cartes sél.</div></div>
-      <div class="stat"><div class="stat-val" id="stMait" style="color:var(--teal)">0</div><div class="stat-label">Maîtrisées</div></div>
-      <div class="stat"><div class="stat-val" id="stPct" style="color:var(--gold)">0%</div><div class="stat-label">Progression</div></div>
-      <div class="stat"><div class="stat-val" id="stRegle" style="color:var(--dim);font-size:.9rem">—</div><div class="stat-label">Questions</div></div>
-    </div>
-    <div class="part-tabs">
-      <button class="ptab active" id="tabTout">Tout (32)</button>
-      <button class="ptab" id="tabHi" style="border-color:rgba(232,66,74,.4);color:#e84249">Histoire (1-10)</button>
-      <button class="ptab" id="tabGe" style="border-color:rgba(94,207,177,.4);color:#5ecfb1">Géo (11-22)</button>
-      <button class="ptab" id="tabEm">EMC (23-32)</button>
-    </div>
-    <div class="section-title">Chapitres à réviser</div>
-    <div class="chapitres-grid" id="chapGrid"></div>
-    <div class="btn-row">
-      <button class="btn" id="btnAll">✅ Tout</button>
-      <button class="btn" id="btnNone">❌ Aucun</button>
-      <button class="btn" id="btnFaibles" style="border-color:rgba(232,66,74,.4);color:var(--acc2)">⚠ Faibles</button>
-      <button class="btn" id="btnReset">🔄 Reset progression</button>
-    </div>
-    <div class="info-strip">
-      <div class="pill">⏱ <b>45 min</b> max</div>
-      <div class="pill">📚 Règle <b>20-10-10</b></div>
-      <div class="pill">🔁 Spaced repetition</div>
-      <div class="pill">📊 → <b>Suivi parental</b></div>
-    </div>
-    <button class="btn-primary" id="btnStart" disabled>🎯 Démarrer la session</button>
+<div class="landing" id="landing">
+  <div class="eyebrow">Brevet 2026 · DNB</div>
+  <h1 class="h1">10 vrais sujets <em>Histoire-Géo-EMC</em></h1>
+  <p class="sub">Documents authentiques indispensables. Télécharge le PDF officiel, réponds, l'IA corrige.</p>
+  <div class="pills">
+    <div class="pill">⏱ <span>2h</span> par sujet</div>
+    <div class="pill">📊 <span>50 points</span></div>
+    <div class="pill">📅 Sujets <span>2022 → 2025</span></div>
+    <div class="pill">🤖 Correction <span>IA</span> + officielle</div>
   </div>
-  <div class="phase" id="phaseSession">
-    <div class="timer-bar">
-      <span class="timer-val" id="timerVal">45:00</span>
-      <div class="prog-bar"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
-      <span id="qCount" style="font-family:'DM Mono',monospace;font-size:13px;color:var(--dim)">Q 0/0</span>
-    </div>
-    <div id="qArea"></div>
-    <div id="fbArea"></div>
-    <div id="nextWrap" style="display:none;margin-top:8px">
-      <button class="btn-next" id="btnNext">Question suivante →</button>
-    </div>
-  </div>
-  <div class="phase" id="phaseRes">
-    <div class="resultats-card">
-      <p style="font-family:'Syne',sans-serif;font-weight:700;font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.1em">Session terminée</p>
-      <div class="score-grand" id="scoreGrand">0%</div>
-      <div id="scoreDetail" style="font-size:14px;color:var(--dim);margin-bottom:6px"></div>
-      <div id="msgFin" style="font-size:14px;color:var(--dim);margin-bottom:14px"></div>
-      <div id="faiblesRes"></div>
-      <div class="btn-row" style="justify-content:center;margin-top:14px">
-        <button class="btn-primary" id="btnNouv">📚 Nouvelle session</button>
-        <button class="btn" id="btnSuivi">📊 Suivi parental</button>
-      </div>
-    </div>
-  </div>
+  <div class="sujets-list" id="grid"></div>
 </div>
+
+<div class="sujet-view" id="sujetView">
+  <div class="sv-header">
+    <a class="back-btn" href="#" onclick="retour();return false;">← Retour</a>
+    <div class="sv-titre" id="svTitre"></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end">
+      <a class="sv-dl" id="svDl" href="#" target="_blank">⬇ Télécharger le sujet</a>
+      <div class="sv-warn">⚠ Ne regarde pas le corrigé !</div>
+    </div>
+  </div>
+  <div id="svContent"></div>
+</div>
+
 <script>
 // ============================================================
-// DATA-HISTGEO.JS — Source unique 276 cartes Histoire-Géo-EMC
-// Utilisé par : flashcards-histgeo.html + revisions-histgeo.html + automatismes-histgeo.html
-// Variable globale : CHAPITRES_HG
-// 32 chapitres : Histoire (1-10) + Géographie (11-22) + EMC (23-32)
+// PROXY - VOTRE URL GOOGLE APPS SCRIPT (avec clé API configurée)
 // ============================================================
-const CHAPITRES_HG = {
-  1: { titre: "Première Guerre mondiale (1914-1918)", cartes: [
-    { q: "Causes de la Première Guerre mondiale ?", r: "Rivalités coloniales, nationalisme, alliances (Triple Entente/Triple Alliance), assassinat de François-Ferdinand (28 juin 1914)." },
-    { q: "Triple Entente vs Triple Alliance ?", r: "Entente : France, Royaume-Uni, Russie. Alliance : Allemagne, Autriche-Hongrie, Italie." },
-    { q: "Guerre des tranchées ?", r: "Guerre de position, soldats dans des tranchées boueuses sous les bombardements." },
-    { q: "Bataille de Verdun 1916 ?", r: "Symbole de la résistance française. Ils ne passeront pas !" },
-    { q: "Bataille de la Somme 1916 ?", r: "1 million de pertes. Première utilisation de chars." },
-    { q: "Génocide arménien 1915-1916 ?", r: "Extermination des Arméniens par l'Empire ottoman : 1,2 à 1,5 million de morts." },
-    { q: "Pourquoi les USA entrent en guerre en 1917 ?", r: "Guerre sous-marine allemande + défense du droit international." },
-    { q: "Date de l'armistice de 1918 ?", r: "11 novembre 1918, dans le wagon du maréchal Foch." },
-    { q: "Bilan humain de la 1ère Guerre mondiale ?", r: "10 millions de morts, 20 millions de blessés." },
-    { q: "Mutineries de 1917 ?", r: "Révoltes de soldats français refusant les attaques suicidaires." }
-  ]},
-  2: { titre: "Sortie de guerre et traités", cartes: [
-    { q: "Date et lieu du traité de Versailles ?", r: "28 juin 1919, galerie des Glaces." },
-    { q: "14 points de Wilson ?", r: "Programme de paix américain : liberté des mers, SDN, droit des peuples." },
-    { q: "Qu'est-ce que la SDN ?", r: "Société des Nations, ancêtre de l'ONU, créée en 1920." },
-    { q: "Clauses du traité de Versailles ?", r: "Culpabilité allemande, réparations, pertes territoriales, démilitarisation." },
-    { q: "Pourquoi diktat pour l'Allemagne ?", r: "L'Allemagne n'a pas participé aux négociations, forcée de signer." },
-    { q: "Nouveaux États après 1918 ?", r: "Pologne, Tchécoslovaquie, Yougoslavie, Hongrie, Autriche, Finlande, pays baltes." },
-    { q: "Pourquoi la SDN a-t-elle échoué ?", r: "Pas d'armée, absence des USA, montée des totalitarismes." },
-    { q: "Traumatisme français après 1918 ?", r: "Gueules cassées, peur de l'Allemagne, ligne Maginot." },
-    { q: "Réparations allemandes ?", r: "132 milliards de marks-or à payer aux vainqueurs." },
-    { q: "Ligne Maginot ?", r: "Ligne de fortifications française contre une invasion allemande." }
-  ]},
-  3: { titre: "Montée des totalitarismes", cartes: [
-    { q: "Régime totalitaire : définition ?", r: "Parti unique, culte du chef, police politique, propagande, contrôle total." },
-    { q: "URSS de Staline ?", r: "Collectivisation, plans quinquennaux, Goulag (camps de travail)." },
-    { q: "Allemagne de Hitler ?", r: "Nazisme, antisémitisme, Lebensraum, Führerprinzip." },
-    { q: "Italie de Mussolini ?", r: "Fascisme, marche sur Rome 1922, culte du Duce." },
-    { q: "Culte de la personnalité ?", r: "Mise en scène du dictateur, présenté comme guide infaillible." },
-    { q: "Propagande totalitaire ?", r: "Contrôle des médias, affiches, cinéma, meetings de masse." },
-    { q: "Instruments de la terreur totalitaire ?", r: "Police politique (NKVD, Gestapo), camps, dénonciation." },
-    { q: "Premiers camps nazis ?", r: "Dès 1933 (Dachau), pour les opposants politiques." },
-    { q: "Front populaire 1936 ?", r: "Gouvernement Léon Blum : congés payés, semaine de 40h." },
-    { q: "JO de Berlin 1936 ?", r: "Hitler utilise les JO comme vitrine. Jesse Owens : 4 médailles." }
-  ]},
-  4: { titre: "Guerre-éclair (1939-1941)", cartes: [
-    { q: "Début de la 2e Guerre mondiale ?", r: "1er septembre 1939 : invasion de la Pologne." },
-    { q: "Drôle de guerre ?", r: "Inactivité militaire : sept. 1939 – mai 1940." },
-    { q: "Blitzkrieg ?", r: "Guerre-éclair : avions + chars + infanterie motorisée." },
-    { q: "Invasion de la France ?", r: "Mai-juin 1940, percée dans les Ardennes." },
-    { q: "Armistice de juin 1940 ?", r: "22 juin 1940 à Rethondes." },
-    { q: "France coupée en 1940 ?", r: "Zone occupée (Nord) par l'Allemagne / zone libre (Sud) par Vichy." },
-    { q: "Appel du 18 juin 1940 ?", r: "De Gaulle sur la BBC, naissance de la France libre." },
-    { q: "Bataille d'Angleterre 1940 ?", r: "Victoire britannique, Hitler renonce à envahir l'Angleterre." },
-    { q: "Winston Churchill ?", r: "Premier ministre britannique, symbole de la résistance." },
-    { q: "Régime de Vichy ?", r: "Régime collaborationniste dirigé par Pétain (1940-1944)." }
-  ]},
-  5: { titre: "Guerre d'anéantissement (1941-1945)", cartes: [
-    { q: "Opération Barbarossa ?", r: "Invasion de l'URSS par l'Allemagne, 22 juin 1941." },
-    { q: "Pearl Harbor ?", r: "Attaque japonaise, 7 déc. 1941, entrée en guerre des USA." },
-    { q: "Guerre totale ?", r: "Mobilisation de toutes les ressources, civils ciblés." },
-    { q: "Tournant de Stalingrad 1942-1943 ?", r: "Première grande défaite allemande, l'URSS repasse à l'offensive." },
-    { q: "Débarquement de Normandie ?", r: "6 juin 1944, opération Overlord." },
-    { q: "Libération de Paris ?", r: "Août 1944, capitulation allemande le 25 août." },
-    { q: "Shoah ?", r: "Extermination des Juifs par les nazis : 6 millions de morts." },
-    { q: "Camps d'extermination ?", r: "Auschwitz-Birkenau, Treblinka, Sobibor, Belzec." },
-    { q: "Conférence de Wannsee 1942 ?", r: "Organisation de la solution finale." },
-    { q: "Bombes atomiques ?", r: "Hiroshima 6 août 1945, Nagasaki 9 août 1945. Capitulation Allemagne : 8 mai 1945." }
-  ]},
-  6: { titre: "Libération et bilan", cartes: [
-    { q: "Bilan humain de la 2e Guerre mondiale ?", r: "60 millions de morts (URSS : 27 millions)." },
-    { q: "Procès de Nuremberg 1945-1946 ?", r: "Procès des criminels nazis pour crimes contre l'humanité." },
-    { q: "Crime contre l'humanité ?", r: "Acte inhumain contre une population civile." },
-    { q: "Création de l'ONU ?", r: "1945, remplace la SDN." },
-    { q: "DUDH 1948 ?", r: "Déclaration universelle des droits de l'homme." },
-    { q: "Plan Marshall 1947 ?", r: "Aide américaine pour reconstruire l'Europe (13 milliards de dollars)." },
-    { q: "Procès de Tokyo ?", r: "Jugement des criminels de guerre japonais." },
-    { q: "Génocide : définition ?", r: "Destruction d'un groupe national, ethnique, racial ou religieux." },
-    { q: "Résistance française ?", r: "Mouvements clandestins, maquis, réseaux d'évasion." },
-    { q: "Rôle des femmes pendant la guerre ?", r: "Main-d'œuvre, infirmières, résistantes." }
-  ]},
-  7: { titre: "Guerre froide (1947-1991)", cartes: [
-    { q: "Rideau de fer ?", r: "Frontière idéologique Est/Ouest (discours Churchill 1946)." },
-    { q: "Doctrine Truman ?", r: "Endiguement du communisme." },
-    { q: "Plan Marshall 1947 ?", r: "Aide américaine à l'Europe de l'Ouest (refusée par l'URSS)." },
-    { q: "Allemagne coupée ?", r: "RFA (Ouest) et RDA (Est). Berlin divisée en 4 secteurs." },
-    { q: "Blocus de Berlin 1948-1949 ?", r: "URSS bloque Berlin-Ouest, pont aérien américain." },
-    { q: "OTAN 1949 ?", r: "Alliance militaire des pays capitalistes." },
-    { q: "Pacte de Varsovie 1955 ?", r: "Alliance militaire des pays communistes." },
-    { q: "Crise de Cuba 1962 ?", r: "Missiles soviétiques à Cuba, monde frôle la guerre nucléaire." },
-    { q: "Guerre par procuration ?", r: "Superpuissances s'affrontent par pays interposés (Vietnam)." },
-    { q: "Chute du mur de Berlin ?", r: "9 novembre 1989. Fin de l'URSS : 1991." }
-  ]},
-  8: { titre: "Construction européenne", cartes: [
-    { q: "CECA 1951 ?", r: "Communauté européenne du charbon et de l'acier." },
-    { q: "CEE 1957 ?", r: "Communauté économique européenne, traité de Rome." },
-    { q: "6 pays fondateurs ?", r: "France, Allemagne, Italie, Belgique, Pays-Bas, Luxembourg." },
-    { q: "Traité de Maastricht 1992 ?", r: "Création de l'UE, citoyenneté européenne, prépare l'euro." },
-    { q: "Euro en circulation ?", r: "2002." },
-    { q: "Espace Schengen ?", r: "Libre circulation des personnes." },
-    { q: "Brexit 2020 ?", r: "Sortie du Royaume-Uni de l'UE." },
-    { q: "PAC ?", r: "Politique agricole commune." },
-    { q: "Acte unique européen 1986 ?", r: "Création du marché unique." },
-    { q: "Programme Erasmus+ ?", r: "Mobilité étudiante européenne." }
-  ]},
-  9: { titre: "Décolonisation (1945-1975)", cartes: [
-    { q: "Conférence de Bandung 1955 ?", r: "Conférence des non-alignés." },
-    { q: "Guerre d'Indochine 1946-1954 ?", r: "Défaite française à Diên Biên Phu." },
-    { q: "Guerre d'Algérie 1954-1962 ?", r: "Accords d'Évian 1962." },
-    { q: "FLN ?", r: "Front de libération nationale algérien." },
-    { q: "1960 en Afrique ?", r: "Année de l'Afrique : 17 indépendances." },
-    { q: "Indépendance de l'Inde 1947 ?", r: "Gandhi, partition avec le Pakistan." },
-    { q: "Guerre du Vietnam 1955-1975 ?", r: "Victoire du Nord communiste." },
-    { q: "Décolonisation portugaise ?", r: "1974-1975, révolution des Œillets." },
-    { q: "Françafrique ?", r: "Influence de la France en Afrique post-indépendances." },
-    { q: "Mémoires douloureuses de la colonisation ?", r: "Reconnaissance des crimes coloniaux, restitution d'œuvres." }
-  ]},
-  10: { titre: "Après-guerre froide (1991 à nos jours)", cartes: [
-    { q: "Guerre du Golfe 1990-1991 ?", r: "Intervention contre l'Irak après l'invasion du Koweït." },
-    { q: "Guerres de Yougoslavie 1991-2001 ?", r: "Guerres civiles, nettoyage ethnique (Bosnie, Kosovo)." },
-    { q: "Génocide au Rwanda 1994 ?", r: "Extermination des Tutsis, 800 000 morts." },
-    { q: "11 septembre 2001 ?", r: "Attentats d'Al-Qaïda sur les tours jumelles." },
-    { q: "Guerre contre le terrorisme ?", r: "Invasions de l'Afghanistan 2001 et de l'Irak 2003." },
-    { q: "BRICS ?", r: "Brésil, Russie, Inde, Chine, Afrique du Sud." },
-    { q: "Crise des migrants 2015 ?", r: "Guerres (Syrie), pauvreté, changements climatiques." },
-    { q: "Accord de Paris 2015 ?", r: "Lutter contre le réchauffement climatique." },
-    { q: "Pandémie Covid-19 2020 ?", r: "Pandémie mondiale, confinements, vaccins." },
-    { q: "Défis actuels ?", r: "Climat, migrations, IA, montée des populismes." }
-  ]},
-  11: { titre: "Aires urbaines françaises", cartes: [
-    { q: "Métropolisation ?", r: "Concentration des activités et population dans les grandes métropoles." },
-    { q: "Aire urbaine ?", r: "Pôle urbain + couronne périurbaine." },
-    { q: "Principales métropoles françaises ?", r: "Paris, Lyon, Marseille, Lille, Toulouse, Bordeaux, Nice, Nantes." },
-    { q: "Ségrégation socio-spatiale ?", r: "Séparation des populations selon leurs revenus." },
-    { q: "Étalement urbain ?", r: "Consommation d'espaces naturels par les villes." },
-    { q: "Périurbanisation ?", r: "Installation des citadins dans les communes périurbaines." },
-    { q: "Sort des villes moyennes ?", r: "En difficulté face aux métropoles." },
-    { q: "Éco-quartier ?", r: "Quartier durable (basse consommation, espaces verts)." },
-    { q: "Gentrification ?", r: "Remplacement des populations modestes par des classes aisées." },
-    { q: "QPV ?", r: "Quartiers prioritaires de la politique de la ville." }
-  ]},
-  12: { titre: "Les espaces productifs français", cartes: [
-    { q: "Espaces agricoles français ?", r: "Céréales (Bassin parisien), élevage (Massif central), viticulture." },
-    { q: "Désindustrialisation ?", r: "Baisse emploi industriel, friches." },
-    { q: "Tertiarisation ?", r: "Augmentation de la part des services." },
-    { q: "Pôle de compétitivité ?", r: "Regroupement d'entreprises, chercheurs et universités pour innover." },
-    { q: "Zone industrialo-portuaire ?", r: "Zone industrielle liée à un port (Le Havre, Fos-sur-Mer)." },
-    { q: "Tourisme en France ?", r: "1er pays touristique mondial (86M de visiteurs)." },
-    { q: "Énergies renouvelables en France ?", r: "Parcs éoliens, centrales solaires, barrages hydrauliques." },
-    { q: "Reconversion des friches industrielles ?", r: "Sites culturels, numériques ou logistiques." },
-    { q: "French Tech ?", r: "Écosystème des startups françaises." },
-    { q: "Grand Paris ?", r: "Projet d'aménagement de la métropole parisienne." }
-  ]},
-  13: { titre: "Les espaces de faible densité français", cartes: [
-    { q: "Atouts des espaces ruraux ?", r: "Cadre de vie, tourisme vert, agriculture, énergies renouvelables." },
-    { q: "Fragilités des espaces ruraux ?", r: "Vieillissement, enclavement, désertification médicale." },
-    { q: "Néoruraux ?", r: "Citadins s'installant à la campagne (télétravail)." },
-    { q: "ZRR ?", r: "Zones de revitalisation rurale (aides fiscales)." },
-    { q: "Télétravail et espaces ruraux ?", r: "Dynamise certains territoires." },
-    { q: "Espaces de montagne ?", r: "Contraintes (froid, pente) et atouts (tourisme, hydroélectricité)." },
-    { q: "Espaces littoraux ?", r: "Pression touristique, conflits d'usage, risques de submersion." },
-    { q: "Diagonale du vide ?", r: "Zone de faible densité traversant la France du nord-est au sud-ouest." },
-    { q: "Hyperruralité ?", r: "Espaces très peu denses, éloignés des services." },
-    { q: "Plan Action Cœur de Ville ?", r: "Revitaliser les centres-villes des villes moyennes." }
-  ]},
-  14: { titre: "Les espaces transfrontaliers français", cartes: [
-    { q: "Eurocité ?", r: "Coopération transfrontalière entre villes de pays différents." },
-    { q: "Principaux espaces transfrontaliers français ?", r: "Avec Allemagne, Suisse, Italie, Espagne, Belgique." },
-    { q: "Tunnel du Mont-Blanc ?", r: "Infrastructure reliant la France à l'Italie (1965)." },
-    { q: "Eurodistrict Strasbourg-Ortenau ?", r: "Coopération entre Strasbourg et l'Allemagne." },
-    { q: "Corridor Rhin-Rhône ?", r: "Infrastructure de transport majeure." },
-    { q: "Avantages coopération transfrontalière ?", r: "Échanges économiques, mobilité des travailleurs." },
-    { q: "Défis espaces transfrontaliers ?", r: "Harmonisation des lois, barrières linguistiques." },
-    { q: "ZIP de Dunkerque ?", r: "Zone industrialo-portuaire transfrontalière avec la Belgique." },
-    { q: "Frontières naturelles de la France ?", r: "Rhin, Alpes, Pyrénées, Méditerranée, Atlantique, Manche." },
-    { q: "Coopération France-Suisse ?", r: "Emploi frontalier, Arc lémanique." }
-  ]},
-  15: { titre: "Les régions ultramarines françaises", cartes: [
-    { q: "DROM ?", r: "Guadeloupe, Martinique, Guyane, La Réunion, Mayotte." },
-    { q: "COM ?", r: "Saint-Pierre-et-Miquelon, Saint-Barthélemy, Wallis-et-Futuna, Polynésie." },
-    { q: "Spécificités des DROM ?", r: "Mêmes lois que la métropole, régions européennes." },
-    { q: "Défis des régions ultramarines ?", r: "Éloignement, chômage élevé, dépendance économique." },
-    { q: "Atouts des régions ultramarines ?", r: "Biodiversité, tourisme, ZEE." },
-    { q: "ZEE ?", r: "Zone économique exclusive (droits d'exploitation des ressources maritimes)." },
-    { q: "Guyane stratégique ?", r: "Base de lancement de fusées (Kourou)." },
-    { q: "Plan Chlordécone ?", r: "Dépollution des sols en Guadeloupe et Martinique." },
-    { q: "La Réunion ?", r: "Île volcanique de l'océan Indien, 900 000 habitants." },
-    { q: "Mayotte ?", r: "101e département français, île de l'océan Indien." }
-  ]},
-  16: { titre: "L'Union européenne", cartes: [
-    { q: "Nombre de pays dans l'UE ?", r: "27 (depuis le Brexit 2020)." },
-    { q: "PAC ?", r: "Politique agricole commune." },
-    { q: "Fonds structurels de l'UE ?", r: "FEDER (développement régional), FSE (emploi)." },
-    { q: "Schengen ?", r: "Libre circulation des personnes." },
-    { q: "Inégalités territoriales dans l'UE ?", r: "Opposition Est/Ouest (PIB)." },
-    { q: "Capitales européennes ?", r: "Bruxelles (Commission), Strasbourg (Parlement), Luxembourg (Justice)." },
-    { q: "Régions ultrapériphériques ?", r: "Territoires européens hors continent (Guadeloupe, Guyane, Réunion)." },
-    { q: "Zone euro ?", r: "20 pays utilisant l'euro." },
-    { q: "Parlement européen ?", r: "Élu au suffrage universel direct." },
-    { q: "Conseil de l'Europe vs Conseil de l'UE ?", r: "Europe : droits de l'homme (47 pays). UE : décisions de l'Union." }
-  ]},
-  17: { titre: "La France dans la mondialisation", cartes: [
-    { q: "Principales FMN françaises ?", r: "TotalEnergies, LVMH, AXA, Carrefour, Airbus." },
-    { q: "Hubs français ?", r: "Roissy-CDG, Le Havre, Marseille-Fos." },
-    { q: "Territoires gagnants de la mondialisation ?", r: "Métropoles (Paris, Lyon), pôles de compétitivité." },
-    { q: "Territoires perdants ?", r: "Campagnes isolées, villes moyennes désindustrialisées." },
-    { q: "Rôle de Paris dans la mondialisation ?", r: "Ville mondiale (finance, mode, tourisme, culture)." },
-    { q: "Flux touristiques français ?", r: "1ère destination touristique mondiale (86M visiteurs)." },
-    { q: "PIB de la France ?", r: "Environ 2 800 milliards d'euros (7e économie mondiale)." },
-    { q: "Secteurs d'excellence français ?", r: "Aéronautique (Airbus), luxe (LVMH), nucléaire (EDF)." },
-    { q: "Défis économiques de la France ?", r: "Chômage, dette publique, transitions écologique et numérique." },
-    { q: "IDH de la France ?", r: "0,903 (très élevé, top 30 mondial)." }
-  ]},
-  18: { titre: "Les inégalités en France", cartes: [
-    { q: "Principales inégalités territoriales ?", r: "Opposition Est/Ouest, Nord/Sud, métropoles/périphéries." },
-    { q: "Chômage en France ?", r: "Environ 7-8%." },
-    { q: "Pauvreté en France ?", r: "14% sous le seuil de pauvreté (1 102 €/mois)." },
-    { q: "Fracture numérique ?", r: "Inégalité d'accès à Internet entre villes et campagnes." },
-    { q: "Politiques contre les inégalités ?", r: "Minima sociaux, allocations logement, services publics." },
-    { q: "Zonage prioritaire ?", r: "QPV (quartiers prioritaires), ZRR (zones rurales)." },
-    { q: "Revenu médian en France ?", r: "Environ 1 800 € par mois." },
-    { q: "Inégalités de genre ?", r: "Écart de salaire hommes/femmes (17%), plafond de verre." },
-    { q: "Inégalités scolaires ?", r: "Reproduction sociale, effet d'établissement." },
-    { q: "Mixité sociale ?", r: "Politique de mélange des catégories sociales." }
-  ]},
-  19: { titre: "La mondialisation", cartes: [
-    { q: "Mondialisation ?", r: "Mise en relation des différentes parties du monde par les échanges." },
-    { q: "FMN ?", r: "Firme multinationale (Apple, Total, Nestlé)." },
-    { q: "3 piliers institutionnels ?", r: "OMC (commerce), FMI (finance), Banque mondiale." },
-    { q: "Flux de la mondialisation ?", r: "Marchandises (conteneurs), capitaux, informations, personnes." },
-    { q: "Hub ?", r: "Plateforme où transitent les flux mondiaux." },
-    { q: "Mégalopole ?", r: "Région urbaine très peuplée (Tokyo, NY, Londres, Shanghai, Paris)." },
-    { q: "Pays émergents ?", r: "Pays à forte croissance (BRICS)." },
-    { q: "Inégalités de la mondialisation ?", r: "Métropoles gagnantes / territoires perdants." },
-    { q: "Délocalisation ?", r: "Transfert d'activités vers des pays à bas coûts." },
-    { q: "Relocalisation ?", r: "Retour d'activités dans le pays d'origine." }
-  ]},
-  20: { titre: "Les inégalités de développement", cartes: [
-    { q: "IDH ?", r: "Indice de développement humain (PIB, santé, éducation)." },
-    { q: "Distinction Nord/Sud ?", r: "Nord = pays développés, Sud = pays en développement." },
-    { q: "PMA ?", r: "Pays les moins avancés (Afrique subsaharienne, Afghanistan)." },
-    { q: "Taux d'alphabétisation ?", r: "Mesure l'accès à l'éducation." },
-    { q: "Espérance de vie ?", r: "Durée de vie moyenne, reflet de la santé." },
-    { q: "OMD ?", r: "Objectifs du millénaire pour le développement (ONU 2000)." },
-    { q: "ODD ?", r: "Objectifs de développement durable (ONU 2015, pour 2030)." },
-    { q: "Fracture numérique mondiale ?", r: "Inégalité d'accès à Internet entre pays." },
-    { q: "Aide publique au développement ?", r: "0,7% du PIB des pays riches (objectif ONU)." },
-    { q: "Dette des pays du Sud ?", r: "Frein au développement, dépendance envers les créanciers." }
-  ]},
-  21: { titre: "Les défis du XXIe siècle", cartes: [
-    { q: "Changement climatique ?", r: "Augmentation de la température due aux GES." },
-    { q: "Transition énergétique ?", r: "Passage des énergies fossiles aux renouvelables." },
-    { q: "Types de migrations ?", r: "Économiques, politiques (réfugiés), climatiques." },
-    { q: "Conflit asymétrique ?", r: "Armée régulière contre groupes non étatiques." },
-    { q: "Développement durable ?", r: "Répondre aux besoins actuels sans compromettre l'avenir." },
-    { q: "Économie circulaire ?", r: "Recycler, réparer, réutiliser." },
-    { q: "Défis de l'IA ?", r: "Éthique, emplois, désinformation." },
-    { q: "Désinformation ?", r: "Fausses informations diffusées pour manipuler." },
-    { q: "Accord de Paris 2015 ?", r: "Lutter contre le réchauffement, limiter à +1,5°C." },
-    { q: "COP ?", r: "Conférence des Parties, négociations climatiques." }
-  ]},
-  22: { titre: "Les aires urbaines mondiales", cartes: [
-    { q: "Mégalopole ?", r: "Région urbaine de plusieurs millions d'habitants." },
-    { q: "Ville mondiale ?", r: "Ville concentrant les fonctions de commandement mondial." },
-    { q: "Principales villes mondiales ?", r: "New York, Londres, Tokyo, Paris, Singapour." },
-    { q: "Urbanisation mondiale ?", r: "55% de la population mondiale vit en ville." },
-    { q: "Problèmes des mégapoles du Sud ?", r: "Bidonvilles, transports saturés, pollution." },
-    { q: "Étalement urbain mondial ?", r: "Consommation d'espaces naturels par les villes." },
-    { q: "Gentrification ?", r: "Remplacement des populations modestes par des classes aisées." },
-    { q: "Développement urbain durable ?", r: "Éco-quartiers, transports en commun, végétalisation." },
-    { q: "Bidonville ?", r: "Quartier informel sans équipements (favelas, shanty towns)." },
-    { q: "Smart city ?", r: "Ville intelligente utilisant les données numériques." }
-  ]},
-  23: { titre: "Valeurs de la République (EMC)", cartes: [
-    { q: "Liberté (valeur républicaine) ?", r: "Liberté d'expression, de presse, de conscience." },
-    { q: "Égalité (valeur républicaine) ?", r: "Égalité des droits, lutte contre les discriminations." },
-    { q: "Fraternité (valeur républicaine) ?", r: "Solidarité, sécurité sociale." },
-    { q: "Laïcité ?", r: "Neutralité de l'État, séparation Églises/État (loi 1905)." },
-    { q: "Devise de la République ?", r: "Liberté, Égalité, Fraternité." },
-    { q: "Neutralité des agents publics ?", r: "Les fonctionnaires ne manifestent pas leurs opinions religieuses." },
-    { q: "Charte de la laïcité 2013 ?", r: "Texte sur la laïcité à l'école." },
-    { q: "Limites à la liberté d'expression ?", r: "Diffamation, incitation à la haine, négationnisme." },
-    { q: "Loi 1905 ?", r: "Séparation des Églises et de l'État." },
-    { q: "Principes constitutionnels français ?", r: "République indivisible, laïque, démocratique et sociale." }
-  ]},
-  24: { titre: "Citoyenneté française (EMC)", cartes: [
-    { q: "Droit du sol ?", r: "Nationalité par naissance en France." },
-    { q: "Droit du sang ?", r: "Nationalité par filiation (parents français)." },
-    { q: "Naturalisation ?", r: "Procédure pour devenir français." },
-    { q: "Conditions pour voter ?", r: "Être majeur (18 ans), français, jouir de ses droits civils." },
-    { q: "Devoir de défense ?", r: "JDC (journée défense citoyenneté)." },
-    { q: "SNU ?", r: "Service national universel (12 jours)." },
-    { q: "Service civique ?", r: "Engagement volontaire dans une association." },
-    { q: "3 niveaux des institutions françaises ?", r: "Communes, départements, régions. État (Président, Parlement)." },
-    { q: "Suffrage universel ?", r: "Droit de vote pour tous les citoyens majeurs." },
-    { q: "Rôle du Conseil constitutionnel ?", r: "Vérifier la conformité des lois à la Constitution." }
-  ]},
-  25: { titre: "Justice en France (EMC)", cartes: [
-    { q: "3 grands principes de la justice ?", r: "Indépendance, égalité devant la loi, présomption d'innocence." },
-    { q: "Présomption d'innocence ?", r: "Innocent tant qu'il n'est pas jugé coupable." },
-    { q: "Justice civile vs pénale ?", r: "Civile : litiges entre personnes. Pénale : infractions." },
-    { q: "Cour d'assises ?", r: "Juge les crimes (juges + jury populaire)." },
-    { q: "TIG ?", r: "Travail d'intérêt général (peine alternative)." },
-    { q: "Juge des enfants ?", r: "Magistrat spécialisé dans la protection des mineurs." },
-    { q: "Aide juridictionnelle ?", r: "Prise en charge des frais de justice pour les revenus modestes." },
-    { q: "Tribunal correctionnel ?", r: "Juge les délits." },
-    { q: "Cour de cassation ?", r: "Plus haute juridiction civile et pénale." },
-    { q: "Conseil d'État ?", r: "Plus haute juridiction administrative." }
-  ]},
-  26: { titre: "Débat démocratique et médias (EMC)", cartes: [
-    { q: "3 rôles des médias ?", r: "Informer, permettre le débat, contrôler le pouvoir." },
-    { q: "Liberté de la presse ?", r: "Droit d'informer sans censure (loi 1881)." },
-    { q: "Fake news ?", r: "Fausses informations diffusées pour manipuler." },
-    { q: "Fact-checking ?", r: "Vérification des faits par les journalistes." },
-    { q: "Dangers des réseaux sociaux ?", r: "Bulles de filtre, harcèlement, fake news." },
-    { q: "Loi de 1881 ?", r: "Loi sur la liberté de la presse." },
-    { q: "Droit de grève ?", r: "Droit des salariés de cesser le travail." },
-    { q: "Associations loi 1901 ?", r: "Associations à but non lucratif." },
-    { q: "Bulle de filtre ?", r: "Enfermement dans des informations qui confirment nos opinions." },
-    { q: "Pluralisme médiatique ?", r: "Diversité des médias et des opinions." }
-  ]},
-  27: { titre: "La France et l'Europe", cartes: [
-    { q: "Poids démographique de la France ?", r: "2e pays le plus peuplé de l'UE (68M)." },
-    { q: "Rôle de la France dans l'UE ?", r: "Pays fondateur, membre du Conseil." },
-    { q: "1ère puissance agricole de l'UE ?", r: "France (blé, maïs, élevage)." },
-    { q: "Secteurs d'excellence français ?", r: "Aéronautique (Airbus), luxe (LVMH), nucléaire (EDF)." },
-    { q: "Défis de la France ?", r: "Chômage, dette publique, transitions écologique/numérique." },
-    { q: "Coopération transfrontalière ?", r: "Projets communs avec les pays voisins." },
-    { q: "France et OTAN ?", r: "Membre fondateur, retour dans le commandement intégré en 2009." },
-    { q: "Langue française dans le monde ?", r: "Langue officielle dans 29 pays, 300M locuteurs." },
-    { q: "Francophonie ?", r: "Organisation internationale de la francophonie (OIF)." },
-    { q: "Soft power français ?", r: "Influence culturelle (cinéma, gastronomie, mode)." }
-  ]},
-  28: { titre: "Défense et sécurité en France", cartes: [
-    { q: "Missions de l'armée française ?", r: "Défense du territoire, OPEX, sécurité." },
-    { q: "OTAN ?", r: "Alliance militaire des pays occidentaux." },
-    { q: "Dissuasion nucléaire ?", r: "Stratégie de défense basée sur l'arme atomique." },
-    { q: "JDC ?", r: "Journée défense et citoyenneté." },
-    { q: "OPEX récentes ?", r: "Mali (Serval/Barkhane), Sahel, Liban." },
-    { q: "Gendarmerie nationale ?", r: "Sécurité publique en zones rurales." },
-    { q: "Police nationale ?", r: "Sécurité publique en zones urbaines." },
-    { q: "Renseignement français ?", r: "DGSI (intérieur), DGSE (extérieur)." },
-    { q: "Budget de la défense française ?", r: "Objectif 2% du PIB (engagement OTAN)." },
-    { q: "Menaces actuelles pour la France ?", r: "Terrorisme, cyberattaques, désinformation." }
-  ]},
-  29: { titre: "Environnement et développement durable", cartes: [
-    { q: "Transition écologique ?", r: "Transformer l'économie pour réduire l'impact environnemental." },
-    { q: "Empreinte carbone ?", r: "Quantité de CO2 émise par une activité." },
-    { q: "Loi Grenelle 2009 ?", r: "Loi française sur l'environnement." },
-    { q: "ZAN ?", r: "Zéro artificialisation nette d'ici 2050." },
-    { q: "Convention citoyenne pour le climat ?", r: "Citoyens tirés au sort proposant des mesures." },
-    { q: "Accord de Paris 2015 ?", r: "Accord international limitant le réchauffement à +1,5°C." },
-    { q: "COP ?", r: "Conférence des Parties, négociations climatiques annuelles." },
-    { q: "GES ?", r: "Gaz à effet de serre (CO2, méthane)." },
-    { q: "Biodiversité ?", r: "Diversité des espèces vivantes." },
-    { q: "Économie circulaire ?", r: "Recycler, réparer, réutiliser." }
-  ]},
-  30: { titre: "Les espaces productifs mondiaux", cartes: [
-    { q: "Silicon Valley ?", r: "Pôle technologique mondial en Californie." },
-    { q: "ZES ?", r: "Zone économique spéciale (avantages fiscaux)." },
-    { q: "Grands espaces agricoles mondiaux ?", r: "Corn Belt (USA), soja (Brésil), rizières (Asie)." },
-    { q: "Grands espaces industriels mondiaux ?", r: "Chine (usine du monde), Europe, Amérique du Nord." },
-    { q: "Délocalisation ?", r: "Transfert d'activités vers des pays à bas coûts." },
-    { q: "Relocalisation ?", r: "Retour d'activités dans le pays d'origine." },
-    { q: "Principaux hubs mondiaux ?", r: "Atlanta, Dubaï, Londres, Tokyo, Paris CDG." },
-    { q: "Principaux ports mondiaux ?", r: "Shanghai, Singapour, Rotterdam, Anvers." },
-    { q: "Shenzhen (Chine) ?", r: "Première ZES chinoise, symbole de la croissance." },
-    { q: "Maquiladoras ?", r: "Usines d'assemblage à la frontière Mexique/USA." }
-  ]},
-  31: { titre: "Les mobilités humaines mondiales", cartes: [
-    { q: "Types de migrations ?", r: "Économiques, politiques (réfugiés), climatiques." },
-    { q: "Réfugié ?", r: "Personne fuyant la guerre ou les persécutions." },
-    { q: "Migrant économique ?", r: "Personne cherchant à améliorer ses conditions de vie." },
-    { q: "Principales routes migratoires ?", r: "Afrique/Asie vers Europe, Amérique latine vers USA." },
-    { q: "Effets sur les pays d'accueil ?", r: "Main-d'oeuvre, enrichissement culturel, tensions sociales." },
-    { q: "Effets sur les pays de départ ?", r: "Envois d'argent, fuite des cerveaux." },
-    { q: "Droit d'asile ?", r: "Droit d'être protégé pour une personne persécutée." },
-    { q: "Tourisme de masse ?", r: "Déplacements touristiques nombreux, impacts environnementaux." },
-    { q: "Migrations climatiques ?", r: "Déplacements dus aux catastrophes ou à la montée des eaux." },
-    { q: "HCR ?", r: "Haut-Commissariat aux réfugiés de l'ONU." }
-  ]},
-  32: { titre: "Les ressources mondiales", cartes: [
-    { q: "Ressources énergétiques mondiales ?", r: "Pétrole, gaz, charbon, uranium, solaire, éolien." },
-    { q: "Principaux producteurs de pétrole ?", r: "États-Unis, Arabie saoudite, Russie." },
-    { q: "Eau bleue ?", r: "Eau des rivières, lacs et nappes souterraines." },
-    { q: "Eau virtuelle ?", r: "Eau utilisée pour produire un bien." },
-    { q: "Minerais stratégiques ?", r: "Lithium, cobalt, terres rares (batteries, électronique)." },
-    { q: "OPEP ?", r: "Organisation des pays exportateurs de pétrole." },
-    { q: "Enjeux géopolitiques des ressources ?", r: "Conflits, dépendance, tensions." },
-    { q: "Transition énergétique ?", r: "Passage aux énergies renouvelables." },
-    { q: "Stress hydrique ?", r: "Manque d'eau disponible par rapport aux besoins." },
-    { q: "Terres rares ?", r: "Métaux essentiels aux technologies (monopole chinois)." }
-  ]}
-};
+const PROXY = 'https://script.google.com/macros/s/AKfycbxxQCRDZvKAb9fuXkDslK7LYMXjcIrIi-_EpA8DWT1-tTelSpYcMxPkiSPG5bKheLTY/exec';
 
-</script>
-<script>
+const STORE = {};
+const _STORE_KEY = 'hg_corrections_ia';
+try {
+  const _saved = JSON.parse(localStorage.getItem(_STORE_KEY) || '{}');
+  Object.assign(STORE, _saved);
+} catch(e) {}
 
-let eleve = 'eleve1';
-let session = [], idx = 0;
-let score = { ok:0, total:0, chTaux:{} };
-let timerInt = null, tps = 45*60;
-
-const DATA = CHAPITRES_HG;
-const kProg  = () => 'auto_hg_prog_' + eleve;
-const kRat   = () => 'auto_hg_rat_' + eleve;
-const kSuivi = () => 'suivi_sessions_histoire_' + eleve;
-
-function getProg()  { return JSON.parse(localStorage.getItem(kProg())  || '{}'); }
-function getRat()   { return JSON.parse(localStorage.getItem(kRat())   || '{}'); }
-function getScore(ch, q) { return getProg()[ch+'_'+q.substring(0,28)]?.score || 0; }
-function setScore(ch, q, v) {
-  const p = getProg();
-  p[ch+'_'+q.substring(0,28)] = { score:Math.min(3,Math.max(0,v)), date:new Date().toISOString() };
-  localStorage.setItem(kProg(), JSON.stringify(p));
+function getUserId() {
+  let id = localStorage.getItem('hg_user_id');
+  if (!id) {
+    id = crypto.randomUUID ? crypto.randomUUID() : 'user_' + Date.now();
+    localStorage.setItem('hg_user_id', id);
+  }
+  return id;
 }
-function getFaibles() {
-  const sessions = JSON.parse(localStorage.getItem(kSuivi())||'[]').slice(0,5);
-  const taux = {};
-  sessions.forEach(s => {
-    if (s.chapitresTaux) Object.entries(s.chapitresTaux).forEach(([ch,t]) => {
-      if (!taux[ch]) taux[ch] = []; taux[ch].push(t);
+
+function getSessionId() {
+  let sid = sessionStorage.getItem('hg_session_id');
+  if (!sid) {
+    sid = 'sess_' + Date.now();
+    sessionStorage.setItem('hg_session_id', sid);
+  }
+  return sid;
+}
+
+function isPaid() { return false; }
+function getJoursRestantsEssai() { return 3; }
+
+async function callIA(prompt, system) {
+  const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout (45s)')), 45000));
+  // URLSearchParams évite le preflight CORS (pas de Content-Type: application/json)
+  const payload = JSON.stringify({
+    userId: getUserId(),
+    action: 'correction_ia',
+    prompt: prompt,
+    system: system,
+    estPayant: isPaid(),
+    sessionId: getSessionId(),
+    joursRestantsEssai: getJoursRestantsEssai(),
+    source: document.title,
+    matiere: 'histoire'
+  });
+  const req = fetch(PROXY, {
+    method: 'POST',
+    body: new URLSearchParams({ data: payload })
+    // Pas de Content-Type JSON → pas de preflight → pas de blocage CORS
+  }).then(r => r.json()).then(d => {
+    if (d.success && d.content) return d.content;
+    throw new Error(d.error || 'Erreur API');
+  });
+  return Promise.race([req, timeout]);
+}
+
+function safeJSON(t) {
+  try { return JSON.parse(t.replace(/```json|```/g, '').trim()); }
+  catch(e) { return null; }
+}
+
+const SUJETS = [
+  {id:1, annee:'2025', session:'Métropole (juin)', titre:'25GENHGEMCME1 — Géo: Vallée batterie · Hist: Décolonisation · EMC: Égalité F/H', pdf:'https://hg.ac-besancon.fr/wp-content/uploads/sites/63/2025/07/dipl-me-national-du-brevet-2025-histoire-g-ographie-enseignement-moral-et-civique-228363.pdf', tags:[{t:'2025',c:'y25'}], exos:[{type:'geo',label:'EXERCICE 1 — Géographie (20 pts)',pts:20,questions:[{texte:'Q1 — Relevez un extrait qui définit la gigafactory. (2 pts)',rep:'« usines de fabrication de batteries »'},{texte:'Q2 — Identifiez deux types d\'acteurs. (4 pts)',rep:'État/Région (publics) + entreprises privées'},{texte:'Q3 — Situez « la vallée de la batterie ». (2 pts)',rep:'Hauts-de-France, entre Dunkerque, Douvrin et Douai'},{texte:'Q4 — Caractérisez l\'espace productif. (4 pts)',rep:'Espace industriel en reconversion'},{texte:'Q5 — Montrez les atouts de la vallée. (8 pts)',rep:'Proximité usines auto, port Dunkerque, main-d\'œuvre, subventions'}]},{type:'hist',label:'EXERCICE 2 — Histoire (20 pts)',pts:20,questions:[{texte:'Développement construit : indépendance d\'une colonie. (14 pts)',rep:'Algérie : FLN, de Gaulle, 1954-1962, accords Évian'},{texte:'a) Année chute mur Berlin / ONU / traité Rome. (3 pts)',rep:'1989 / 1945 / 1957'},{texte:'b) Autre événement sur frise. (1 pt)',rep:'Accords Évian 1962'},{texte:'c) Situez Guerre froide. (2 pts)',rep:'1947-1991, accolade'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Inégalité mise en avant. (2 pts)',rep:'Sous-représentation des femmes en informatique (11%)'},{texte:'Q2 — Extrait Constitution sur égalité. (2 pts)',rep:'« La loi favorise l\'égal accès des femmes et des hommes »'},{texte:'Q3 — Intérêt de la figure Ada Lovelace. (2 pts)',rep:'Montrer un modèle féminin inspirant'},{texte:'Q4 — Rédigez un discours 8 mars. (4 pts)',rep:'Écart salarial, ateliers débat, invitation femmes pionnières'}]}]},
+  {id:2, annee:'2025', session:'Asie-Pacifique', titre:'25GENHGEMCAA1 — Hist: 1GM Viviani · Géo: Aménager inégalités · EMC: JO 2024', pdf:'https://www.education.gouv.fr/sites/default/files/2025-06/dipl-me-national-du-brevet-2025-histoire-g-ographie---enseignement-moral-et-civique-441168.pdf', tags:[{t:'2025',c:'y25'}], exos:[{type:'hist',label:'EXERCICE 1 — Histoire (20 pts)',pts:20,questions:[{texte:'Q1 — Contexte appel Viviani 7 août 1914. (4 pts)',rep:'Début WW1, mobilisation hommes'},{texte:'Q2 — Pourquoi s\'adresser aux femmes ? (2 pts)',rep:'Remplacer hommes dans champs et usines'},{texte:'Q3 — Deux éléments mobilisation campagne. (4 pts)',rep:'Moisson inachevée, vendanges proches'},{texte:'Q4 — Pourquoi femmes usines obus 1917 ? (4 pts)',rep:'Hommes au front + production armement'},{texte:'Q5 — Participation femmes effort guerre. (6 pts)',rep:'Agriculture, usines (munitionnettes), soins'}]},{type:'geo',label:'EXERCICE 2 — Géographie (20 pts)',pts:20,questions:[{texte:'Développement construit : aménagement vs inégalités. (14 pts)',rep:'Inégalités territoires, politiques QPV/ZRR, exemples'},{texte:'Q1a — Nommez deux métropoles. (2 pts)',rep:'Paris, Lyon'},{texte:'Q1b — Nommez un fleuve. (1 pt)',rep:'La Loire'},{texte:'Q1c — Deux massifs montagneux. (1 pt)',rep:'Alpes, Pyrénées'},{texte:'Q2 — Complétez légende. (1 pt)',rep:'Gris = massifs montagneux'},{texte:'Q3 — Représentez axe de communication. (1 pt)',rep:'Autoroute A6/A7'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Deux symboles République JO 2024. (2 pts)',rep:'Drapeau tricolore, Marseillaise'},{texte:'Q2 — Que rappellent les 10 statues ? (2 pts)',rep:'Combat des femmes pour leurs droits'},{texte:'Q3 — Valeur associée. (2 pts)',rep:'Égalité : femmes ont combattu pour droits'},{texte:'Q4 — Pourquoi important JO ? (4 pts)',rep:'Vitrine internationale des valeurs françaises'}]}]},
+  {id:3, annee:'2024', session:'Métropole (juin)', titre:'24GENHGEMCME1 — Hist: Auschwitz · Géo: France/Europe · EMC: Service Civique', pdf:'https://hg.ac-besancon.fr/wp-content/uploads/sites/63/2024/11/dipl-me-national-du-brevet-2024-histoire-g-ographie-enseignement-moral-et-civique-195917.pdf', tags:[{t:'2024',c:'y24'}], exos:[{type:'hist',label:'EXERCICE 1 — Histoire (20 pts)',pts:20,questions:[{texte:'Q1 — Nature document Ginette Kolinka. (2 pts)',rep:'Témoignage autobiographique rescapée Auschwitz'},{texte:'Q2 — Trois formes de violence. (6 pts)',rep:'Violence physique, épuisement, faim'},{texte:'Q3 — Qui surveille les déportées ? (2 pts)',rep:'Les kapos'},{texte:'Q4 — Décrivez sélection photo. (4 pts)',rep:'SS séparent travailleurs de ceux envoyés chambres à gaz'},{texte:'Q5 — Expliquez génocide Juifs. (6 pts)',rep:'Destruction systématique, 1,1M morts dont 90% Juifs'}]},{type:'geo',label:'EXERCICE 2 — Géographie (20 pts)',pts:20,questions:[{texte:'Développement construit : France et Europe dans le monde. (14 pts)',rep:'Culturelle (tourisme), géopolitique (ONU), économique (PIB)'},{texte:'Q1a — Trois pays UE. (1.5 pt)',rep:'Allemagne, Italie, Espagne'},{texte:'Q1b — Trois métropoles européennes. (1.5 pt)',rep:'Berlin, Rome, Madrid'},{texte:'Q2 — Métropole siège institution UE. (1 pt)',rep:'Bruxelles'},{texte:'Q3-4 — Mégalopole européenne. (2 pts)',rep:'Londres à Milan, hachures'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Deux avantages Service Civique. (2 pts)',rep:'Sans diplôme, indemnisé 601€/mois'},{texte:'Q2 — Deux expériences Bastien. (2 pts)',rep:'Restos du Cœur, mission environnement Avignon'},{texte:'Q3 — Valeur associée. (2 pts)',rep:'Fraternité'},{texte:'Q4 — Discours CMJ. (4 pts)',rep:'Domaine éducation, aide aux devoirs, égalité'}]}]},
+  {id:4, annee:'2024', session:'Amérique du Nord', titre:'24GENHGEMCAN1 — Hist: Mur Berlin · Géo: DROM · EMC: SNU', pdf:'https://www.education.gouv.fr/media/195323/download', tags:[{t:'2024',c:'y24'}], exos:[{type:'hist',label:'EXERCICE 1 — Histoire (20 pts)',pts:20,questions:[{texte:'Q1 — Événement 9 nov 1989. (2 pts)',rep:'Chute du mur de Berlin'},{texte:'Q2 — Trois expressions caractère exceptionnel. (3 pts)',rep:'« Reste pour toujours », « folie », « on rit, on pleure »'},{texte:'Q3 — Régime autoritaire RDA. (4 pts)',rep:'Ordre de tirer, autorisation spéciale'},{texte:'Q4 — Liberté retrouvée. (3 pts)',rep:'Liberté de circulation'},{texte:'Q5 — Deux éléments guerre froide dessin Plantu. (4 pts)',rep:'Drapeaux RFA et RDA, réunification'},{texte:'Q6 — Deux conséquences. (4 pts)',rep:'Liberté circulation, réunification 3 oct 1990'}]},{type:'geo',label:'EXERCICE 2 — Géographie (20 pts)',pts:20,questions:[{texte:'Développement construit : spécificités ultramarins. (14 pts)',rep:'Éloignement, chômage, cyclones, aménagements spécifiques'},{texte:'Q — Signification DROM. (2 pts)',rep:'Départements et Régions d\'Outre-Mer'},{texte:'Q — Trois océans. (1.5 pt)',rep:'Atlantique, Indien, Pacifique'},{texte:'Q — 5 DROM. (2.5 pts)',rep:'Guadeloupe, Martinique, Guyane, Réunion, Mayotte'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Quatre activités SNU. (4 pts)',rep:'Sport, secours, environnement, valeurs patriotiques'},{texte:'Q2 — Deux acteurs encadrement. (2 pts)',rep:'Chef SDJES, maire'},{texte:'Q3 — Deux symboles République. (2 pts)',rep:'Drapeau, devise Liberté-Égalité-Fraternité'},{texte:'Q4 — Pourquoi engagement citoyen. (2 pts)',rep:'Sport = respect, secours = solidarité'}]}]},
+  {id:5, annee:'2024', session:'Session 4', titre:'24GENHGEMCME4 — Géo: Téléo Toulouse · Hist: Décolonisation · EMC: Restos du Cœur', pdf:'https://www.education.gouv.fr/sites/default/files/document/Dipl%C3%B4me%20national%20du%20brevet%202024%20-%20Histoire-G%C3%A9ographie%20-%20Enseignement%20moral%20et%20civique-401868.pdf', tags:[{t:'2024',c:'y24'}], exos:[{type:'geo',label:'EXERCICE 1 — Géographie (20 pts)',pts:20,questions:[{texte:'Q1 — Trois modes de transport Toulouse. (3 pts)',rep:'Métro, bus, téléphérique'},{texte:'Q2 — Trois acteurs construction Téléo. (3 pts)',rep:'Mairie, Région, État'},{texte:'Q3 — Expliquez « transports transversaux ». (3 pts)',rep:'Relie périphérie sans passer par centre'},{texte:'Q4 — Connexion modes transport. (5 pts)',rep:'Correspondances métro, bus, vélos'},{texte:'Q5 — Accès activités et services. (6 pts)',rep:'Université, hôpital, Oncopole'}]},{type:'hist',label:'EXERCICE 2 — Histoire (20 pts)',pts:20,questions:[{texte:'Développement construit : indépendance colonie. (14 pts)',rep:'Algérie 1954-1962'},{texte:'Annexe — ONU année. (1 pt)',rep:'1945'},{texte:'Événement 1962. (1 pt)',rep:'Indépendance Algérie'},{texte:'Traité Rome année. (1 pt)',rep:'1957'},{texte:'Événement 1989. (1 pt)',rep:'Chute mur Berlin'},{texte:'Situez Guerre froide. (2 pts)',rep:'1947-1991'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Association affiche. (1 pt)',rep:'Restos du Cœur'},{texte:'Q2 — Objectif affiche. (2 pts)',rep:'Recruter bénévoles collecte alimentaire'},{texte:'Q3 — Deux domaines bénévolat. (2 pts)',rep:'Éducation, social'},{texte:'Q4 — Qu\'est-ce que le bénévolat ? (2 pts)',rep:'Engagement non rémunéré, 22M de Français'},{texte:'Q5 — Action concrète CVC. (3 pts)',rep:'Collecte alimentaire avec Croix-Rouge'}]}]},
+  {id:6, annee:'2023', session:'Métropole (juin)', titre:'23GENHGEMCME1 — Hist: Civils WW1 · Géo: Espaces faible densité · EMC: CMJ', pdf:'https://hg.ac-besancon.fr/wp-content/uploads/sites/63/2023/10/sujet_DNB_juin_23GENHGEMCME.pdf', tags:[{t:'2023',c:'y23'}], exos:[{type:'hist',label:'EXERCICE 1 — Histoire (20 pts)',pts:20,questions:[{texte:'Q1 — Nature document Juliette. (2 pts)',rep:'Témoignage oral 1983'},{texte:'Q2 — Trois souffrances civils. (6 pts)',rep:'Manque, misère, queues'},{texte:'Q3 — Apport vs soldat. (4 pts)',rep:'Montre vie à l\'arrière : pénuries, femmes usines'},{texte:'Q4 — Décrivez affiche emprunt. (4 pts)',rep:'Soldat front + femme/enfant arrière'},{texte:'Q5 — Objectif affiche. (2 pts)',rep:'Souscrire à l\'emprunt de guerre'},{texte:'Q6 — Participation civils. (2 pts)',rep:'Femmes usines, enfants courses, emprunts'}]},{type:'geo',label:'EXERCICE 2 — Géographie (20 pts)',pts:20,questions:[{texte:'Développement construit : espaces faible densité. (14 pts)',rep:'Atouts cadre vie, tourisme. Défis désertification médicale'},{texte:'Q1a — Trois espaces aire urbaine. (3 pts)',rep:'Centre, banlieue, couronne périurbaine'},{texte:'Q1b — Mobilités. (2 pts)',rep:'Flèches trajets domicile-travail'},{texte:'Q2 — Six aires urbaines. (5 pts)',rep:'Paris, Lyon, Marseille, Bordeaux, Toulouse, Nantes'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Deux conditions CMJ. (2 pts)',rep:'Collégien, habiter/scolarisé à Reims'},{texte:'Q2 — Deux thématiques. (2 pts)',rep:'Environnement, culture'},{texte:'Q3 — Slogan démocratique. (2 pts)',rep:'« Présente-toi ou vote » = représentation + élection'},{texte:'Q4 — Discours candidature CMJ. (4 pts)',rep:'Motivations, projet jardin partagé, valeurs'}]}]},
+  {id:7, annee:'2023', session:'Amérique du Nord', titre:'23GENHGEMCAN1 — Hist: Lettres poilu · Géo: Espaces productifs · EMC: Vote', pdf:'https://www.education.gouv.fr/media/155783/download', tags:[{t:'2023',c:'y23'}], exos:[{type:'hist',label:'EXERCICE 1 — Histoire (20 pts)',pts:20,questions:[{texte:'Q1 — Auteur et contexte lettres. (4 pts)',rep:'Félix Delaurat, cultivateur mobilisé 1916'},{texte:'Q2 — Expressions intensité combats. (4 pts)',rep:'« vrai enfer », « perdu quart effectif »'},{texte:'Q3 — Importance lettres poilus. (4 pts)',rep:'Témoignage direct authentique'},{texte:'Q4 — Évolution état esprit. (4 pts)',rep:'Résigné mai → désespoir déc.'},{texte:'Q5 — Conditions vie soldat. (4 pts)',rep:'Tranchées, bombardements, pertes 25%'}]},{type:'geo',label:'EXERCICE 2 — Géographie (20 pts)',pts:20,questions:[{texte:'Développement construit : espace productif français. (14 pts)',rep:'Ex Sophia Antipolis, acteurs, mondialisation'},{texte:'Q a — Deux métropoles. (2 pts)',rep:'Lille, Nice'},{texte:'Q b — Légende espaces industriels. (3 pts)',rep:'Gris foncé = ancien, clair = dynamique'},{texte:'Q c — Technopôle et ZIP. (1 pt)',rep:'○ technopôles, ■ ZIP'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Deux motivations vote jeune. (2 pts)',rep:'Droit/devoir, décider avenir commun'},{texte:'Q2 — Deux éléments vote libre/secret. (2 pts)',rep:'Isoloir, « fait seul mon choix »'},{texte:'Q3 — Deux raisons détournement jeunes. (2 pts)',rep:'Politiques ignorant jeunes, sujets non évoqués'},{texte:'Q4 — Nom abstention. (1 pt)',rep:'L\'abstention'},{texte:'Q5 — Arguments CMEJ. (3 pts)',rep:'Vote = droit, représentativité, démocratie'}]}]},
+  {id:8, annee:'2022', session:'Métropole (juin)', titre:'22GENHGEMCME1 — Hist: Vote femmes 1944 · Géo: DROM · EMC: Pétition', pdf:'https://pedagogie.ac-strasbourg.fr/fileadmin/pedagogie/histoiregeographie/Examens_et_concours/DNB_2022/22GENHGEMCME1.pdf', tags:[{t:'2022',c:'y22'}], exos:[{type:'hist',label:'EXERCICE 1 — Histoire (20 pts)',pts:20,questions:[{texte:'Q1 — France pas sortie guerre mars 1944. (4 pts)',rep:'Présence prisonniers/déportés, territoire non libéré'},{texte:'Q2 — Deux arguments opposants. (4 pts)',rep:'Déséquilibre femmes/hommes, délai trop court'},{texte:'Q3 — Pourquoi vote femmes non discutable. (4 pts)',rep:'France résiste unie, femmes ont remplacé hommes'},{texte:'Q4 — Décision issue débat. (4 pts)',rep:'Amendement adopté, femmes voteront dès Libération'},{texte:'Q5 — Retour démocratie et avancée. (4 pts)',rep:'Rétablissement élections + suffrage universel aux femmes'}]},{type:'geo',label:'EXERCICE 2 — Géographie (20 pts)',pts:20,questions:[{texte:'Développement construit : aménagement ultramarins. (14 pts)',rep:'Spécificités : insularité, éloignement, aménagements'},{texte:'Q1 — Trois DROM. (3 pts)',rep:'Guyane, Martinique, Guadeloupe'},{texte:'Q2 — Figuré DROM. (1 pt)',rep:'Carré'},{texte:'Q3 — Deux océans. (2 pts)',rep:'Atlantique, Pacifique'},{texte:'Q4 — Deux trajets aériens. (2 pts)',rep:'Guyane→Paris, Guyane→Martinique'},{texte:'Q5 — Brésil sur carte B. (1 pt)',rep:'À placer au sud de Guyane'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Deux expressions correspondant dessin. (2 pts)',rep:'Démocratie représentative, démocratie participative'},{texte:'Q2 — Pourquoi garanti par Constitution. (4 pts)',rep:'Art 2 : gouvernement du peuple, Art 3 : souveraineté peuple'},{texte:'Q3 — Arguments pétition CVC. (4 pts)',rep:'Pétition = volonté collective, élus représentent camarades'}]}]},
+  {id:9, annee:'2020', session:'Amérique du Nord', titre:'20GENHGEMCAN1 — Géo: Outremer · Hist: Régime nazi · EMC: Laïcité', pdf:'https://www.education.gouv.fr/media/115747/download', tags:[{t:'2020',c:''}], exos:[{type:'geo',label:'EXERCICE 1 — Géographie (20 pts)',pts:20,questions:[{texte:'Q1 — Difficultés ultramarins. (6 pts)',rep:'PIB inférieur, chômage élevé, mortalité infantile'},{texte:'Q2 — Comparaison voisins. (6 pts)',rep:'DROM mieux développés que Haïti/Comores'},{texte:'Q3 — Deux espaces reliés Guadeloupe. (2 pts)',rep:'Europe, Caraïbe'},{texte:'Q4 — Avantages aéroport. (6 pts)',rep:'Tourisme, emplois, désenclavement'}]},{type:'hist',label:'EXERCICE 2 — Histoire (20 pts)',pts:20,questions:[{texte:'Développement construit : régime nazi. (14 pts)',rep:'Totalitaire (parti unique, Gestapo), antisémite (Nuremberg), expansionniste'},{texte:'Frise 1930-1939. (6 pts)',rep:'Hitler 1933, Front populaire 1936'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Objectifs enseignement laïque. (2 pts)',rep:'Forger personnalité, libre arbitre, protéger prosélytisme'},{texte:'Q2 — Égalité articles 9 et 14. (2 pts)',rep:'Art 9 = égalité F/H, Art 14 = égalité traitement quelle que soit religion'},{texte:'Q3 — Garantie liberté religieuse. (2 pts)',rep:'Libre arbitre, étude objective des religions'},{texte:'Q4 — Expliquez à Inès. (4 pts)',rep:'Interdit signes religieux portés ≠ étude pédagogique des religions'}]}]},
+  {id:10, annee:'2022', session:'Métropole (septembre)', titre:'22GENHGEMCME (sept.) — PDF officiel', pdf:'https://hg.ac-besancon.fr/wp-content/uploads/sites/63/2022/10/22GENHGEMCM-sujet-sept.pdf', tags:[{t:'2022',c:'y22'}], exos:[{type:'hist',label:'EXERCICE — Voir PDF',pts:20,questions:[{texte:'⚠ Téléchargez le PDF pour accéder aux vraies questions.',rep:'Ouvrez le PDF officiel'}]},{type:'geo',label:'Géographie — voir PDF',pts:20,questions:[{texte:'⚠ Voir PDF officiel.',rep:'Voir PDF'}]},{type:'emc',label:'EMC — voir PDF',pts:10,questions:[{texte:'⚠ Voir PDF officiel.',rep:'Voir PDF'}]}]}
+];
+
+function buildLanding() {
+  const grid = document.getElementById('grid');
+  SUJETS.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'sitem';
+    div.innerHTML = '<div class="sitem-num">S' + String(i+1).padStart(2,'0') + ' · ' + s.annee + '</div>'
+      + '<div class="sitem-info">'
+      + '<div class="sitem-titre">' + s.session + '</div>'
+      + '<div class="sitem-sub">' + s.titre + '</div>'
+      + '<div class="sitem-tags">' + (s.tags||[]).map(t=>'<span class="ctag ' + (t.c||'') + '">' + t.t + '</span>').join('') + '</div>'
+      + '</div>'
+      + '<div class="sitem-btns">'
+      + '<a class="card-dl" href="' + s.pdf + '" target="_blank" onclick="event.stopPropagation()">⬇ PDF</a>'
+      + '<button class="card-open" onclick="event.stopPropagation();ouvrirSujet(' + i + ')">Commencer →</button>'
+      + ' BAREME UNIVERSEL :'
+    + ' - 1/3 des points : BONNE REPONSE (resultat ou element attendu correct).'
+    + ' - 1/3 des points : REDACTION (phrase complete, vocabulaire precis, structure claire).'
+    + ' - 1/3 des points : JUSTIFICATION (demarche explicitee, theoreme nomme, etapes visibles).'
+    + ' CONSEQUENCES : reponse sans justif = 1/3 max. Reponse sans redaction = 2/3 max. Justif sans resultat = 1/3. Tout correct = max.'
+    + ' Detaille les 3 tiers dans detail_bareme : reponse X/3 - redaction X/3 - justification X/3.'
+    + '</div>';
+    grid.appendChild(div);
+  });
+}
+
+function ouvrirSujet(idx) {
+  const s = SUJETS[idx];
+  document.getElementById('landing').style.display = 'none';
+  const view = document.getElementById('sujetView');
+  view.classList.add('active');
+  document.getElementById('svTitre').innerHTML = 'DNB ' + s.annee + ' — ' + s.session + '<div style="font-size:12px;color:#9090a8;margin-top:3px">' + s.titre + '</div>';
+  document.getElementById('svDl').href = s.pdf;
+
+  let html = '';
+  s.exos.forEach((exo, ei) => {
+    const cls = exo.type === 'hist' ? 'hist' : exo.type === 'geo' ? 'geo' : 'emc';
+    html += `<div class="exo-header"><span class="exo-badge ${cls}">${exo.label}</span><span class="exo-pts">${exo.pts} pts</span></div>`;
+    exo.questions.forEach((q, qi) => {
+      const qid = `q_${s.id}_${ei}_${qi}`;
+      html += `<div class="qblock"><div class="qnum">Q${ei+1}.${qi+1}</div><div class="qtexte">${q.texte}</div><textarea id="ans_${qid}" placeholder="Ta réponse ici..."></textarea><div class="qbtns"><button class="btn-corriger" onclick="corriger(${idx},${ei},${qi},'${qid}')">🤖 Correction IA</button><button class="btn-off" onclick="toggleOff('off_${qid}')">📖 Correction officielle</button></div><div class="corr-off-toggle" id="off_${qid}"><strong>📖 CORRECTION OFFICIELLE</strong><br>${q.rep}</div><div class="corr-panel" id="panel_${qid}"></div></div>`;
     });
   });
-  return Object.entries(taux).filter(([,v]) => v.reduce((a,b)=>a+b,0)/v.length < 60).map(([ch]) => parseInt(ch));
-}
-function setEleve(e) {
-  eleve = e;
-  document.getElementById('btn1').className = 'eleve-btn' + (e==='eleve1'?' e1':'');
-  document.getElementById('btn2').className = 'eleve-btn' + (e==='eleve2'?' e2':'');
-  buildGrid(); updateStats();
-}
-function buildGrid() {
-  const faibles = getFaibles();
-  const g = document.getElementById('chapGrid'); g.innerHTML = '';
-  Object.entries(DATA).forEach(([n, ch]) => {
-    const isFaible = faibles.includes(parseInt(n));
-    const d = document.createElement('div');
-    d.className = 'ch-item' + (isFaible?' faible':'');
-    d.id = 'ci'+n;
-    d.onclick = () => { d.classList.toggle('selected'); updateStats(); };
-    d.innerHTML = '<span class="ch-num">'+n+'</span><span style="font-size:12px">'+ch.titre+'</span>'+(isFaible?'<span class="ch-warn">⚠</span>':'');
-    g.appendChild(d);
-  });
-}
-function filterPart(from, to) {
-  selectAll(false);
-  for(let i=from;i<=to;i++) { document.getElementById('ci'+i)?.classList.add('selected'); }
-  updateStats();
-}
-function getSel() { return Array.from(document.querySelectorAll('#chapGrid .ch-item.selected')).map(el=>parseInt(el.id.replace('ci',''))); }
-function selectAll(v) { Object.keys(DATA).forEach(n=>document.getElementById('ci'+n)?.classList.toggle('selected',v)); updateStats(); }
-function selFaibles() { selectAll(false); getFaibles().forEach(n=>document.getElementById('ci'+n)?.classList.add('selected')); updateStats(); }
-function resetProg() { if(confirm('Reset progression ?')){ localStorage.removeItem(kProg()); localStorage.removeItem(kRat()); updateStats(); } }
-function updateStats() {
-  const sel = getSel();
-  const toutes = sel.flatMap(n=>(DATA[n]?.cartes||[]).map(c=>({...c,ch:n})));
-  const mait = toutes.filter(c=>getScore(c.ch,c.q)>=3).length;
-  const pct = toutes.length ? Math.round(mait/toutes.length*100) : 0;
-  document.getElementById('stCartes').textContent = toutes.length;
-  document.getElementById('stMait').textContent = mait;
-  document.getElementById('stPct').textContent = pct+'%';
-  document.getElementById('btnStart').disabled = toutes.length===0;
-  document.getElementById('stRegle').textContent = toutes.length<=40 ? toutes.length+' (toutes)' : '20-10-10';
-}
-function melanger(a) { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
-function genSession() {
-  const sel = getSel();
-  const principal = sel.flatMap(n=>(DATA[n]?.cartes||[]).map(c=>({...c,ch:n,type:'principal'})));
-  const dedup = arr => { const ids=new Set(); return arr.filter(c=>{if(ids.has(c.q))return false;ids.add(c.q);return true;}); };
-  if (principal.length<=40) return melanger(dedup(principal));
-  const nouv = principal.filter(c=>getScore(c.ch,c.q)===0);
-  const enCours = principal.filter(c=>getScore(c.ch,c.q)>0&&getScore(c.ch,c.q)<3);
-  const mait = principal.filter(c=>getScore(c.ch,c.q)>=3);
-  const vingt = melanger(dedup([...nouv,...enCours,...mait])).slice(0,20);
-  const rat = getRat();
-  let dixRat = Object.entries(rat).filter(([,d])=>d.count>=1).sort((a,b)=>b[1].count-a[1].count).slice(0,10).map(([,d])=>({...d.carte,type:'ratee'}));
-  if (dixRat.length<10) {
-    const deja = new Set([...vingt,...dixRat].map(c=>c.q));
-    dixRat = [...dixRat,...melanger([...enCours,...nouv]).filter(c=>!deja.has(c.q)).slice(0,10-dixRat.length).map(c=>({...c,type:'ratee'}))];
-  }
-  const autres = Object.entries(DATA).filter(([n])=>!sel.includes(parseInt(n))).flatMap(([n,ch])=>ch.cartes.map(c=>({...c,ch:parseInt(n),type:'revision'})));
-  let dixRev = melanger([...autres]).slice(0,10);
-  if (dixRev.length<10) {
-    const deja = new Set([...vingt,...dixRat].map(c=>c.q));
-    dixRev = [...dixRev,...melanger([...principal]).filter(c=>!deja.has(c.q)).slice(0,10-dixRev.length).map(c=>({...c,type:'revision'}))];
-  }
-  return melanger(dedup([...vingt,...dixRat,...dixRev])).slice(0,40);
+  html += `<div class="export-zone"><p>📄 Sauvegarder toutes les corrections IA</p><button class="btn-pdf" onclick="exportPDF(${idx})">📄 Générer PDF</button><button class="sv-dl" style="background:#e87a7a;color:#09090f" onclick="effacerCorrections(${idx})">🗑 Effacer corrections</button></div>`;
+  document.getElementById('svContent').innerHTML = html;
+  window.scrollTo(0,0);
 }
 
-// ══════════════ ÉVALUATION — NIVEAU MOYEN (seuil 50%) ══════════════
-function evaluer(rep, att) {
-  if (!rep || rep.length < 2) return { ok: false, t: 0, m: 'Écris une réponse.' };
-  
-  const r = rep.toLowerCase().trim();
-  const a = att.toLowerCase();
-  
-  if (r === a) return { ok: true, t: 100, m: 'Parfait !' };
-  
-  // MOYEN : mots de PLUS de 4 lettres
-  const mA = a.split(/[\s,;.()+->]+/).filter(m => m.length > 4);
-  const mR = r.split(/[\s,;.()+->]+/).filter(m => m.length > 4);
-  
-  let ok = 0;
-  mA.forEach(ma => {
-    if (mR.some(mr => mr.includes(ma.slice(0, 4)) || ma.includes(mr.slice(0, 4)))) ok++;
-  });
-  
-  let t = mA.length ? Math.round(ok / mA.length * 100) : 50;
-  
-  // Bonus réduit (+10 au lieu de +20), condition plus stricte
-  if (mR.length <= 4 && t >= 45) t = Math.min(100, t + 10);
-  
-  const cles = mA.slice(0, 3).filter(m => 
-    mR.some(mr => mr.includes(m.slice(0, 4)))
-  );
-  if (cles.length >= 2) t = Math.min(100, t + 5);
-  
-  // Exiger au moins 50% des mots-clés
-  const motsTrouves = mA.filter(m => 
-    mR.some(mr => mr.includes(m.slice(0, 4)))
-  ).length;
-  
-  if (motsTrouves < mA.length / 2) {
-    return { ok: false, t: Math.min(t, 50), m: 'Il manque des éléments essentiels.' };
-  }
-  
-  // SEUIL À 50%
-  if (t >= 50) {
-    return { ok: true, t, m: t >= 80 ? 'Parfait !' : (t >= 70 ? 'Bien !' : 'Presque !') };
-  }
-  
-  return { ok: false, t, m: 'À retravailler.' };
+function retour() { document.getElementById('landing').style.display = 'block'; document.getElementById('sujetView').classList.remove('active'); window.scrollTo(0,0); }
+function toggleOff(id) { document.getElementById(id).classList.toggle('show'); }
+
+async function corriger(sIdx, ei, qi, qid) {
+  const s = SUJETS[sIdx];
+  const q = s.exos[ei].questions[qi];
+  const ans = document.getElementById('ans_'+qid).value.trim();
+  if (!ans) { alert("Écris ta réponse d'abord !"); return; }
+  const panel = document.getElementById('panel_'+qid);
+  const btn = panel.previousElementSibling?.querySelector('.btn-corriger');
+  panel.classList.add('show');
+  panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction experte en cours...</div>';
+  if (btn) btn.disabled = true;
+
+  const exo_type = s.exos[ei].type || 'hist';
+  const methodoLabel = exo_type==='hist' ? 'Histoire' : exo_type==='geo' ? 'Géographie' : 'EMC';
+  const methodoDetail = exo_type==='hist'
+    ? "nature/auteur/date du document, citations précises, croisement de documents, paragraphes construits avec connecteurs logiques"
+    : exo_type==='geo'
+    ? "données chiffrées et indicateurs, localisation précise, légende cartographique, vocabulaire géographique spécialisé"
+    : "analyse rigoureuse du document, mobilisation des notions civiques (démocratie, citoyenneté, droits/devoirs), argumentaire structuré";
+
+  const system = `Tu es un correcteur expert du DNB en ${methodoLabel}, exigeant et bienveillant comme un professeur expérimenté.
+
+Ta correction doit être APPROFONDIE. Réponds UNIQUEMENT en JSON valide avec cette structure exacte :
+{
+  "note": "X/${q.pts}",
+  "cours_su": "Oui" ou "Partiel" ou "Non",
+  "transfert": "Oui" ou "Partiel" ou "Non",
+  "methode": "Oui" ou "Partiel" ou "Non",
+  "correction_experte": "Rédige ici LA correction modèle complète que l'élève aurait dû écrire, avec les notions clés, le vocabulaire précis, les exemples attendus. 3 à 6 phrases.",
+  "analyse_eleve": "Analyse précise de ce que l'élève a bien fait et ce qui manque ou est inexact.",
+  "pistes": "2 ou 3 conseils concrets et actionnables pour progresser sur ce type de question."
 }
 
-function demarrer() {
+Critères :
+- cours_su : connaissances du cours mobilisées ?
+- transfert : application au document/contexte spécifique ?
+- methode : respect de la méthode ${methodoLabel} (${methodoDetail}) ?`;
+
+  const prompt = `QUESTION (${q.pts} pts) : ${q.texte}
+
+ÉLÉMENTS DE CORRECTION ATTENDUS : ${q.rep}
+
+RÉPONSE DE L'ÉLÈVE : ${ans}
+
+Évalue avec rigueur et produis une correction experte complète.`;
+
   try {
-    session = genSession();
-    if (!session.length) { alert('Aucune carte disponible.'); return; }
-    idx=0; score={ok:0,total:0,chTaux:{}};
-    tps=45*60; showPhase('phaseSession'); startTimer(); affQ();
-  } catch(e) { alert('Erreur : ' + e.message); console.error(e); }
-}
-function affQ() {
-  if (idx>=session.length){fin();return;}
-  const c=session[idx];
-  document.getElementById('progFill').style.width=Math.round(idx/session.length*100)+'%';
-  document.getElementById('qCount').textContent='Q '+(idx+1)+'/'+session.length;
-  const tLabel=c.type==='ratee'?'🔴 À retravailler':c.type==='revision'?'🔵 Révision':'🟡 Chapitre choisi';
-  const tCls=c.type==='ratee'?'tp-r':c.type==='revision'?'tp-n':'tp-p';
-  document.getElementById('qArea').innerHTML =
-    '<div class="q-card"><div class="q-meta"><span class="q-badge ch">'+(DATA[c.ch]?.titre||'')+'</span>'
-    +'<span class="q-badge '+tCls+'">'+tLabel+'</span><span class="q-badge ch">Niv '+getScore(c.ch,c.q)+'/3</span></div>'
-    +'<div class="q-text">'+c.q+'</div>'
-    +'<textarea class="rep" id="repIn" placeholder="Ta réponse..." rows="3"></textarea>'
-    +'<div class="q-btns"><button class="btn-verif" id="btnVerif">✔ Vérifier</button></div></div>';
-  document.getElementById('fbArea').innerHTML='';
-  document.getElementById('nextWrap').style.display='none';
-  document.getElementById('btnVerif').addEventListener('click', verif);
-  setTimeout(()=>document.getElementById('repIn')?.focus(),80);
-  document.getElementById('repIn').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.ctrlKey)verif();});
-}
-function verif() {
-  const rep=document.getElementById('repIn')?.value.trim();
-  if(!rep){alert('Écris une réponse.');return;}
-  const c=session[idx]; const ev=evaluer(rep,c.r);
-  if(ev.ok) score.ok++; score.total++;
-  if(!score.chTaux[c.ch]) score.chTaux[c.ch]={ok:0,t:0};
-  score.chTaux[c.ch].t++; if(ev.ok) score.chTaux[c.ch].ok++;
-  let s=getScore(c.ch,c.q); s=ev.ok?Math.min(s+1,3):Math.max(0,s-1); setScore(c.ch,c.q,s);
-  const rat=getRat(); const id=c.q.slice(0,40);
-  if(!ev.ok){rat[id]={count:(rat[id]?.count||0)+1,carte:c};}
-  else if(rat[id]){rat[id].count=Math.max(0,(rat[id].count||1)-1);if(!rat[id].count)delete rat[id];}
-  localStorage.setItem(kRat(),JSON.stringify(rat));
-  const cls=ev.t>=65?'fb-ok':ev.t>=40?'fb-mid':'fb-bad';
-  const ico=ev.t>=65?'✅':ev.t>=40?'⚠️':'❌';
-  document.getElementById('fbArea').innerHTML='<div class="feedback show"><div class="'+cls+'">'+ico+' '+ev.m+' — '+ev.t+'%</div><div class="fb-rep"><strong>📖 Réponse attendue</strong>'+c.r+'</div></div>';
-  idx++; document.getElementById('nextWrap').style.display='block';
-  document.getElementById('btnVerif').disabled=true;
-}
-function startTimer(){
-  clearInterval(timerInt);
-  timerInt=setInterval(()=>{
-    if(tps<=0){clearInterval(timerInt);fin();return;} tps--;
-    const m=Math.floor(tps/60),s=tps%60;
-    const el=document.getElementById('timerVal');
-    if(el){el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');el.className='timer-val'+(tps<300?' urgent':'');}
-  },1000);
-}
-function fin(){
-  clearInterval(timerInt);
-  const totalQuestions = score.total;
-  const bonnesReponses = score.ok;
-  const pct = totalQuestions ? Math.round(bonnesReponses / totalQuestions * 100) : 0;
-  const chapitres=getSel().map(n=>DATA[n]?.titre).filter(Boolean);
-  const chapitresTaux={};
-  Object.entries(score.chTaux).forEach(([ch,d])=>{chapitresTaux[DATA[ch]?.titre||'Ch'+ch]=Math.round(d.ok/d.t*100);});
-  const sessions=JSON.parse(localStorage.getItem(kSuivi())||'[]');
-  sessions.unshift({id:Date.now(),date:new Date().toISOString(),matiere:'histoire',eleve,pourcentage:pct,noteSur:totalQuestions,noteObtenue:bonnesReponses,chapitres,chapitresTaux});
-  localStorage.setItem(kSuivi(),JSON.stringify(sessions.slice(0,200)));
-  showPhase('phaseRes');
-  const cls=pct>=80?'ex':pct>=60?'bi':'ef';
-  const msg=pct>=80?'🌟 Excellent !':pct>=60?'👍 Bien joué !':pct>=40?'💪 Courage !':'📚 Continue.';
-  document.getElementById('scoreGrand').className='score-grand '+cls;
-  // Affichage de la note sur le nombre total de questions
-  document.getElementById('scoreGrand').textContent = bonnesReponses + '/' + totalQuestions;
-  document.getElementById('scoreDetail').textContent = bonnesReponses + ' bonnes réponses sur ' + totalQuestions + ' (' + pct + '%)';
-  document.getElementById('msgFin').textContent=msg;
-  const faibles=Object.entries(chapitresTaux).filter(([,t])=>t<60).map(([ch])=>ch);
-  if(faibles.length){
-    document.getElementById('faiblesRes').innerHTML='<div class="faibles-box"><h4>⚠ Chapitres à retravailler (< 60%)</h4><ul>'+faibles.map(f=>'<li>• '+f+'</li>').join('')+'</ul></div>';
-  }
-}
-function showPhase(id){['phaseSelect','phaseSession','phaseRes'].forEach(p=>document.getElementById(p).className='phase'+(p===id?' active':''));}
-function initApp() {
-  setEleve('eleve1');
-  document.getElementById('btnStart').addEventListener('click', demarrer);
-  document.getElementById('btnAll').addEventListener('click', () => selectAll(true));
-  document.getElementById('btnNone').addEventListener('click', () => selectAll(false));
-  document.getElementById('btnFaibles').addEventListener('click', selFaibles);
-  document.getElementById('btnReset').addEventListener('click', resetProg);
-  document.getElementById('btn1').addEventListener('click', () => setEleve('eleve1'));
-  document.getElementById('btn2').addEventListener('click', () => setEleve('eleve2'));
-  document.getElementById('btnNext').addEventListener('click', () => { document.getElementById('nextWrap').style.display='none'; affQ(); });
-  document.getElementById('btnNouv').addEventListener('click', () => location.reload());
-  document.getElementById('btnSuivi').addEventListener('click', () => window.location.href='suivi-parent.html');
-  const setTab = (id) => { document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active')); document.getElementById(id).classList.add('active'); };
-  document.getElementById('tabTout').addEventListener('click', () => { selectAll(true); setTab('tabTout'); });
-  document.getElementById('tabHi').addEventListener('click', () => { filterPart(1,10); setTab('tabHi'); });
-  document.getElementById('tabGe').addEventListener('click', () => { filterPart(11,22); setTab('tabGe'); });
-  document.getElementById('tabEm').addEventListener('click', () => { filterPart(23,32); setTab('tabEm'); });
-}
-if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initApp); } else { initApp(); }
+    const txt = await callIA(prompt, system);
+    const json = safeJSON(txt);
+    if (!json) throw new Error('Réponse IA non parsable');
 
+    const badge = (val) => {
+      const ok = val === 'Oui';
+      const partiel = val === 'Partiel';
+      const bg = ok ? 'rgba(94,207,177,.15)' : partiel ? 'rgba(245,166,35,.15)' : 'rgba(232,122,122,.15)';
+      const col = ok ? 'var(--teal)' : partiel ? 'var(--amber)' : 'var(--red)';
+      const icon = ok ? '✓' : partiel ? '◑' : '✗';
+      return `<span style="background:${bg};color:${col};border:1px solid ${col};border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;">${icon} ${val}</span>`;
+    };
+
+    panel.innerHTML = `
+      <div class="corr-ia">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+          <div class="corr-note">✓ Note : ${json.note || '?'}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+            <span style="font-size:10px;color:var(--muted);margin-right:2px;">Cours</span>${badge(json.cours_su||'?')}
+            <span style="font-size:10px;color:var(--muted);margin-left:6px;">Transfert</span>${badge(json.transfert||'?')}
+            <span style="font-size:10px;color:var(--muted);margin-left:6px;">Méthode</span>${badge(json.methode||'?')}
+          </div>
+        </div>
+        <div style="margin-bottom:10px;">
+          <div style="font-size:10px;color:var(--amber);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">📝 Correction modèle</div>
+          <div style="background:rgba(245,166,35,.06);border-left:3px solid var(--amber);border-radius:0 6px 6px 0;padding:10px 13px;font-size:13px;color:var(--text);line-height:1.6;">${json.correction_experte || ''}</div>
+        </div>
+        <div style="margin-bottom:10px;">
+          <div style="font-size:10px;color:var(--teal);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">🔍 Analyse de ta réponse</div>
+          <div class="corr-txt" style="font-size:13px;">${json.analyse_eleve || ''}</div>
+        </div>
+        ${json.pistes ? `<div>
+          <div style="font-size:10px;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">🎯 Pour progresser</div>
+          <div class="corr-conseil" style="font-size:13px;color:var(--dim);">${json.pistes}</div>
+        </div>` : ''}
+      </div>
+      <div class="corr-off"><strong>📖 CORRECTION OFFICIELLE</strong><br>${q.rep}</div>
+      <button class="btn-copy" onclick="copier(this)">📋 Copier</button>`;
+  } catch(e) {
+    panel.innerHTML = '<div class="erreur">Erreur: '+e.message+'</div>';
+  }
+  if (btn) btn.disabled = false;
+}
+
+async function copier(btn) { await navigator.clipboard.writeText(btn.closest('.corr-panel').innerText); btn.textContent = '✓ Copié !'; setTimeout(()=>btn.textContent='📋 Copier',1500); }
+function effacerCorrections(sIdx) { if(confirm('Effacer ?')){ delete STORE[SUJETS[sIdx].id]; localStorage.setItem(_STORE_KEY, JSON.stringify(STORE)); alert('Corrections effacées.'); } }
+function exportPDF(sIdx) { const s = SUJETS[sIdx]; const data = STORE[s.id]; if(!data?.length){ alert("Corrige au moins une question d'abord."); return; } let html = `<html><head><meta charset="UTF-8"><style>body{font-family:Arial;padding:2rem;}h1{color:#b87800;} .ia{background:#fffbf0;border-left:3px solid #f5a623;padding:8px;} .off{background:#fff0f0;border-left:3px solid #e74c3c;padding:8px;}</style></head><body><h1>DNB ${s.annee} — ${s.session}</h1>`; data.forEach(c=>{ html+=`<h2>${c.exo} — Q${c.qi}</h2><div class="ia">🤖 ${c.correctionIA}</div><div class="off">📖 ${c.correctionOff}</div>`; }); html+=`</body></html>`; const win=window.open('','_blank'); win.document.write(html); win.document.close(); win.print(); }
+
+buildLanding();
+console.log('✅ 10 sujets chargés');
 </script>
 </body>
 </html>

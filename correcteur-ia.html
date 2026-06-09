@@ -59,9 +59,7 @@
   // ============================================================
   // URL DU PROXY GOOGLE SHEETS
   // ============================================================
-  const DEEPSEEK_KEY = 'sk-REMPLACEZ_PAR_VOTRE_CLE_API_DEEPSEEK';
-  const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
-  
+      
   // Barèmes et méthodologies par matière
   const baremes = {
     francais: { nom: "Français", points: 20, criteres: "Orthographe (4 pts), syntaxe (4 pts), cohérence (6 pts), pertinence (6 pts)", methodologie: "Introduction : amorce, présentation, problématique, plan. Développement : paragraphes structurés, connecteurs, exemples. Conclusion : rappel, synthèse, ouverture." },
@@ -71,50 +69,55 @@
   };
 
   async function callCorrection(texte, matiere) {
+    // Vérification accès
+    if (typeof aAccesComplet !== 'undefined' && !aAccesComplet()) {
+      if (typeof afficherBlocageEssaiExpire !== 'undefined') afficherBlocageEssaiExpire();
+      throw new Error('ACCES_BLOQUE');
+    }
     const b = baremes[matiere];
     const prompt = `Tu es correcteur expert du brevet des collèges.
 
 Matière : ${b.nom}
-Barème : ${b.criteres}
+Barème : ${b.criteres} — BAREME UNIVERSEL : 1/3 bonne réponse + 1/3 rédaction + 1/3 justification.
 Méthodologie attendue : ${b.methodologie}
 
 Texte de l'élève :
 ${texte}
 
-Corrige ce texte en respectant le barème et la méthodologie.
-Réponds UNIQUEMENT au format JSON (sans texte avant ou après) :
+Réponds UNIQUEMENT en JSON (sans texte avant ou après) :
 {
   "note": X,
-  "appreciation": "..." ,
+  "detail_bareme": "réponse X/3 - rédaction X/3 - justification X/3",
+  "appreciation": "...",
   "erreurs": ["erreur 1", "erreur 2"],
   "conseilsMethodologiques": ["conseil 1", "conseil 2"],
   "versionCorrigee": "..."
 }`;
 
     try {
-      const response = await fetch(DEEPSEEK_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + DEEPSEEK_KEY
-        },
-        body: JSON.stringify({
-          model: 'deepseek-chat',
-          messages: [
-            { role: 'system', content: "Tu es un correcteur bienveillant et exigeant pour le brevet." },
-            { role: 'user', content: prompt }
-          ]
-        })
+      const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout 45s')), 45000));
+      const payload = JSON.stringify({
+        userId: localStorage.getItem('user_id') || 'anon',
+        action: 'correction_ia', prompt: prompt,
+        system: 'Tu es un correcteur bienveillant et exigeant pour le brevet.',
+        estPayant: typeof isPaid !== 'undefined' ? isPaid() : false,
+        sessionId: sessionStorage.getItem('session_id') || 'sess',
+        joursRestantsEssai: 3, source: 'correcteur-ia', matiere: matiere
       });
-      if (!response.ok) throw new Error(`DeepSeek HTTP ${response.status}`);
-      const result = await response.json();
-      if (result.choices && result.choices[0] && result.choices[0].message) return result.choices[0].message.content;
-      return "{}";
+      const req = fetch('https://script.google.com/macros/s/AKfycbxxQCRDZvKAb9fuXkDslK7LYMXjcIrIi-_EpA8DWT1-tTelSpYcMxPkiSPG5bKheLTY/exec', {
+        method: 'POST',
+        body: new URLSearchParams({ data: payload })
+      }).then(r => r.json()).then(d => {
+        if (d.success && d.content) return d.content;
+        throw new Error(d.error || 'Erreur proxy');
+      });
+      return await Promise.race([req, timeout]);
     } catch(e) {
       console.error(e);
       return "{}";
     }
   }
+
 
   function afficherCorrection(correction, matiere) {
     const resultDiv = document.getElementById("resultat");
@@ -159,45 +162,6 @@ Réponds UNIQUEMENT au format JSON (sans texte avant ou après) :
     document.getElementById("userTexte").value = "";
     document.getElementById("resultat").style.display = "none";
   });
-</script>
-
-<!-- ========== TRACKER ========== -->
-<script>
-const TRACKER_URL = 'https://script.google.com/macros/s/AKfycbxDHkyI8wlinBQ1BRIsg7dcz4AYWbY87SY5UDr6KVu4uHylWQs4fLfdd3a98PEwdL-A/exec';
-
-function getUserId() {
-  let id = localStorage.getItem('app_user_id');
-  if (!id) {
-    id = crypto.randomUUID ? crypto.randomUUID() : 'user_' + Date.now() + '_' + Math.random();
-    localStorage.setItem('app_user_id', id);
-  }
-  return id;
-}
-
-function isPaid() {
-  return localStorage.getItem('code_valide') === 'true';
-}
-
-function trackAction(action, matiere, type, note) {
-  fetch(TRACKER_URL, {
-    method: 'POST',
-    mode: 'no-cors',
-    body: JSON.stringify({
-      userId: getUserId(),
-      action: action,
-      matiere: matiere,
-      type: type,
-      estPayant: isPaid(),
-      note: note || ''
-    })
-  }).catch(e => console.warn('tracker failed', e));
-}
-
-// Première visite : tracer le début de l'essai
-if (!localStorage.getItem('trial_started')) {
-  trackAction('trial_start', '', '', '');
-  localStorage.setItem('trial_started', 'true');
-}
 </script>
 
 </body>
