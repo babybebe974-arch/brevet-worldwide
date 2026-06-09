@@ -17,9 +17,10 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .page-title span{color:var(--acc);}
 .eleve-bar{display:flex;gap:8px;background:var(--s2);border-radius:50px;padding:4px;width:fit-content;}
 .eleve-btn{padding:7px 22px;border-radius:50px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;background:transparent;color:var(--dim);}
-.eleve-btn.e1{background:var(--blue-w);color:#09090f;}
-.eleve-btn.e2{background:var(--pink-n);color:#09090f;}
+.eleve-btn.aw{background:var(--blue-w);color:#09090f;}
+.eleve-btn.an{background:var(--pink-n);color:#09090f;}
 
+/* WARNING SPACED LEARNING */
 .warning-box{background:rgba(232,200,122,.1);border-left:4px solid var(--gold);border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--gold);}
 .warning-box strong{color:var(--gold);font-family:'Syne',sans-serif;}
 .warning-box p{margin:4px 0;}
@@ -93,18 +94,19 @@ textarea.rep::placeholder{color:var(--muted);}
     <a href="index.html" class="page-back">← Hub</a>
     <div class="page-title"><span>Automatismes</span> Sciences 🔬</div>
     <div class="eleve-bar">
-      <button class="eleve-btn e1" id="btn1">👤 Élève 1</button>
-      <button class="eleve-btn" id="btn2">👤 Élève 2</button>
+      <button class="eleve-btn aw" id="btnW">🌊 Wassil</button>
+      <button class="eleve-btn" id="btnN">⚡ Nawal</button>
     </div>
   </div>
 </div>
 <div class="container">
   <div class="phase active" id="phaseSelect">
     
+    <!-- ⚠️ WARNING SPACED LEARNING ⚠️ -->
     <div class="warning-box" id="warningBox">
       <span class="close-warning" onclick="document.getElementById('warningBox').style.display='none';">&times;</span>
       <strong>🧠 Mode Spaced Learning (révision circulaire)</strong>
-      <p>✅ Pour activer la <strong>répétition espacée</strong> :</p>
+      <p>✅ Pour activer la <strong>répétition espacée</strong> (révision des leçons anciennes + nouvelles) :</p>
       <p>👉 <strong>Sélectionnez TOUS les chapitres que vous avez déjà vus depuis le début de l'année</strong> (même les anciens).</p>
       <p>📌 L'ordinateur piochera automatiquement : <strong>20 cartes des chapitres choisis + 10 cartes des erreurs + 10 cartes d'autres chapitres</strong>.</p>
       <p>💡 <strong>Plus vous sélectionnez de chapitres, plus la révision est efficace !</strong></p>
@@ -159,125 +161,484 @@ textarea.rep::placeholder{color:var(--muted);}
   </div>
 </div>
 <script>
+// ==================== DONNÉES COMMUNES SCIENCES (SVT + PHYSIQUE-CHIMIE) ====================
+// 28 CHAPITRES – 280 FLASHCARDS
+
 const CHAPITRES_SC = {
-  1: { titre: "Réchauffement climatique", cartes: [{ q: "Citez trois gaz à effet de serre (GES).", r: "CO₂ (dioxyde de carbone), CH₄ (méthane), N₂O (protoxyde d'azote)." }] },
-  2: { titre: "La cellule — unité du vivant", cartes: [{ q: "Quels sont les constituants d'une cellule animale ?", r: "Membrane plasmique, cytoplasme, noyau, mitochondries." }] }
+  // ==================== PARTIE 1 : SVT (chapitres 1 à 18) ====================
+  1: { titre: "Réchauffement climatique", cartes: [
+    { q: "Citez trois gaz à effet de serre (GES).", r: "CO₂ (dioxyde de carbone), CH₄ (méthane), N₂O (protoxyde d'azote)." },
+    { q: "Quelles sont les causes humaines du réchauffement climatique ?", r: "Combustion des énergies fossiles, déforestation, agriculture intensive, élevage." },
+    { q: "Quelles sont les conséquences du réchauffement climatique ?", r: "Fonte des glaciers, montée des eaux, catastrophes naturelles, extinction d'espèces." },
+    { q: "Qu'est-ce que l'Accord de Paris (2015) ?", r: "Traité international pour limiter le réchauffement à +2°C (idéal 1,5°C)." },
+    { q: "Différence entre effet de serre naturel et réchauffement climatique ?", r: "L'effet de serre naturel est vital. Le réchauffement est dû à son augmentation par l'homme." },
+    { q: "Qu'est-ce que l'empreinte carbone ?", r: "Mesure des émissions de gaz à effet de serre d'une activité, d'un produit ou d'une personne." },
+    { q: "Citez 3 solutions pour réduire son empreinte carbone.", r: "Transports en commun/vélo, isolation du logement, réduire sa consommation de viande." },
+    { q: "Qu'est-ce que la transition énergétique ?", r: "Passage des énergies fossiles aux énergies renouvelables." },
+    { q: "Qu'est-ce que la COP ?", r: "Conférence des Parties (négociations climatiques annuelles)." },
+    { q: "Qu'est-ce que le GIEC ?", r: "Groupe d'experts intergouvernemental sur l'évolution du climat (prix Nobel de la paix 2007)." }
+  ]},
+  2: { titre: "La cellule — unité du vivant", cartes: [
+    { q: "Quels sont les constituants d'une cellule animale ?", r: "Membrane plasmique, cytoplasme, noyau, mitochondries." },
+    { q: "Quelle est la différence entre cellule animale et cellule végétale ?", r: "La cellule végétale possède une paroi cellulosique et des chloroplastes." },
+    { q: "Où se déroule la photosynthèse ?", r: "Dans les chloroplastes des cellules végétales." },
+    { q: "Qu'est-ce qu'un tissu ?", r: "Ensemble de cellules ayant la même fonction." },
+    { q: "Donner l'équation de la photosynthèse.", r: "CO₂ + H₂O + lumière → glucose + O₂." },
+    { q: "Qu'est-ce que la différenciation cellulaire ?", r: "Processus par lequel une cellule non spécialisée devient une cellule spécialisée." },
+    { q: "Qu'est-ce qu'une cellule souche ?", r: "Cellule non spécialisée capable de se diviser et de se différencier." },
+    { q: "Qu'est-ce que la membrane plasmique ?", r: "Barrière qui entoure la cellule et régule les échanges." },
+    { q: "Qu'est-ce que le noyau de la cellule ?", r: "Contient l'ADN, dirige les activités cellulaires." },
+    { q: "Qu'est-ce que la mitochondrie ?", r: "Organite qui produit l'énergie de la cellule (respiration cellulaire)." }
+  ]},
+  3: { titre: "Génétique et hérédité", cartes: [
+    { q: "Qu'est-ce qu'un gène ?", r: "Fragment d'ADN qui porte l'information pour un caractère héréditaire." },
+    { q: "Différence entre allèle dominant et récessif.", r: "Dominant : s'exprime même à un seul exemplaire. Récessif : s'exprime seulement en deux exemplaires." },
+    { q: "Qu'est-ce qu'un caryotype ?", r: "Photographie classée des chromosomes d'une cellule." },
+    { q: "Combien de chromosomes possède un être humain ?", r: "46 chromosomes (23 paires)." },
+    { q: "Qu'est-ce que la mucoviscidose ?", r: "Maladie génétique due à deux allèles récessifs." },
+    { q: "Qu'est-ce que l'ADN ?", r: "Molécule support de l'information génétique (forme de double hélice)." },
+    { q: "Qu'est-ce qu'un chromosome ?", r: "Structure contenant l'ADN, visible lors de la division cellulaire." },
+    { q: "Qu'est-ce que la trisomie 21 ?", r: "Présence d'un chromosome supplémentaire sur la paire 21." },
+    { q: "Qu'est-ce que la drépanocytose ?", r: "Maladie génétique des globules rouges (forme de faucille)." },
+    { q: "Qu'est-ce que le test ADN ?", r: "Analyse de l'ADN pour identifier une personne ou une maladie." }
+  ]},
+  4: { titre: "Évolution des espèces", cartes: [
+    { q: "Qu'est-ce que la sélection naturelle ?", r: "Les individus les mieux adaptés à leur environnement survivent et se reproduisent (Darwin)." },
+    { q: "Citez trois preuves de l'évolution.", r: "Fossiles, anatomie comparée, similitudes génétiques (ADN)." },
+    { q: "Qu'est-ce qu'un ancêtre commun ?", r: "Espèce disparue dont descendent plusieurs espèces actuelles." },
+    { q: "Qu'est-ce qu'un arbre phylogénétique ?", r: "Schéma qui représente les liens de parenté entre espèces." },
+    { q: "Qu'est-ce que la dérive génétique ?", r: "Variation aléatoire de la fréquence des gènes dans une petite population." },
+    { q: "Qui est Charles Darwin ?", r: "Naturaliste britannique, auteur de 'L'Origine des espèces' (1859)." },
+    { q: "Qu'est-ce que le transformisme ?", r: "Théorie selon laquelle les espèces se transforment au cours du temps." },
+    { q: "Qu'est-ce que le fixisme ?", r: "Théorie selon laquelle les espèces sont fixes et immuables." },
+    { q: "Citez un exemple de sélection naturelle chez l'homme.", r: "Résistance au paludisme chez les porteurs de l'allèle drépanocytaire." },
+    { q: "Qu'est-ce que l'endémisme ?", r: "Espèce présente uniquement dans une région géographique restreinte." }
+  ]},
+  5: { titre: "Reproduction", cartes: [
+    { q: "Qu'est-ce que la reproduction asexuée ?", r: "Un seul individu donne naissance à des clones (bouturage, marcottage)." },
+    { q: "Qu'est-ce que la fécondation ?", r: "Fusion d'un gamète mâle et d'un gamète femelle pour former un zygote." },
+    { q: "Quelles sont les étapes du développement embryonnaire ?", r: "Fécondation → segmentation → gastrulation → organogenèse." },
+    { q: "Comment se fait la pollinisation ?", r: "Transport du pollen par le vent, l'eau, les insectes ou les animaux." },
+    { q: "Qu'est-ce que la mitose ?", r: "Division cellulaire qui produit deux cellules filles identiques (croissance, réparation)." },
+    { q: "Qu'est-ce que la méiose ?", r: "Division cellulaire qui produit des gamètes avec la moitié des chromosomes." },
+    { q: "Qu'est-ce qu'un gamète ?", r: "Cellule reproductrice (spermatozoïde chez l'homme, ovule chez la femme)." },
+    { q: "Qu'est-ce que le zygote ?", r: "Cellule œuf résultant de la fécondation." },
+    { q: "Qu'est-ce que la gestation ?", r: "Période de développement de l'embryon puis du fœtus dans l'utérus." },
+    { q: "Qu'est-ce que la ménopause ?", r: "Arrêt définitif des règles et de la fertilité chez la femme." }
+  ]},
+  6: { titre: "Système nerveux", cartes: [
+    { q: "Quels sont les organes du système nerveux central ?", r: "Cerveau, cervelet, tronc cérébral, moelle épinière." },
+    { q: "Qu'est-ce qu'un neurone ?", r: "Cellule spécialisée dans la transmission de l'influx nerveux." },
+    { q: "Différence entre mouvement volontaire et réflexe.", r: "Volontaire : commandé par le cerveau. Réflexe : commandé par la moelle épinière." },
+    { q: "Qu'est-ce qu'une synapse ?", r: "Zone de communication entre deux neurones." },
+    { q: "Qu'est-ce que l'influx nerveux ?", r: "Signal électrique qui se propage le long des neurones." },
+    { q: "Qu'est-ce que le cerveau ?", r: "Centre de contrôle des fonctions supérieures (pensée, mémoire, émotions)." },
+    { q: "Qu'est-ce que le cervelet ?", r: "Coordonne les mouvements et l'équilibre." },
+    { q: "Qu'est-ce que le réflexe rotulien ?", r: "Réflexe obtenu en frappant le tendon sous la rotule (extension de la jambe)." },
+    { q: "Qu'est-ce qu'un neurotransmetteur ?", r: "Substance chimique qui transmet le message d'un neurone à l'autre." },
+    { q: "Qu'est-ce que la plasticité cérébrale ?", r: "Capacité du cerveau à se modifier en fonction de l'expérience." }
+  ]},
+  7: { titre: "Hormones et régulation", cartes: [
+    { q: "Quel est le rôle de l'insuline ?", r: "Hormone qui fait baisser le taux de glucose (glycémie) dans le sang." },
+    { q: "Que se passe-t-il lors d'un stress ?", r: "Libération d'adrénaline qui accélère le cœur et prépare le corps à l'action." },
+    { q: "Quelles sont les hormones sexuelles principales ?", r: "Testostérone (hommes), œstrogènes et progestérone (femmes)." },
+    { q: "Quel est le rôle de l'hypothalamus ?", r: "Glande dans le cerveau, chef d'orchestre des autres glandes." },
+    { q: "Qu'est-ce que le diabète de type 1 ?", r: "Maladie auto-immune où le pancréas ne produit plus d'insuline." },
+    { q: "Qu'est-ce que le diabète de type 2 ?", r: "Diabète lié à une résistance à l'insuline (souvent lié à l'obésité)." },
+    { q: "Qu'est-ce que la glycémie ?", r: "Taux de glucose dans le sang." },
+    { q: "Quel est le rôle de la thyroïde ?", r: "Produit des hormones qui régulent le métabolisme." },
+    { q: "Qu'est-ce que le cortisol ?", r: "Hormone du stress produite par les glandes surrénales." },
+    { q: "Qu'est-ce que la puberté ?", r: "Période de développement sexuel sous l'influence des hormones." }
+  ]},
+  8: { titre: "Nutrition et digestion", cartes: [
+    { q: "Citez les trois grandes familles de nutriments.", r: "Glucides (sucres), lipides (graisses), protides (protéines)." },
+    { q: "À quoi servent les enzymes digestives ?", r: "À dégrader les aliments (ex: amylase dégrade l'amidon)." },
+    { q: "Où se déroule l'absorption des nutriments ?", r: "Dans l'intestin grêle, grâce aux villosités intestinales." },
+    { q: "Qu'est-ce que le bol alimentaire ?", r: "Masse pâteuse formée par les aliments mâchés et mélangés à la salive." },
+    { q: "Que sont les fibres alimentaires ?", r: "Sucres non digestibles qui facilitent le transit intestinal." },
+    { q: "Quels aliments sont riches en fer ?", r: "Viande rouge, lentilles, épinards, œufs." },
+    { q: "Qu'est-ce que le lactose ?", r: "Sucre du lait, digéré par la lactase." },
+    { q: "Qu'est-ce que la digestion mécanique ?", r: "Mastication, brassage, fragmentation des aliments." },
+    { q: "Qu'est-ce que la digestion chimique ?", r: "Dégradation des aliments par les enzymes." },
+    { q: "Qu'est-ce que le système digestif ?", r: "Ensemble des organes qui transforment les aliments (bouche, estomac, intestins)." }
+  ]},
+  9: { titre: "Respiration et circulation sanguine", cartes: [
+    { q: "Où se produisent les échanges gazeux entre l'air et le sang ?", r: "Dans les alvéoles pulmonaires." },
+    { q: "Quel est le trajet du sang dans la circulation ?", r: "Cœur → artères → capillaires (échanges) → veines → cœur." },
+    { q: "Que transportent les globules rouges ?", r: "L'oxygène (O₂) grâce à l'hémoglobine." },
+    { q: "Différence entre artère et veine.", r: "Artère : sang part du cœur, paroi épaisse. Veine : sang retourne au cœur." },
+    { q: "Qu'est-ce que l'hémoglobine ?", r: "Protéine des globules rouges qui fixe l'oxygène." },
+    { q: "Qu'est-ce que la circulation pulmonaire ?", r: "Circuit entre le cœur et les poumons." },
+    { q: "Qu'est-ce que la circulation systémique ?", r: "Circuit entre le cœur et le reste du corps." },
+    { q: "Qu'est-ce que la fréquence cardiaque ?", r: "Nombre de battements du cœur par minute." },
+    { q: "Qu'est-ce que la pression artérielle ?", r: "Force exercée par le sang sur les parois des artères." },
+    { q: "Qu'est-ce que le pouls ?", r: "Onde de pression ressentie dans les artères." }
+  ]},
+  10: { titre: "Microbes et infections", cartes: [
+    { q: "Citez les 4 grandes catégories de microbes.", r: "Bactéries, virus, champignons, parasites." },
+    { q: "Quelles sont les barrières naturelles de l'organisme ?", r: "Peau, muqueuses, sucs gastriques, larmes." },
+    { q: "Différence entre bactérie et virus.", r: "Bactérie : cellule vivante. Virus : particule non vivante, nécessite une cellule hôte." },
+    { q: "Qu'est-ce qu'un anticorps ?", r: "Protéine fabriquée par les lymphocytes qui neutralise un antigène." },
+    { q: "Comment se reproduisent les bactéries ?", r: "Par division binaire (scission binaire)." },
+    { q: "Comment se reproduisent les virus ?", r: "En détournant la machinerie d'une cellule hôte." },
+    { q: "Qu'est-ce qu'un antigène ?", r: "Substance étrangère reconnue par le système immunitaire." },
+    { q: "Qu'est-ce que la fièvre ?", r: "Élévation de la température corporelle, signe de lutte contre l'infection." },
+    { q: "Qu'est-ce qu'une zoonose ?", r: "Maladie transmise de l'animal à l'homme." },
+    { q: "Qu'est-ce qu'un réservoir de microbes ?", r: "Être vivant ou milieu où les microbes se multiplient." }
+  ]},
+  11: { titre: "Vaccination et antibiotiques", cartes: [
+    { q: "Qu'est-ce qu'un vaccin ?", r: "Antigène affaibli qui déclenche une réponse immunitaire sans provoquer la maladie." },
+    { q: "Pourquoi les antibiotiques sont-ils inefficaces contre les virus ?", r: "Ils ciblent des structures propres aux bactéries (paroi, ribosomes)." },
+    { q: "Qu'est-ce que l'immunité de groupe ?", r: "Protection collective quand un pourcentage élevé de la population est vacciné." },
+    { q: "Pourquoi y a-t-il une résistance aux antibiotiques ?", r: "Les bactéries mutent et deviennent insensibles (surutilisation)." },
+    { q: "Qu'est-ce que l'effet mémoire immunitaire ?", r: "Capacité à réagir plus vite lors d'un second contact avec un antigène." },
+    { q: "Pourquoi fait-on des rappels de vaccin ?", r: "Pour maintenir un niveau suffisant d'anticorps protecteurs." },
+    { q: "Qu'est-ce que Louis Pasteur ?", r: "Scientifique français, inventeur du vaccin contre la rage." },
+    { q: "Qu'est-ce que la variolisation ?", r: "Ancêtre de la vaccination (inoculation de la variole)." },
+    { q: "Qu'est-ce qu'un antibiotique à large spectre ?", r: "Antibiotique efficace contre de nombreuses bactéries." },
+    { q: "Qu'est-ce que l'automédication ?", r: "Fait de se soigner sans avis médical (risque de résistance)." }
+  ]},
+  12: { titre: "Sexualité et reproduction humaine", cartes: [
+    { q: "Citez trois méthodes contraceptives.", r: "Pilule, préservatif, stérilet, implant, patch." },
+    { q: "Que signifie IST ?", r: "Infection Sexuellement Transmissible." },
+    { q: "Comment agit le préservatif face au VIH ?", r: "Barrière physique empêchant l'échange de liquides biologiques." },
+    { q: "Qu'est-ce que le VIH ?", r: "Virus qui attaque les lymphocytes, affaiblit le système immunitaire (sida)." },
+    { q: "Qu'est-ce que la pilule contraceptive ?", r: "Médicament hormonal qui bloque l'ovulation." },
+    { q: "Qu'est-ce que le stérilet ?", r: "Dispositif intra-utérin (cuivre ou hormonal)." },
+    { q: "Qu'est-ce que la contraception d'urgence ?", r: "Pilule du lendemain, à prendre rapidement après un rapport non protégé." },
+    { q: "Qu'est-ce que le sida ?", r: "Syndrome d'immunodéficience acquise, stade avancé de l'infection par le VIH." },
+    { q: "Qu'est-ce que la chlamydia ?", r: "IST bactérienne souvent asymptomatique, peut causer la stérilité." },
+    { q: "Qu'est-ce que le HPV ?", r: "Papillomavirus humain, responsable du cancer du col de l'utérus." }
+  ]},
+  13: { titre: "Défenses immunitaires", cartes: [
+    { q: "Qu'est-ce que l'immunité innée ?", r: "Immédiate, non spécifique (peau, phagocytes, inflammation)." },
+    { q: "Qu'est-ce que l'immunité acquise ?", r: "Lente, spécifique (anticorps, lymphocytes mémoire)." },
+    { q: "Quel est le rôle des lymphocytes B ?", r: "Fabriquer des anticorps." },
+    { q: "Quel est le rôle des lymphocytes T ?", r: "Détruire les cellules infectées." },
+    { q: "Qu'est-ce qu'un phagocyte ?", r: "Cellule qui engloutit et détruit les microbes." },
+    { q: "Qu'est-ce qu'une réaction allergique ?", r: "Réaction excessive du système immunitaire à un allergène." },
+    { q: "Qu'est-ce qu'une maladie auto-immune ?", r: "Système immunitaire attaque les cellules du corps." },
+    { q: "Qu'est-ce qu'un immunosuppresseur ?", r: "Médicament qui diminue les défenses immunitaires." },
+    { q: "Qu'est-ce que la séropositivité ?", r: "Présence d'anticorps contre le VIH dans le sang." },
+    { q: "Qu'est-ce que le vaccin thérapeutique ?", r: "Vaccin administré après l'infection pour renforcer l'immunité." }
+  ]},
+  14: { titre: "La photosynthèse", cartes: [
+    { q: "Où se déroule la photosynthèse ?", r: "Dans les chloroplastes des cellules végétales." },
+    { q: "Donner l'équation de la photosynthèse.", r: "6 CO₂ + 6 H₂O + lumière → C₆H₁₂O₆ (glucose) + 6 O₂." },
+    { q: "Quels sont les pigments photosynthétiques ?", r: "Chlorophylle (verte), caroténoïdes (orange/rouge)." },
+    { q: "Quel est le rôle de la photosynthèse ?", r: "Produire de la matière organique et de l'oxygène." },
+    { q: "Qu'est-ce que le spectre d'absorption de la chlorophylle ?", r: "La chlorophylle absorbe surtout le bleu et le rouge (pas le vert)." },
+    { q: "Qu'est-ce que la productivité primaire ?", r: "Quantité de matière organique produite par la photosynthèse." },
+    { q: "Qu'est-ce que l'autotrophie ?", r: "Capacité à produire sa propre matière organique." },
+    { q: "Qu'est-ce que l'hétérotrophie ?", r: "Besoin de se nourrir de matière organique produite par d'autres." },
+    { q: "Pourquoi les feuilles sont-elles vertes ?", r: "La chlorophylle réfléchit la lumière verte (absorbe le reste)." },
+    { q: "Qu'est-ce que le photopériodisme ?", r: "Réaction des plantes à la durée du jour." }
+  ]},
+  15: { titre: "La respiration cellulaire", cartes: [
+    { q: "Où se déroule la respiration cellulaire ?", r: "Dans les mitochondries des cellules." },
+    { q: "Donner l'équation de la respiration cellulaire.", r: "C₆H₁₂O₆ (glucose) + 6 O₂ → 6 CO₂ + 6 H₂O + énergie (ATP)." },
+    { q: "Qu'est-ce que l'ATP ?", r: "Adénosine triphosphate, molécule qui stocke et transporte l'énergie." },
+    { q: "Différence entre respiration et photosynthèse.", r: "Respiration : consomme O₂ et glucose, produit CO₂ et énergie. Photosynthèse : inverse." },
+    { q: "Qu'est-ce que la fermentation ?", r: "Respiration sans oxygène (production d'alcool ou d'acide lactique)." },
+    { q: "Qu'est-ce que le métabolisme ?", r: "Ensemble des réactions chimiques dans une cellule." },
+    { q: "Qu'est-ce que le catabolisme ?", r: "Dégradation de molécules pour produire de l'énergie." },
+    { q: "Qu'est-ce que l'anabolisme ?", r: "Synthèse de molécules consommant de l'énergie." },
+    { q: "Pourquoi les muscles produisent-ils de l'acide lactique ?", r: "Fermentation lactique en manque d'oxygène (effort intense)." },
+    { q: "Qu'est-ce que la glycolyse ?", r: "Première étape de la respiration, dans le cytoplasme." }
+  ]},
+  16: { titre: "Biodiversité et écosystèmes", cartes: [
+    { q: "Qu'est-ce que la biodiversité ?", r: "Diversité des espèces, des gènes et des écosystèmes." },
+    { q: "Qu'est-ce qu'un écosystème ?", r: "Ensemble d'êtres vivants et de leur environnement." },
+    { q: "Qu'est-ce qu'une chaîne alimentaire ?", r: "Suite d'êtres vivants qui se mangent (producteur → consommateur)." },
+    { q: "Qu'est-ce qu'un réseau trophique ?", r: "Ensemble des chaînes alimentaires interconnectées." },
+    { q: "Qu'est-ce qu'une espèce endémique ?", r: "Espèce présente uniquement dans une région." },
+    { q: "Qu'est-ce qu'une espèce invasive ?", r: "Espèce introduite qui prolifère et nuit à l'écosystème." },
+    { q: "Qu'est-ce que la biomasse ?", r: "Masse totale des êtres vivants dans un écosystème." },
+    { q: "Qu'est-ce qu'une aire marine protégée ?", r: "Zone maritime où les activités sont réglementées." },
+    { q: "Qu'est-ce que l'UICN ?", r: "Union internationale pour la conservation de la nature." },
+    { q: "Qu'est-ce que le développement durable ?", r: "Répondre aux besoins actuels sans compromettre l'avenir." }
+  ]},
+  17: { titre: "Risques sanitaires et environnementaux", cartes: [
+    { q: "Qu'est-ce qu'un perturbateur endocrinien ?", r: "Substance chimique qui perturbe le système hormonal." },
+    { q: "Qu'est-ce qu'un pesticide ?", r: "Produit chimique utilisé pour éliminer les nuisibles." },
+    { q: "Qu'est-ce que la pollution de l'air ?", r: "Présence de particules ou gaz nocifs (PM2.5, NO₂, ozone)." },
+    { q: "Qu'est-ce que la pollution de l'eau ?", r: "Contamination par des nitrates, pesticides, métaux lourds." },
+    { q: "Qu'est-ce que le réchauffement climatique ?", r: "Augmentation de la température moyenne due aux GES." },
+    { q: "Qu'est-ce que l'effet de serre ?", r: "Phénomène naturel qui retient la chaleur." },
+    { q: "Qu'est-ce que la couche d'ozone ?", r: "Couche atmosphérique qui filtre les UV." },
+    { q: "Qu'est-ce que les CFC ?", r: "Chlorofluorocarbures, responsables du trou de la couche d'ozone." },
+    { q: "Qu'est-ce que la désertification ?", r: "Transformation des terres en désert." },
+    { q: "Qu'est-ce que l'acidification des océans ?", r: "Absorption du CO₂ qui abaisse le pH de l'eau." }
+  ]},
+  18: { titre: "Géologie et risques naturels", cartes: [
+    { q: "Qu'est-ce qu'un séisme ?", r: "Tremblement de terre dû à la rupture des roches." },
+    { q: "Qu'est-ce qu'un volcan ?", r: "Ouverture dans la croûte terrestre libérant magma et gaz." },
+    { q: "Différence entre magma et lave.", r: "Magma : roche fondue sous terre. Lave : magma à la surface." },
+    { q: "Qu'est-ce qu'un tsunami ?", r: "Vague géante due à un séisme sous-marin." },
+    { q: "Qu'est-ce que la subduction ?", r: "Plongement d'une plaque tectonique sous une autre." },
+    { q: "Qu'est-ce que la dérive des continents ?", r: "Théorie de Wegener (les continents bougent)." },
+    { q: "Qu'est-ce que la tectonique des plaques ?", r: "Théorie expliquant les mouvements de l'écorce terrestre." },
+    { q: "Qu'est-ce que l'érosion ?", r: "Usure des roches par l'eau, le vent, la glace." },
+    { q: "Qu'est-ce qu'une faille ?", r: "Fracture dans la croûte terrestre." },
+    { q: "Qu'est-ce qu'un point chaud ?", r: "Remontée de magma sous la plaque (ex: Hawaii)." }
+  ]},
+  // ==================== PARTIE 2 : PHYSIQUE-CHIMIE (chapitres 19 à 28) ====================
+  19: { titre: "Atomes et molécules", cartes: [
+    { q: "Quels sont les constituants d'un atome ?", r: "Protons (charge +), neutrons (neutres) dans le noyau, électrons (charge -) autour." },
+    { q: "Donner la formule de la molécule d'eau.", r: "H₂O (2 atomes d'hydrogène, 1 atome d'oxygène)." },
+    { q: "Différence entre atome et molécule.", r: "Atome = plus petite particule d'un élément. Molécule = assemblage d'atomes." },
+    { q: "Comment passe-t-on de l'état solide à l'état liquide ?", r: "Fusion (apport de chaleur)." },
+    { q: "Qu'est-ce qu'un ion ?", r: "Atome ou molécule ayant gagné ou perdu des électrons (charge électrique)." },
+    { q: "Qu'est-ce qu'un isotope ?", r: "Atome avec même nombre de protons mais différent nombre de neutrons." },
+    { q: "Différence entre fusion et fission nucléaire.", r: "Fusion : assemblage de noyaux (étoiles). Fission : éclatement d'un noyau (centrales)." },
+    { q: "Qu'est-ce que la masse atomique ?", r: "Somme des protons et neutrons (en u)." },
+    { q: "Qu'est-ce que le numéro atomique ?", r: "Nombre de protons (Z)." },
+    { q: "Donner la formule du dioxyde de carbone.", r: "CO₂." }
+  ]},
+  20: { titre: "Mélanges et corps purs", cartes: [
+    { q: "Qu'est-ce qu'un corps pur ?", r: "Substance composée d'un seul type de constituant (ex: eau distillée)." },
+    { q: "Différence entre mélange homogène et hétérogène.", r: "Homogène : on ne distingue pas les constituants. Hétérogène : plusieurs phases." },
+    { q: "Comment séparer du sable et de l'eau ?", r: "Filtration." },
+    { q: "Comment séparer de l'eau salée ?", r: "Distillation (évaporation puis condensation)." },
+    { q: "Qu'est-ce qu'une solution ?", r: "Mélange homogène (solvant + soluté)." },
+    { q: "Qu'est-ce que la décantation ?", r: "Séparation par différence de densité." },
+    { q: "Qu'est-ce que la centrifugation ?", r: "Séparation par force centrifuge." },
+    { q: "Qu'est-ce que la chromatographie ?", r: "Technique pour séparer les constituants d'un mélange." },
+    { q: "Qu'est-ce qu'un solvant ?", r: "Substance qui dissout (ex: eau, alcool)." },
+    { q: "Qu'est-ce qu'un soluté ?", r: "Substance dissoute (ex: sucre, sel)." }
+  ]},
+  21: { titre: "Réactions chimiques", cartes: [
+    { q: "Qu'est-ce qu'une réaction chimique ?", r: "Transformation de réactifs en produits, avec conservation des atomes." },
+    { q: "Écrire l'équation de combustion complète du méthane.", r: "CH₄ + 2 O₂ → CO₂ + 2 H₂O." },
+    { q: "Différence entre réaction exothermique et endothermique.", r: "Exothermique : dégage de la chaleur. Endothermique : absorbe de la chaleur." },
+    { q: "Qu'est-ce qu'une oxydoréduction ?", r: "Réaction avec transfert d'électrons." },
+    { q: "Qu'est-ce qu'une neutralisation ?", r: "Réaction entre un acide et une base → eau + sel." },
+    { q: "Écrire l'équation de combustion du butane.", r: "2 C₄H₁₀ + 13 O₂ → 8 CO₂ + 10 H₂O." },
+    { q: "Qu'est-ce que la combustion incomplète ?", r: "Manque d'oxygène → production de CO (monoxyde de carbone)." },
+    { q: "Qu'est-ce que la catalyse ?", r: "Accélération d'une réaction par un catalyseur." },
+    { q: "Qu'est-ce que la loi de Lavoisier ?", r: "Rien ne se perd, rien ne se crée, tout se transforme." },
+    { q: "Qu'est-ce que la combustion ?", r: "Réaction chimique avec du dioxygène." }
+  ]},
+  22: { titre: "Solutions et concentration", cartes: [
+    { q: "Différence entre solvant et soluté.", r: "Solvant : substance qui dissout (ex: eau). Soluté : substance dissoute (ex: sucre)." },
+    { q: "Formule de la concentration massique.", r: "C = m/V (en g/L)." },
+    { q: "Que signifie un pH de 3 ?", r: "Solution acide (pH < 7)." },
+    { q: "Que signifie un pH de 10 ?", r: "Solution basique (pH > 7)." },
+    { q: "Que signifie un pH de 7 ?", r: "Solution neutre." },
+    { q: "Comment mesure-t-on le pH ?", r: "Papier pH ou pH-mètre." },
+    { q: "Qu'est-ce qu'une solution saturée ?", r: "Solution qui ne peut plus dissoudre de soluté." },
+    { q: "Qu'est-ce que la dissolution ?", r: "Processus où un soluté se disperse dans un solvant." },
+    { q: "Qu'est-ce que la dilution ?", r: "Ajout de solvant pour diminuer la concentration." },
+    { q: "Formule de la dilution : C₁ × V₁ = C₂ × V₂ ?", r: "Oui (conservation de la quantité de matière)." }
+  ]},
+  23: { titre: "Mouvement et vitesse", cartes: [
+    { q: "Quels sont les types de trajectoires ?", r: "Rectiligne, circulaire, curviligne." },
+    { q: "Formule de la vitesse moyenne.", r: "v = d/t (m/s ou km/h)." },
+    { q: "Convertir 20 m/s en km/h.", r: "72 km/h (×3,6)." },
+    { q: "Convertir 90 km/h en m/s.", r: "25 m/s (÷3,6)." },
+    { q: "Qu'est-ce qu'un mouvement uniforme ?", r: "Vitesse constante." },
+    { q: "Qu'est-ce qu'un mouvement accéléré ?", r: "La vitesse augmente." },
+    { q: "Qu'est-ce qu'un mouvement décéléré ?", r: "La vitesse diminue." },
+    { q: "Qu'est-ce que la vitesse instantanée ?", r: "Vitesse à un instant précis." },
+    { q: "Qu'est-ce que la vitesse moyenne ?", r: "Moyenne sur un trajet." },
+    { q: "Donner la formule du temps : t = ?", r: "t = d/v." }
+  ]},
+  24: { titre: "Forces et interactions", cartes: [
+    { q: "Formule du poids (force de gravité).", r: "P = m × g (g ≈ 9,8 N/kg sur Terre)." },
+    { q: "Quelles sont les caractéristiques d'une force ?", r: "Direction, sens, intensité (valeur), point d'application." },
+    { q: "Qu'est-ce qu'une force de frottement ?", r: "Force qui s'oppose au mouvement ou au glissement." },
+    { q: "Sur la Lune, le poids est-il différent ?", r: "Oui, car g est plus faible (g Lune ≈ 1,6 N/kg)." },
+    { q: "Qu'est-ce que la force ?", r: "Action qui peut modifier le mouvement ou déformer un objet." },
+    { q: "Qu'est-ce que la réaction d'un support ?", r: "Force perpendiculaire au support." },
+    { q: "Qu'est-ce que la tension d'un fil ?", r: "Force exercée par un fil tiré." },
+    { q: "Qu'est-ce que la poussée d'Archimède ?", r: "Force qui fait flotter les objets." },
+    { q: "Qu'est-ce que le centre de gravité ?", r: "Point où s'applique le poids." },
+    { q: "Qu'est-ce que la dynamique ?", r: "Étude des forces et des mouvements." }
+  ]},
+  25: { titre: "Principe d'inertie (Newton)", cartes: [
+    { q: "Énoncer le principe d'inertie.", r: "Si les forces qui s'exercent sur un corps se compensent (F=0), alors son mouvement est rectiligne uniforme ou il est au repos." },
+    { q: "Pourquoi doit-on attacher sa ceinture de sécurité ?", r: "Application du principe d'inertie : en cas de freinage, le corps continue tout droit." },
+    { q: "Qu'est-ce que le principe des actions réciproques ?", r: "Deux corps en interaction exercent des forces opposées (action/réaction)." },
+    { q: "Énoncer la 2e loi de Newton.", r: "La somme des forces est égale à la masse multipliée par l'accélération : ΣF = m × a." },
+    { q: "Énoncer la 3e loi de Newton.", r: "Si A exerce une force sur B, alors B exerce une force égale et opposée sur A." },
+    { q: "Qu'est-ce qu'un référentiel galiléen ?", r: "Référentiel où le principe d'inertie s'applique." },
+    { q: "Qu'est-ce que la quantité de mouvement ?", r: "p = m × v." },
+    { q: "Qu'est-ce que le travail d'une force ?", r: "Énergie transférée par une force." },
+    { q: "Qu'est-ce que la puissance ?", r: "Travail par unité de temps (P = E/t)." },
+    { q: "Qu'est-ce que l'énergie mécanique ?", r: "Somme de l'énergie cinétique et potentielle." }
+  ]},
+  26: { titre: "Pression", cartes: [
+    { q: "Formule de la pression.", r: "P = F/S (en Pascals, Pa)." },
+    { q: "Quelle est la pression atmosphérique normale ?", r: "1013 hPa (hectopascals)." },
+    { q: "Pourquoi les oreilles se bouchent-elles en montagne ?", r: "La pression atmosphérique diminue avec l'altitude." },
+    { q: "Pourquoi les skis sont-ils larges ?", r: "Pour augmenter la surface et diminuer la pression sur la neige." },
+    { q: "Qu'est-ce que la pression hydrostatique ?", r: "Pression dans un liquide (augmente avec la profondeur)." },
+    { q: "Qu'est-ce que le théorème de Pascal ?", r: "Pression transmise intégralement dans un liquide." },
+    { q: "À quoi sert un manomètre ?", r: "Mesurer la pression." },
+    { q: "Qu'est-ce que le vide ?", r: "Espace sans matière (pression nulle)." },
+    { q: "Qu'est-ce que la pression absolue ?", r: "Pression par rapport au vide." },
+    { q: "Qu'est-ce que la pression relative ?", r: "Pression par rapport à la pression atmosphérique." }
+  ]},
+  27: { titre: "Sources et formes d'énergie", cartes: [
+    { q: "Citez trois énergies fossiles.", r: "Charbon, pétrole, gaz naturel." },
+    { q: "Citez trois énergies renouvelables.", r: "Solaire, éolien, hydraulique, biomasse, géothermie." },
+    { q: "Formule de l'énergie cinétique.", r: "Ec = ½ × m × v² (en Joules)." },
+    { q: "Formule de l'énergie potentielle de position.", r: "Ep = m × g × h (en Joules)." },
+    { q: "Qu'est-ce que l'énergie chimique ?", r: "Énergie stockée dans les liaisons chimiques (carburants, aliments, piles)." },
+    { q: "Quelle est la part du nucléaire dans l'électricité française ?", r: "Environ 70% (la France est le pays le plus nucléarisé)." },
+    { q: "Pourquoi les énergies fossiles sont-elles critiquées ?", r: "Elles émettent du CO₂ (GES) et sont épuisables." },
+    { q: "Une voiture à 100 km/h a-t-elle plus d'énergie qu'à 50 km/h ?", r: "4 fois plus (car v² → 2² = 4)." },
+    { q: "Qu'est-ce que l'énergie nucléaire ?", r: "Énergie libérée par la fission ou fusion des noyaux atomiques." },
+    { q: "Qu'est-ce que l'énergie hydraulique ?", r: "Énergie des chutes d'eau (barrages)." }
+  ]},
+  28: { titre: "Circuits électriques", cartes: [
+    { q: "Énoncer la loi d'Ohm.", r: "U = R × I (U en volts, R en ohms, I en ampères)." },
+    { q: "Formule de la puissance électrique.", r: "P = U × I (P en watts)." },
+    { q: "Différence entre circuit série et circuit dérivation.", r: "Série : un seul chemin, même courant. Dérivation : plusieurs chemins, même tension." },
+    { q: "Qu'est-ce qu'un court-circuit ?", r: "Chemin de très faible résistance qui contourne un récepteur, courant très élevé." },
+    { q: "À quoi sert un fusible ou un disjoncteur ?", r: "À couper le circuit en cas de surintensité." },
+    { q: "À quoi sert la prise de terre ?", r: "À évacuer le courant de fuite vers la terre (protection contre les électrocutions)." },
+    { q: "Qu'est-ce qu'une résistance ?", r: "Composant qui s'oppose au passage du courant." },
+    { q: "Qu'est-ce que la tension électrique ?", r: "Différence de potentiel entre deux points (en volts)." },
+    { q: "Qu'est-ce que l'intensité du courant ?", r: "Débit d'électrons (en ampères)." },
+    { q: "Qu'est-ce qu'un générateur ?", r: "Appareil qui fournit de l'énergie électrique (pile, batterie, alternateur)." }
+  ]}
 };
+
+// Vérification
+console.log("Chapitres Sciences chargés :", Object.keys(CHAPITRES_SC).length);
 </script>
 <script>
-let eleve = 'eleve1';
+
+let eleve = 'wassil';
 let session = [], idx = 0;
 let score = { ok:0, total:0, chTaux:{} };
 let timerInt = null, tps = 45*60;
 
 const DATA = CHAPITRES_SC;
-const kProg = () => 'auto_sc_prog_' + eleve;
-const kRat = () => 'auto_sc_rat_' + eleve;
+const kProg  = () => 'auto_sc_prog_' + eleve;
+const kRat   = () => 'auto_sc_rat_' + eleve;
 const kSuivi = () => 'suivi_sessions_sciences_' + eleve;
 
-function getProg() { return JSON.parse(localStorage.getItem(kProg()) || '{}'); }
-function getRat() { return JSON.parse(localStorage.getItem(kRat()) || '{}'); }
+function getProg()  { return JSON.parse(localStorage.getItem(kProg())  || '{}'); }
+function getRat()   { return JSON.parse(localStorage.getItem(kRat())   || '{}'); }
 function getScore(ch, q) { return getProg()[ch+'_'+q.substring(0,28)]?.score || 0; }
 function setScore(ch, q, v) {
   const p = getProg();
-  p[ch+'_'+q.substring(0,28)] = { score: Math.min(3, Math.max(0, v)), date: new Date().toISOString() };
+  p[ch+'_'+q.substring(0,28)] = { score:Math.min(3,Math.max(0,v)), date:new Date().toISOString() };
   localStorage.setItem(kProg(), JSON.stringify(p));
 }
-
 function getFaibles() {
-  const sessions = JSON.parse(localStorage.getItem(kSuivi()) || '[]').slice(0,5);
+  const sessions = JSON.parse(localStorage.getItem(kSuivi())||'[]').slice(0,5);
   const taux = {};
   sessions.forEach(s => {
-    if (s.chapitresTaux) Object.entries(s.chapitresTaux).forEach(([ch, t]) => {
-      if (!taux[ch]) taux[ch] = [];
-      taux[ch].push(t);
+    if (s.chapitresTaux) Object.entries(s.chapitresTaux).forEach(([ch,t]) => {
+      if (!taux[ch]) taux[ch] = []; taux[ch].push(t);
     });
   });
   return Object.entries(taux).filter(([,v]) => v.reduce((a,b)=>a+b,0)/v.length < 60).map(([ch]) => parseInt(ch));
 }
-
 function setEleve(e) {
   eleve = e;
-  document.getElementById('btn1').className = 'eleve-btn' + (e === 'eleve1' ? ' e1' : '');
-  document.getElementById('btn2').className = 'eleve-btn' + (e === 'eleve2' ? ' e2' : '');
-  buildGrid();
-  updateStats();
+  document.getElementById('btnW').className = 'eleve-btn' + (e==='wassil'?' aw':'');
+  document.getElementById('btnN').className = 'eleve-btn' + (e==='nawal'?' an':'');
+  buildGrid(); updateStats();
 }
-
 function buildGrid() {
   const faibles = getFaibles();
-  const g = document.getElementById('chapGrid');
-  g.innerHTML = '';
+  const g = document.getElementById('chapGrid'); g.innerHTML = '';
   Object.entries(DATA).forEach(([n, ch]) => {
     const isFaible = faibles.includes(parseInt(n));
     const d = document.createElement('div');
-    d.className = 'ch-item' + (isFaible ? ' faible' : '');
-    d.id = 'ci' + n;
+    d.className = 'ch-item' + (isFaible?' faible':'');
+    d.id = 'ci'+n;
     d.onclick = () => { d.classList.toggle('selected'); updateStats(); };
-    d.innerHTML = '<span class="ch-num">'+n+'</span><span style="font-size:12px">'+ch.titre+'</span>' + (isFaible ? '<span class="ch-warn">⚠</span>' : '');
+    d.innerHTML = '<span class="ch-num">'+n+'</span><span style="font-size:12px">'+ch.titre+'</span>'+(isFaible?'<span class="ch-warn">⚠</span>':'');
     g.appendChild(d);
   });
 }
-
-function getSel() { return Array.from(document.querySelectorAll('#chapGrid .ch-item.selected')).map(el => parseInt(el.id.replace('ci', ''))); }
-function selectAll(v) { Object.keys(DATA).forEach(n => document.getElementById('ci'+n)?.classList.toggle('selected', v)); updateStats(); }
-function selFaibles() { selectAll(false); getFaibles().forEach(n => document.getElementById('ci'+n)?.classList.add('selected')); updateStats(); }
+function getSel() { return Array.from(document.querySelectorAll('#chapGrid .ch-item.selected')).map(el=>parseInt(el.id.replace('ci',''))); }
+function selectAll(v) { Object.keys(DATA).forEach(n=>document.getElementById('ci'+n)?.classList.toggle('selected',v)); updateStats(); }
+function selFaibles() { selectAll(false); getFaibles().forEach(n=>document.getElementById('ci'+n)?.classList.add('selected')); updateStats(); }
 function resetProg() { if(confirm('Reset progression ?')){ localStorage.removeItem(kProg()); localStorage.removeItem(kRat()); updateStats(); } }
-
 function updateStats() {
   const sel = getSel();
-  const toutes = sel.flatMap(n => (DATA[n]?.cartes || []).map(c => ({...c, ch: n})));
-  const mait = toutes.filter(c => getScore(c.ch, c.q) >= 3).length;
-  const pct = toutes.length ? Math.round(mait / toutes.length * 100) : 0;
+  const toutes = sel.flatMap(n=>(DATA[n]?.cartes||[]).map(c=>({...c,ch:n})));
+  const mait = toutes.filter(c=>getScore(c.ch,c.q)>=3).length;
+  const pct = toutes.length ? Math.round(mait/toutes.length*100) : 0;
   document.getElementById('stCartes').textContent = toutes.length;
   document.getElementById('stMait').textContent = mait;
-  document.getElementById('stPct').textContent = pct + '%';
-  document.getElementById('btnStart').disabled = toutes.length === 0;
-  document.getElementById('stRegle').textContent = toutes.length <= 40 ? toutes.length + ' (toutes)' : '20-10-10';
+  document.getElementById('stPct').textContent = pct+'%';
+  document.getElementById('btnStart').disabled = toutes.length===0;
+  document.getElementById('stRegle').textContent = toutes.length<=40 ? toutes.length+' (toutes)' : '20-10-10';
 }
-
 function melanger(a) { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
-
 function genSession() {
   const sel = getSel();
-  const principal = sel.flatMap(n => (DATA[n]?.cartes || []).map(c => ({...c, ch: n, type: 'principal'})));
+  const principal = sel.flatMap(n=>(DATA[n]?.cartes||[]).map(c=>({...c,ch:n,type:'principal'})));
   const dedup = arr => { const ids=new Set(); return arr.filter(c=>{if(ids.has(c.q))return false;ids.add(c.q);return true;}); };
-  if (principal.length <= 40) return melanger(dedup(principal));
-  const nouv = principal.filter(c => getScore(c.ch, c.q) === 0);
-  const enCours = principal.filter(c => getScore(c.ch, c.q) > 0 && getScore(c.ch, c.q) < 3);
-  const mait = principal.filter(c => getScore(c.ch, c.q) >= 3);
-  const vingt = melanger(dedup([...nouv, ...enCours, ...mait])).slice(0,20);
+  if (principal.length<=40) return melanger(dedup(principal));
+  const nouv = principal.filter(c=>getScore(c.ch,c.q)===0);
+  const enCours = principal.filter(c=>getScore(c.ch,c.q)>0&&getScore(c.ch,c.q)<3);
+  const mait = principal.filter(c=>getScore(c.ch,c.q)>=3);
+  const vingt = melanger(dedup([...nouv,...enCours,...mait])).slice(0,20);
   const rat = getRat();
-  let dixRat = Object.entries(rat).filter(([,d])=>d.count>=1).sort((a,b)=>b[1].count-a[1].count).slice(0,10).map(([,d])=>({...d.carte, type:'ratee'}));
-  if (dixRat.length < 10) {
-    const deja = new Set([...vingt, ...dixRat].map(c => c.q));
-    dixRat = [...dixRat, ...melanger([...enCours, ...nouv]).filter(c => !deja.has(c.q)).slice(0, 10 - dixRat.length).map(c => ({...c, type:'ratee'}))];
+  let dixRat = Object.entries(rat).filter(([,d])=>d.count>=1).sort((a,b)=>b[1].count-a[1].count).slice(0,10).map(([,d])=>({...d.carte,type:'ratee'}));
+  if (dixRat.length<10) {
+    const deja = new Set([...vingt,...dixRat].map(c=>c.q));
+    dixRat = [...dixRat,...melanger([...enCours,...nouv]).filter(c=>!deja.has(c.q)).slice(0,10-dixRat.length).map(c=>({...c,type:'ratee'}))];
   }
-  const autres = Object.entries(DATA).filter(([n]) => !sel.includes(parseInt(n))).flatMap(([n,ch]) => ch.cartes.map(c => ({...c, ch: parseInt(n), type:'revision'})));
+  const autres = Object.entries(DATA).filter(([n])=>!sel.includes(parseInt(n))).flatMap(([n,ch])=>ch.cartes.map(c=>({...c,ch:parseInt(n),type:'revision'})));
   let dixRev = melanger([...autres]).slice(0,10);
-  if (dixRev.length < 10) {
-    const deja = new Set([...vingt, ...dixRat].map(c => c.q));
-    dixRev = [...dixRev, ...melanger([...principal]).filter(c => !deja.has(c.q)).slice(0, 10 - dixRev.length).map(c => ({...c, type:'revision'}))];
+  if (dixRev.length<10) {
+    const deja = new Set([...vingt,...dixRat].map(c=>c.q));
+    dixRev = [...dixRev,...melanger([...principal]).filter(c=>!deja.has(c.q)).slice(0,10-dixRev.length).map(c=>({...c,type:'revision'}))];
   }
-  return melanger(dedup([...vingt, ...dixRat, ...dixRev])).slice(0,40);
+  return melanger(dedup([...vingt,...dixRat,...dixRev])).slice(0,40);
 }
 
+// ══════════════ ÉVALUATION — SEUIL 50% (mots-clés, bonus réduits) ══════════════
 function evaluer(rep, att) {
   if (!rep || rep.length < 2) return { ok: false, t: 0, m: 'Écris une réponse.' };
+  
   const r = rep.toLowerCase().trim();
   const a = att.toLowerCase();
+  
   if (r === a) return { ok: true, t: 100, m: 'Parfait !' };
+  
+  // Mots de PLUS de 4 lettres
   const mA = a.split(/[\s,;.()+->]+/).filter(m => m.length > 4);
   const mR = r.split(/[\s,;.()+->]+/).filter(m => m.length > 4);
+  
   let ok = 0;
-  mA.forEach(ma => { if (mR.some(mr => mr.includes(ma.slice(0,4)) || ma.includes(mr.slice(0,4)))) ok++; });
+  mA.forEach(ma => {
+    if (mR.some(mr => mr.includes(ma.slice(0, 4)) || ma.includes(mr.slice(0, 4)))) ok++;
+  });
+  
   let t = mA.length ? Math.round(ok / mA.length * 100) : 50;
+  
+  // Bonus réduit : +10 si peu de mots et t>=45
   if (mR.length <= 4 && t >= 45) t = Math.min(100, t + 10);
-  const cles = mA.slice(0,3).filter(m => mR.some(mr => mr.includes(m.slice(0,4))));
+  
+  const cles = mA.slice(0, 3).filter(m => 
+    mR.some(mr => mr.includes(m.slice(0, 4)))
+  );
   if (cles.length >= 2) t = Math.min(100, t + 5);
-  const motsTrouves = mA.filter(m => mR.some(mr => mr.includes(m.slice(0,4)))).length;
-  if (motsTrouves < mA.length / 2) return { ok: false, t: Math.min(t, 50), m: 'Il manque des éléments essentiels.' };
-  if (t >= 50) return { ok: true, t, m: t >= 80 ? 'Parfait !' : (t >= 70 ? 'Bien !' : 'Presque !') };
+  
+  // Exiger au moins 50% des mots-clés
+  const motsTrouves = mA.filter(m => 
+    mR.some(mr => mr.includes(m.slice(0, 4)))
+  ).length;
+  
+  if (motsTrouves < mA.length / 2) {
+    return { ok: false, t: Math.min(t, 50), m: 'Il manque des éléments essentiels.' };
+  }
+  
+  // SEUIL À 50%
+  if (t >= 50) {
+    return { ok: true, t, m: t >= 80 ? 'Parfait !' : (t >= 70 ? 'Bien !' : 'Presque !') };
+  }
+  
   return { ok: false, t, m: 'À retravailler.' };
 }
 
@@ -285,107 +646,95 @@ function demarrer() {
   try {
     session = genSession();
     if (!session.length) { alert('Aucune carte disponible.'); return; }
-    idx = 0; score = { ok:0, total:0, chTaux:{} }; tps = 45*60;
+    idx=0; score={ok:0,total:0,chTaux:{}}; tps=45*60;
     showPhase('phaseSession'); startTimer(); affQ();
-  } catch(e) { alert('Erreur: ' + e.message); }
+  } catch(e) { alert('Erreur : ' + e.message); console.error(e); }
 }
-
 function affQ() {
-  if (idx >= session.length) { fin(); return; }
-  const c = session[idx];
-  document.getElementById('progFill').style.width = Math.round(idx/session.length*100) + '%';
-  document.getElementById('qCount').textContent = 'Q ' + (idx+1) + '/' + session.length;
-  const tLabel = c.type === 'ratee' ? '🔴 À retravailler' : (c.type === 'revision' ? '🔵 Révision' : '🟢 Chapitre choisi');
-  const tCls = c.type === 'ratee' ? 'tp-r' : (c.type === 'revision' ? 'tp-n' : 'tp-p');
-  document.getElementById('qArea').innerHTML = '<div class="q-card"><div class="q-meta"><span class="q-badge ch">' + (DATA[c.ch]?.titre || '') + '</span><span class="q-badge ' + tCls + '">' + tLabel + '</span><span class="q-badge ch">Niv ' + getScore(c.ch, c.q) + '/3</span></div><div class="q-text">' + c.q + '</div><textarea class="rep" id="repIn" placeholder="Ta réponse..." rows="3"></textarea><div class="q-btns"><button class="btn-verif" id="btnVerif">✔ Vérifier</button></div></div>';
-  document.getElementById('fbArea').innerHTML = '';
-  document.getElementById('nextWrap').style.display = 'none';
+  if (idx>=session.length){fin();return;}
+  const c=session[idx];
+  document.getElementById('progFill').style.width=Math.round(idx/session.length*100)+'%';
+  document.getElementById('qCount').textContent='Q '+(idx+1)+'/'+session.length;
+  const tLabel=c.type==='ratee'?'🔴 À retravailler':c.type==='revision'?'🔵 Révision':'🟢 Chapitre choisi';
+  const tCls=c.type==='ratee'?'tp-r':c.type==='revision'?'tp-n':'tp-p';
+  document.getElementById('qArea').innerHTML =
+    '<div class="q-card"><div class="q-meta"><span class="q-badge ch">'+(DATA[c.ch]?.titre||'')+'</span>'
+    +'<span class="q-badge '+tCls+'">'+tLabel+'</span><span class="q-badge ch">Niv '+getScore(c.ch,c.q)+'/3</span></div>'
+    +'<div class="q-text">'+c.q+'</div>'
+    +'<textarea class="rep" id="repIn" placeholder="Ta réponse..." rows="3"></textarea>'
+    +'<div class="q-btns"><button class="btn-verif" id="btnVerif">✔ Vérifier</button></div></div>';
+  document.getElementById('fbArea').innerHTML='';
+  document.getElementById('nextWrap').style.display='none';
   document.getElementById('btnVerif').addEventListener('click', verif);
-  setTimeout(() => document.getElementById('repIn')?.focus(), 80);
-  document.getElementById('repIn').addEventListener('keydown', e => { if(e.key === 'Enter' && e.ctrlKey) verif(); });
+  setTimeout(()=>document.getElementById('repIn')?.focus(),80);
+  document.getElementById('repIn').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.ctrlKey)verif();});
 }
-
 function verif() {
-  const rep = document.getElementById('repIn')?.value.trim();
-  if (!rep) { alert('Écris une réponse.'); return; }
-  const c = session[idx];
-  const ev = evaluer(rep, c.r);
-  if (ev.ok) score.ok++;
-  score.total++;
-  if (!score.chTaux[c.ch]) score.chTaux[c.ch] = { ok:0, t:0 };
-  score.chTaux[c.ch].t++;
-  if (ev.ok) score.chTaux[c.ch].ok++;
-  let s = getScore(c.ch, c.q);
-  s = ev.ok ? Math.min(s+1,3) : Math.max(0,s-1);
-  setScore(c.ch, c.q, s);
-  const rat = getRat();
-  const id = c.q.slice(0,40);
-  if (!ev.ok) { rat[id] = { count: (rat[id]?.count||0)+1, carte: c }; }
-  else if (rat[id]) { rat[id].count = Math.max(0, (rat[id].count||1)-1); if (!rat[id].count) delete rat[id]; }
-  localStorage.setItem(kRat(), JSON.stringify(rat));
-  const cls = ev.t >= 65 ? 'fb-ok' : (ev.t >= 40 ? 'fb-mid' : 'fb-bad');
-  const ico = ev.t >= 65 ? '✅' : (ev.t >= 40 ? '⚠️' : '❌');
-  document.getElementById('fbArea').innerHTML = '<div class="feedback show"><div class="' + cls + '">' + ico + ' ' + ev.m + ' — ' + ev.t + '%</div><div class="fb-rep"><strong>📖 Réponse attendue</strong>' + c.r + '</div></div>';
-  idx++;
-  document.getElementById('nextWrap').style.display = 'block';
-  document.getElementById('btnVerif').disabled = true;
+  const rep=document.getElementById('repIn')?.value.trim();
+  if(!rep){alert('Écris une réponse.');return;}
+  const c=session[idx]; const ev=evaluer(rep,c.r);
+  if(ev.ok) score.ok++; score.total++;
+  if(!score.chTaux[c.ch]) score.chTaux[c.ch]={ok:0,t:0};
+  score.chTaux[c.ch].t++; if(ev.ok) score.chTaux[c.ch].ok++;
+  let s=getScore(c.ch,c.q); s=ev.ok?Math.min(s+1,3):Math.max(0,s-1); setScore(c.ch,c.q,s);
+  const rat=getRat(); const id=c.q.slice(0,40);
+  if(!ev.ok){rat[id]={count:(rat[id]?.count||0)+1,carte:c};}
+  else if(rat[id]){rat[id].count=Math.max(0,(rat[id].count||1)-1);if(!rat[id].count)delete rat[id];}
+  localStorage.setItem(kRat(),JSON.stringify(rat));
+  const cls=ev.t>=65?'fb-ok':ev.t>=40?'fb-mid':'fb-bad';
+  const ico=ev.t>=65?'✅':ev.t>=40?'⚠️':'❌';
+  document.getElementById('fbArea').innerHTML='<div class="feedback show"><div class="'+cls+'">'+ico+' '+ev.m+' — '+ev.t+'%</div><div class="fb-rep"><strong>📖 Réponse attendue</strong>'+c.r+'</div></div>';
+  idx++; document.getElementById('nextWrap').style.display='block';
+  document.getElementById('btnVerif').disabled=true;
 }
-
-function startTimer() {
+function startTimer(){
   clearInterval(timerInt);
-  timerInt = setInterval(() => {
-    if (tps <= 0) { clearInterval(timerInt); fin(); return; }
-    tps--;
-    const m = Math.floor(tps/60), s = tps%60;
-    const el = document.getElementById('timerVal');
-    if (el) { el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0'); el.className = 'timer-val' + (tps < 300 ? ' urgent' : ''); }
-  }, 1000);
+  timerInt=setInterval(()=>{
+    if(tps<=0){clearInterval(timerInt);fin();return;} tps--;
+    const m=Math.floor(tps/60),s=tps%60;
+    const el=document.getElementById('timerVal');
+    if(el){el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');el.className='timer-val'+(tps<300?' urgent':'');}
+  },1000);
 }
-
-function fin() {
+function fin(){
   clearInterval(timerInt);
   const totalQuestions = score.total;
   const bonnesReponses = score.ok;
   const pct = totalQuestions ? Math.round(bonnesReponses / totalQuestions * 100) : 0;
-  const chapitres = getSel().map(n => DATA[n]?.titre).filter(Boolean);
-  const chapitresTaux = {};
-  Object.entries(score.chTaux).forEach(([ch,d]) => { chapitresTaux[DATA[ch]?.titre || 'Ch'+ch] = Math.round(d.ok/d.t*100); });
-  const sessions = JSON.parse(localStorage.getItem(kSuivi()) || '[]');
-  sessions.unshift({ id: Date.now(), date: new Date().toISOString(), matiere: 'sciences', eleve, pourcentage: pct, noteSur: totalQuestions, noteObtenue: bonnesReponses, chapitres, chapitresTaux });
-  localStorage.setItem(kSuivi(), JSON.stringify(sessions.slice(0,200)));
+  const chapitres=getSel().map(n=>DATA[n]?.titre).filter(Boolean);
+  const chapitresTaux={};
+  Object.entries(score.chTaux).forEach(([ch,d])=>{chapitresTaux[DATA[ch]?.titre||'Ch'+ch]=Math.round(d.ok/d.t*100);});
+  const sessions=JSON.parse(localStorage.getItem(kSuivi())||'[]');
+  sessions.unshift({id:Date.now(),date:new Date().toISOString(),matiere:'sciences',eleve,pourcentage:pct,noteSur:totalQuestions,noteObtenue:bonnesReponses,chapitres,chapitresTaux});
+  localStorage.setItem(kSuivi(),JSON.stringify(sessions.slice(0,200)));
   showPhase('phaseRes');
-  const cls = pct >= 80 ? 'ex' : (pct >= 60 ? 'bi' : 'ef');
-  const msg = pct >= 80 ? '🌟 Excellent !' : (pct >= 60 ? '👍 Bien joué !' : (pct >= 40 ? '💪 Courage !' : '📚 Continue.'));
-  document.getElementById('scoreGrand').className = 'score-grand ' + cls;
+  const cls=pct>=80?'ex':pct>=60?'bi':'ef';
+  const msg=pct>=80?'🌟 Excellent !':pct>=60?'👍 Bien joué !':pct>=40?'💪 Courage !':'📚 Continue.';
+  document.getElementById('scoreGrand').className='score-grand '+cls;
   document.getElementById('scoreGrand').textContent = bonnesReponses + '/' + totalQuestions;
   document.getElementById('scoreDetail').textContent = bonnesReponses + ' bonnes réponses sur ' + totalQuestions + ' (' + pct + '%)';
-  document.getElementById('msgFin').textContent = msg;
-  const faibles = Object.entries(chapitresTaux).filter(([,t]) => t < 60).map(([ch]) => ch);
-  if (faibles.length) {
-    document.getElementById('faiblesRes').innerHTML = '<div class="faibles-box"><h4>⚠ Chapitres à retravailler (< 60%)</h4><ul>' + faibles.map(f => '<li>• ' + f + '</li>').join('') + '</ul></div>';
+  document.getElementById('msgFin').textContent=msg;
+  const faibles=Object.entries(chapitresTaux).filter(([,t])=>t<60).map(([ch])=>ch);
+  if(faibles.length){
+    document.getElementById('faiblesRes').innerHTML='<div class="faibles-box"><h4>⚠ Chapitres à retravailler (< 60%)</h4><ul>'+faibles.map(f=>'<li>• '+f+'</li>').join('')+'</ul></div>';
   }
 }
-
-function showPhase(id) {
-  ['phaseSelect', 'phaseSession', 'phaseRes'].forEach(p => document.getElementById(p).className = 'phase' + (p === id ? ' active' : ''));
-}
-
+function showPhase(id){['phaseSelect','phaseSession','phaseRes'].forEach(p=>document.getElementById(p).className='phase'+(p===id?' active':''));}
 function initApp() {
-  setEleve('eleve1');
+  setEleve('wassil');
   document.getElementById('btnStart').addEventListener('click', demarrer);
   document.getElementById('btnAll').addEventListener('click', () => selectAll(true));
   document.getElementById('btnNone').addEventListener('click', () => selectAll(false));
   document.getElementById('btnFaibles').addEventListener('click', selFaibles);
   document.getElementById('btnReset').addEventListener('click', resetProg);
-  document.getElementById('btn1').addEventListener('click', () => setEleve('eleve1'));
-  document.getElementById('btn2').addEventListener('click', () => setEleve('eleve2'));
-  document.getElementById('btnNext').addEventListener('click', () => { document.getElementById('nextWrap').style.display = 'none'; affQ(); });
+  document.getElementById('btnW').addEventListener('click', () => setEleve('wassil'));
+  document.getElementById('btnN').addEventListener('click', () => setEleve('nawal'));
+  document.getElementById('btnNext').addEventListener('click', () => { document.getElementById('nextWrap').style.display='none'; affQ(); });
   document.getElementById('btnNouv').addEventListener('click', () => location.reload());
-  document.getElementById('btnSuivi').addEventListener('click', () => window.location.href = 'suivi-parent.html');
+  document.getElementById('btnSuivi').addEventListener('click', () => window.location.href='suivi-parent.html');
 }
+if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initApp); } else { initApp(); }
 
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp);
-else initApp();
 </script>
 </body>
 </html>
