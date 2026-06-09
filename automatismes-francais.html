@@ -12,9 +12,9 @@
   --s1: #111118;
   --s2: #1a1a24;
   --br: #2a2a38;
-  --acc: #4f8ef7;
-  --acc2: #e8424a;
-  --acc3: #f7f7f7;
+  --acc: #4f8ef7;       /* bleu France */
+  --acc2: #e8424a;      /* rouge France */
+  --acc3: #f7f7f7;      /* blanc */
   --teal: #5ecfb1;
   --gold: #e8c87a;
   --red: #e87a7a;
@@ -130,8 +130,6 @@ textarea.rep::placeholder{color:var(--muted);}
 .faibles-box h4{color:var(--acc2);font-size:12px;font-family:'Syne',sans-serif;margin-bottom:6px;}
 .faibles-box li{font-size:12px;color:var(--dim);padding:2px 0;}
 </style>
-<script src="monetization.js"></script>
-<script src="proxy-client.js"></script>
 </head>
 <body>
 
@@ -152,10 +150,11 @@ textarea.rep::placeholder{color:var(--muted);}
   <!-- PHASE SELECT -->
   <div class="phase active" id="phaseSelect">
 
+    <!-- ⚠️ WARNING SPACED LEARNING ⚠️ -->
     <div class="warning-box" id="warningBox">
       <span class="close-warning" onclick="document.getElementById('warningBox').style.display='none';">&times;</span>
       <strong>🧠 Mode Spaced Learning (révision circulaire)</strong>
-      <p>✅ Pour activer la <strong>répétition espacée</strong> :</p>
+      <p>✅ Pour activer la <strong>répétition espacée</strong> (révision des leçons anciennes + nouvelles) :</p>
       <p>👉 <strong>Sélectionnez TOUS les chapitres que vous avez déjà vus depuis le début de l'année</strong> (même les anciens).</p>
       <p>📌 L'ordinateur piochera automatiquement : <strong>20 cartes des chapitres choisis + 10 cartes des erreurs + 10 cartes d'autres chapitres</strong>.</p>
       <p>💡 <strong>Plus vous sélectionnez de chapitres, plus la révision est efficace !</strong></p>
@@ -219,7 +218,13 @@ textarea.rep::placeholder{color:var(--muted);}
 
 </div>
 
+<!-- DATA SOURCE UNIQUE -->
 <script>
+// ============================================================
+// DATA-FRANCAIS.JS — Source unique 260 cartes français
+// Utilisé par : flashcards-francais.html + automatismes-francais.html
+// Variable globale : CHAPITRES_FR
+// ============================================================
 const CHAPITRES_FR = {
   1: { titre: "Classes grammaticales", cartes: [
     { q: "Quelles sont les 9 classes grammaticales ?", r: "Nom, déterminant, adjectif, pronom, verbe, adverbe, préposition, conjonction, interjection." },
@@ -364,48 +369,224 @@ const CHAPITRES_FR = {
     { q: "Donnez un homonyme de 'sang'", r: "cent, sans, sent" },
     { q: "Donnez un homonyme de 'peau'", r: "pot, peau, paume" },
     { q: "Donnez un paronyme de 'collision'", r: "collusion" }
+  ]},
+  13: { titre: "Genres littéraires", cartes: [
+    { q: "Citez 4 grands genres littéraires", r: "Roman, théâtre, poésie, argumentation" },
+    { q: "Qu'est-ce qu'un roman épistolaire ?", r: "Roman composé de lettres" },
+    { q: "Qu'est-ce qu'un roman d'aventures ?", r: "Récit d'actions palpitantes" },
+    { q: "Qu'est-ce qu'un roman policier ?", r: "Enquête autour d'un crime" },
+    { q: "Qu'est-ce qu'un roman fantastique ?", r: "Hésitation entre réel et irréel" },
+    { q: "Qu'est-ce qu'une tragédie ?", r: "Pièce où les personnages subissent un destin fatal" },
+    { q: "Qu'est-ce qu'une comédie ?", r: "Pièce qui fait rire, fin heureuse" },
+    { q: "Qu'est-ce qu'un poème lyrique ?", r: "Exprime des sentiments personnels" },
+    { q: "Qu'est-ce qu'une fable ?", r: "Courte histoire avec une morale" },
+    { q: "Qu'est-ce qu'un essai ?", r: "Texte argumentatif en prose" }
+  ]},
+  14: { titre: "Mouvements littéraires", cartes: [
+    { q: "Mouvement du XVIe siècle ?", r: "Humanisme (Rabelais, Montaigne)" },
+    { q: "Mouvement du XVIIe siècle ?", r: "Classicisme (Molière, Racine, La Fontaine)" },
+    { q: "Mouvement du XVIIIe siècle ?", r: "Les Lumières (Voltaire, Rousseau, Diderot)" },
+    { q: "Mouvement du XIXe siècle", r: "Romantisme, Réalisme, Naturalisme, Symbolisme" },
+    { q: "Mouvement du XXe siècle", r: "Surréalisme, Existentialisme, Nouveau Roman" },
+    { q: "Idées de l'Humanisme", r: "Exaltation de l'homme, confiance dans la raison" },
+    { q: "Idées des Lumières", r: "Raison, liberté, tolérance, progrès" },
+    { q: "Idées du Romantisme", r: "Exaltation des sentiments, de la nature, de la mélancolie" },
+    { q: "Idées du Réalisme", r: "Représenter la réalité, sans idéalisation" },
+    { q: "Idées du Surréalisme", r: "Rêve, inconscient, automatisme (Breton)" }
+  ]},
+  15: { titre: "Registres littéraires", cartes: [
+    { q: "Registre comique", r: "Provoque le rire" },
+    { q: "Registre tragique", r: "Inspire terreur et pitié" },
+    { q: "Registre épique", r: "Célèbre des héros, des exploits" },
+    { q: "Registre lyrique", r: "Exprime des sentiments personnels" },
+    { q: "Registre satirique", r: "Critique de manière moqueuse" },
+    { q: "Registre pathétique", r: "Suscite l'émotion, la tristesse" },
+    { q: "Registre fantastique", r: "Hésitation entre réel et irréel" },
+    { q: "Registre polémique", r: "Attaque vigoureusement un adversaire" },
+    { q: "Registre didactique", r: "Instruit, transmet un savoir" },
+    { q: "Registre élégiaque", r: "Exprime la plainte, la tristesse" }
+  ]},
+  16: { titre: "Le récit", cartes: [
+    { q: "Étapes du schéma narratif", r: "SI -> perturbateur -> péripéties -> résolution -> SF" },
+    { q: "Qu'est-ce que l'élément perturbateur ?", r: "Événement qui déclenche l'histoire" },
+    { q: "Qu'est-ce que les péripéties ?", r: "Aventures, rebondissements" },
+    { q: "Qu'est-ce que la résolution ?", r: "Moment où le problème se résout" },
+    { q: "Qu'est-ce que la situation finale ?", r: "Situation après l'histoire" },
+    { q: "Narrateur omniscient", r: "Sait tout des personnages" },
+    { q: "Narrateur externe", r: "Ne décrit que les actions (caméra)" },
+    { q: "Narrateur interne", r: "Raconte à la 1ère personne" },
+    { q: "Qu'est-ce qu'une analepse ?", r: "Retour en arrière (flashback)" },
+    { q: "Qu'est-ce qu'une prolepse ?", r: "Anticipation (flashforward)" }
+  ]},
+  17: { titre: "La rédaction", cartes: [
+    { q: "Structure d'une introduction", r: "Amorce, présentation, problématique, annonce du plan" },
+    { q: "Qu'est-ce qu'une amorce ?", r: "Phrase d'accroche pour capter l'attention" },
+    { q: "Qu'est-ce que la problématique ?", r: "Question centrale du devoir" },
+    { q: "Connecteurs de cause", r: "car, parce que, puisque" },
+    { q: "Connecteurs de conséquence", r: "donc, ainsi, par conséquent" },
+    { q: "Connecteurs d'opposition", r: "mais, cependant, pourtant" },
+    { q: "Connecteurs d'addition", r: "et, de plus, en outre, également" },
+    { q: "Connecteurs d'illustration", r: "par exemple, comme, notamment" },
+    { q: "Structure de la conclusion", r: "Bilan, réponse à la problématique, ouverture" },
+    { q: "Qu'est-ce qu'une ouverture ?", r: "Élargir le sujet vers une question plus large" }
+  ]},
+  18: { titre: "Contraction de texte", cartes: [
+    { q: "Règle d'or de la contraction", r: "Ne pas commenter, ne pas juger" },
+    { q: "À combien réduire un texte ?", r: "Au 1/3 environ" },
+    { q: "Comment compter les mots ?", r: "Chaque mot compte" },
+    { q: "Que conserver dans une contraction ?", r: "Les idées essentielles, la thèse, l'ordre logique" },
+    { q: "Que supprimer dans une contraction ?", r: "Les exemples trop détaillés, les répétitions" },
+    { q: "Peut-on ajouter des mots ?", r: "Non, seulement reformuler" },
+    { q: "Peut-on changer l'ordre des idées ?", r: "Non, respecter l'ordre de l'auteur" },
+    { q: "Doit-on citer l'auteur ?", r: "Oui, en introduction" },
+    { q: "Le titre compte-t-il ?", r: "Non" },
+    { q: "Comment noter une contraction ?", r: "Sur 10 points (fond 6, forme 4)" }
+  ]},
+  19: { titre: "Commentaire composé", cartes: [
+    { q: "Structure du commentaire", r: "Introduction, développement (2-3 axes), conclusion" },
+    { q: "Que ne faut-il pas faire ?", r: "Ne pas résumer le texte" },
+    { q: "Comment justifier son analyse ?", r: "Citer, nommer le procédé, expliquer l'effet" },
+    { q: "Que contient la conclusion ?", r: "Bilan, réponse à la problématique, ouverture" },
+    { q: "Comment nommer les procédés ?", r: "Comparaison, métaphore, champ lexical, etc." },
+    { q: "Qu'est-ce qu'un axe de lecture ?", r: "Grande partie du commentaire" },
+    { q: "Combien d'axes ?", r: "2 ou 3 axes" },
+    { q: "Comment rédiger une transition ?", r: "Entre deux axes, phrase de liaison" },
+    { q: "Faut-il une accroche ?", r: "Oui, en introduction" },
+    { q: "Différence commentaire/contraction ?", r: "Commentaire = analyse ; Contraction = résumé" }
+  ]},
+  20: { titre: "Oral : présentation", cartes: [
+    { q: "Durée de l'oral du brevet", r: "5 min exposé + 10 min échange" },
+    { q: "Peut-on lire son texte ?", r: "Non, utiliser des notes (mots-clés)" },
+    { q: "Peut-on utiliser un PowerPoint ?", r: "Oui, mais sobre" },
+    { q: "Que faut-il préparer ?", r: "Un plan détaillé, des notes, des exemples précis" },
+    { q: "Comment gérer son stress ?", r: "Respirer, bien dormir, bien préparer" },
+    { q: "Structure de l'exposé", r: "Introduction, développement, conclusion" },
+    { q: "Que doit contenir l'introduction ?", r: "Présentation du sujet, annonce du plan" },
+    { q: "Que doit contenir le développement ?", r: "2 ou 3 parties argumentées" },
+    { q: "Que doit contenir la conclusion ?", r: "Bilan, ouverture" },
+    { q: "Peut-on avoir des notes ?", r: "Oui, mais discrètes" }
+  ]},
+  21: { titre: "Oral : expression", cartes: [
+    { q: "Posture à l'oral", r: "Debout, gestes naturels, regarder le jury" },
+    { q: "Comment bien utiliser sa voix ?", r: "Articuler, parler fort, débit calme" },
+    { q: "Comment bien articuler ?", r: "Ouvrir la bouche, parler lentement" },
+    { q: "Que faire si trou de mémoire ?", r: "Prendre une inspiration, regarder ses notes, reformuler" },
+    { q: "Comment regarder le jury ?", r: "Regarder toutes les personnes" },
+    { q: "Faut-il sourire ?", r: "Oui, cela montre sa bonne volonté" },
+    { q: "Comment gérer sa respiration ?", r: "Respirer calmement avant de parler" },
+    { q: "Comment s'habiller ?", r: "Sobre et confortable" },
+    { q: "Faut-il faire des gestes ?", r: "Oui, mais naturels et mesurés" },
+    { q: "Comment réagir face au stress ?", r: "Le considérer comme une énergie positive" }
+  ]},
+  22: { titre: "Oral : échange", cartes: [
+    { q: "Que faire si on ne sait pas ?", r: "L'admettre honnêtement" },
+    { q: "Question incomprise ?", r: "Demander une reformulation poliment" },
+    { q: "Ne pas couper la parole", r: "Attendre que le jury ait fini" },
+    { q: "Question difficile ?", r: "Prendre le temps de réfléchir, reformuler" },
+    { q: "Peut-on dire 'je ne sais pas' ?", r: "Oui, en montrant qu'on a réfléchi" },
+    { q: "Comment reformuler une question ?", r: "Si je comprends bien, vous me demandez..." },
+    { q: "Peut-on prendre des notes pendant l'échange ?", r: "Oui, rapidement" },
+    { q: "Comment argumenter ?", r: "Donner des exemples précis" },
+    { q: "Faut-il regarder le jury ?", r: "Oui, pour montrer qu'on s'adresse à eux" },
+    { q: "Comment terminer l'oral ?", r: "Merci de votre attention" }
+  ]},
+  23: { titre: "Dictée", cartes: [
+    { q: "Que vérifier en priorité ?", r: "Accords, homophones, terminaisons" },
+    { q: "Vérifier a/à", r: "Remplacer par 'avait'" },
+    { q: "Vérifier on/ont", r: "Remplacer par 'avaient'" },
+    { q: "Accords du participe passé avec être", r: "S'accorde avec le sujet" },
+    { q: "Accords du participe passé avec avoir", r: "S'accorde avec le COD si placé avant" },
+    { q: "Vérifier les homophones", r: "Remplacer par un autre mot équivalent" },
+    { q: "Vérifier les terminaisons en 'é'", r: "Remplacer par 'manger'" },
+    { q: "Vérifier les terminaisons en 'er'", r: "Remplacer par 'vendre'" },
+    { q: "Vérifier le pluriel des noms", r: "Ajouter un 's' ou 'x'" },
+    { q: "Vérifier l'accord des adjectifs", r: "Regarder le nom qu'ils qualifient" }
+  ]},
+  24: { titre: "Grammaire (analyse)", cartes: [
+    { q: "Différence nature/fonction", r: "Nature = classe grammaticale, fonction = rôle dans la phrase" },
+    { q: "Trouver le COD", r: "Poser 'quoi ?' après le verbe" },
+    { q: "Trouver le COI", r: "Poser 'à qui ?' ou 'de quoi ?'" },
+    { q: "Trouver le sujet", r: "Poser 'qui est-ce qui ?' avant le verbe" },
+    { q: "Trouver le complément circonstanciel", r: "Poser quand, où, comment, pourquoi" },
+    { q: "Nature de 'que'", r: "Conjonction de subordination ou pronom relatif" },
+    { q: "Nature de 'dont'", r: "Pronom relatif" },
+    { q: "Fonction d'un adjectif", r: "Épithète ou attribut" },
+    { q: "Fonction d'un nom", r: "Sujet, COD, COI, attribut, complément du nom" },
+    { q: "Comment justifier une fonction", r: "Poser la question adaptée" }
+  ]},
+  25: { titre: "Réécriture", cartes: [
+    { q: "Changer 'je' en 'nous'", r: "Verbe à la 1ère personne du pluriel" },
+    { q: "Changer féminin en masculin", r: "Modifier déterminants, adjectifs et participes" },
+    { q: "Changer singulier en pluriel", r: "Ajouter 's' ou 'x', adapter le verbe" },
+    { q: "Présent en imparfait", r: "Terminaisons -ais, -ais, -ait, -ions, -iez, -aient" },
+    { q: "Présent en futur", r: "Terminaisons -ai, -as, -a, -ons, -ez, -ont" },
+    { q: "Présent en passé composé", r: "Auxiliaire avoir/être au présent + participe passé" },
+    { q: "Phrase active en passive", r: "COD devient sujet, complément d'agent" },
+    { q: "Phrase passive en active", r: "Sujet devient COD, suppression du complément d'agent" },
+    { q: "Discours direct en indirect", r: "Changer les pronoms et les temps" },
+    { q: "Vérifier les accords après réécriture", r: "Relire attentivement" }
+  ]},
+  26: { titre: "Essai", cartes: [
+    { q: "Structure de l'essai", r: "Introduction, développement (thèse/antithèse), conclusion" },
+    { q: "Comment trouver des idées ?", r: "Brainstorming" },
+    { q: "Comment illustrer ses arguments ?", r: "Exemples précis (œuvres, films, expériences)" },
+    { q: "Structure d'un paragraphe argumentatif", r: "1. Idée. 2. Exemple. 3. Explication du lien" },
+    { q: "Comment conclure un essai ?", r: "Rappeler la réponse, ouvrir sur une question plus large" },
+    { q: "Que faire si on n'a pas d'idée ?", r: "Chercher des exemples concrets, penser à des œuvres étudiées" },
+    { q: "Faut-il donner son avis ?", r: "Oui, mais justifié" },
+    { q: "Faut-il des connecteurs logiques ?", r: "Oui, pour structurer" },
+    { q: "Combien de paragraphes dans le développement ?", r: "2 ou 3 paragraphes" },
+    { q: "Peut-on utiliser le 'je' ?", r: "Oui, mais avec modération" }
   ]}
 };
+
 </script>
 <script>
+// ══════════════ STATE ══════════════
 let eleve = 'eleve1';
 let session = [], idx = 0;
 let score = { ok:0, total:0, chTaux:{} };
 let timerInt = null, tps = 45*60;
 
-const kProg = () => 'auto_fr_prog_' + eleve;
-const kRat = () => 'auto_fr_rat_' + eleve;
+// ══════════════ STORAGE ══════════════
+const kProg  = () => 'auto_fr_prog_' + eleve;
+const kRat   = () => 'auto_fr_rat_' + eleve;
 const kSuivi = () => 'suivi_sessions_francais_' + eleve;
 
-function getProg() { return JSON.parse(localStorage.getItem(kProg()) || '{}'); }
-function getRat() { return JSON.parse(localStorage.getItem(kRat()) || '{}'); }
+function getProg()  { return JSON.parse(localStorage.getItem(kProg())  || '{}'); }
+function getRat()   { return JSON.parse(localStorage.getItem(kRat())   || '{}'); }
+
 function getScore(ch, q) { return getProg()[ch+'_'+q.substring(0,28)]?.score || 0; }
 function setScore(ch, q, v) {
   const p = getProg();
-  p[ch+'_'+q.substring(0,28)] = { score: Math.min(3, Math.max(0, v)), date: new Date().toISOString() };
+  p[ch+'_'+q.substring(0,28)] = { score:Math.min(3,Math.max(0,v)), date:new Date().toISOString() };
   localStorage.setItem(kProg(), JSON.stringify(p));
 }
 
 function getFaibles() {
-  const sessions = JSON.parse(localStorage.getItem(kSuivi()) || '[]').slice(0,5);
+  const sessions = JSON.parse(localStorage.getItem(kSuivi())||'[]').slice(0,5);
   const taux = {};
   sessions.forEach(s => {
-    if (s.chapitresTaux) Object.entries(s.chapitresTaux).forEach(([ch, t]) => {
+    if (s.chapitresTaux) Object.entries(s.chapitresTaux).forEach(([ch,t]) => {
       if (!taux[ch]) taux[ch] = [];
       taux[ch].push(t);
     });
   });
-  return Object.entries(taux).filter(([,v]) => v.reduce((a,b)=>a+b,0)/v.length < 60).map(([ch]) => parseInt(ch));
+  return Object.entries(taux)
+    .filter(([,v]) => v.reduce((a,b)=>a+b,0)/v.length < 60)
+    .map(([ch]) => parseInt(ch));
 }
 
+// ══════════════ ELEVE ══════════════
 function setEleve(e) {
   eleve = e;
-  document.getElementById('btn1').className = 'eleve-btn' + (e === 'eleve1' ? ' e1' : '');
-  document.getElementById('btn2').className = 'eleve-btn' + (e === 'eleve2' ? ' e2' : '');
+  document.getElementById('btn1').className = 'eleve-btn' + (e==='eleve1'?' e1':'');
+  document.getElementById('btn2').className = 'eleve-btn' + (e==='eleve2'?' e2':'');
   buildGrid();
   updateStats();
 }
 
+// ══════════════ GRILLE ══════════════
 function buildGrid() {
   const faibles = getFaibles();
   const g = document.getElementById('chapGrid');
@@ -413,172 +594,258 @@ function buildGrid() {
   Object.entries(CHAPITRES_FR).forEach(([n, ch]) => {
     const isFaible = faibles.includes(parseInt(n));
     const d = document.createElement('div');
-    d.className = 'ch-item' + (isFaible ? ' faible' : '');
-    d.id = 'ci' + n;
+    d.className = 'ch-item' + (isFaible?' faible':'');
+    d.id = 'ci'+n;
     d.onclick = () => { d.classList.toggle('selected'); updateStats(); };
-    d.innerHTML = '<span class="ch-num">'+n+'</span><span style="font-size:12px">'+ch.titre+'</span>' + (isFaible ? '<span class="ch-warn">⚠</span>' : '');
+    d.innerHTML = '<span class="ch-num">'+n+'</span><span style="font-size:12px">'+ch.titre+'</span>'+(isFaible?'<span class="ch-warn">⚠</span>':'');
     g.appendChild(d);
   });
 }
 
 function getSel() {
-  return Array.from(document.querySelectorAll('#chapGrid .ch-item.selected')).map(el => parseInt(el.id.replace('ci', '')));
+  return Array.from(document.querySelectorAll('#chapGrid .ch-item.selected')).map(el=>parseInt(el.id.replace('ci','')));
 }
-function selectAll(v) { Object.keys(CHAPITRES_FR).forEach(n => document.getElementById('ci'+n)?.classList.toggle('selected', v)); updateStats(); }
-function selFaibles() { selectAll(false); getFaibles().forEach(n => document.getElementById('ci'+n)?.classList.add('selected')); updateStats(); }
+function selectAll(v) { Object.keys(CHAPITRES_FR).forEach(n=>document.getElementById('ci'+n)?.classList.toggle('selected',v)); updateStats(); }
+function selFaibles() { selectAll(false); getFaibles().forEach(n=>document.getElementById('ci'+n)?.classList.add('selected')); updateStats(); }
 function resetProg() { if(confirm('Reset progression ?')){ localStorage.removeItem(kProg()); localStorage.removeItem(kRat()); updateStats(); } }
 
 function updateStats() {
   const sel = getSel();
-  const toutes = sel.flatMap(n => (CHAPITRES_FR[n]?.cartes || []).map(c => ({...c, ch: n})));
-  const mait = toutes.filter(c => getScore(c.ch, c.q) >= 3).length;
-  const pct = toutes.length ? Math.round(mait / toutes.length * 100) : 0;
+  const toutes = sel.flatMap(n=>(CHAPITRES_FR[n]?.cartes||[]).map(c=>({...c,ch:n})));
+  const mait = toutes.filter(c=>getScore(c.ch,c.q)>=3).length;
+  const pct = toutes.length ? Math.round(mait/toutes.length*100) : 0;
   document.getElementById('stCartes').textContent = toutes.length;
   document.getElementById('stMait').textContent = mait;
-  document.getElementById('stPct').textContent = pct + '%';
-  document.getElementById('btnStart').disabled = toutes.length === 0;
-  document.getElementById('stRegle').textContent = toutes.length <= 40 ? toutes.length + ' (toutes)' : '20-10-10';
+  document.getElementById('stPct').textContent = pct+'%';
+  document.getElementById('btnStart').disabled = toutes.length===0;
+  const nb = toutes.length<=40 ? toutes.length : 40;
+  document.getElementById('stRegle').textContent = toutes.length<=40 ? nb+' (toutes)' : '20-10-10';
 }
 
+// ══════════════ GÉNÉRATION 20-10-10 ══════════════
 function melanger(a) { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
 
 function genSession() {
   const sel = getSel();
-  const principal = sel.flatMap(n => (CHAPITRES_FR[n]?.cartes || []).map(c => ({...c, ch: n, type: 'principal'})));
+  const principal = sel.flatMap(n=>(CHAPITRES_FR[n]?.cartes||[]).map(c=>({...c,ch:n,type:'principal'})));
   const dedup = arr => { const ids=new Set(); return arr.filter(c=>{if(ids.has(c.q))return false;ids.add(c.q);return true;}); };
-  if (principal.length <= 40) return melanger(dedup(principal));
-  const nouv = principal.filter(c => getScore(c.ch, c.q) === 0);
-  const enCours = principal.filter(c => getScore(c.ch, c.q) > 0 && getScore(c.ch, c.q) < 3);
-  const mait = principal.filter(c => getScore(c.ch, c.q) >= 3);
-  const vingt = melanger(dedup([...nouv, ...enCours, ...mait])).slice(0,20);
+
+  if (principal.length<=40) return melanger(dedup(principal));
+
+  // Bloc 1 : 20 cartes chapitres choisis
+  const nouv = principal.filter(c=>getScore(c.ch,c.q)===0);
+  const enCours = principal.filter(c=>getScore(c.ch,c.q)>0&&getScore(c.ch,c.q)<3);
+  const mait = principal.filter(c=>getScore(c.ch,c.q)>=3);
+  const vingt = melanger(dedup([...nouv,...enCours,...mait])).slice(0,20);
+
+  // Bloc 2 : 10 cartes ratées (spaced repetition)
   const rat = getRat();
-  let dixRat = Object.entries(rat).filter(([,d])=>d.count>=1).sort((a,b)=>b[1].count-a[1].count).slice(0,10).map(([,d])=>({...d.carte, type:'ratee'}));
-  if (dixRat.length < 10) {
-    const deja = new Set([...vingt, ...dixRat].map(c => c.q));
-    dixRat = [...dixRat, ...melanger([...enCours, ...nouv]).filter(c => !deja.has(c.q)).slice(0, 10 - dixRat.length).map(c => ({...c, type:'ratee'}))];
+  let dixRat = Object.entries(rat)
+    .filter(([,d])=>d.count>=1).sort((a,b)=>b[1].count-a[1].count).slice(0,10)
+    .map(([,d])=>({...d.carte,type:'ratee'}));
+  if (dixRat.length<10) {
+    const deja = new Set([...vingt,...dixRat].map(c=>c.q));
+    dixRat = [...dixRat,...melanger([...enCours,...nouv]).filter(c=>!deja.has(c.q)).slice(0,10-dixRat.length).map(c=>({...c,type:'ratee'}))];
   }
-  const autres = Object.entries(CHAPITRES_FR).filter(([n]) => !sel.includes(parseInt(n))).flatMap(([n,ch]) => ch.cartes.map(c => ({...c, ch: parseInt(n), type:'revision'})));
+
+  // Bloc 3 : 10 cartes révision autres chapitres
+  const autres = Object.entries(CHAPITRES_FR)
+    .filter(([n])=>!sel.includes(parseInt(n)))
+    .flatMap(([n,ch])=>ch.cartes.map(c=>({...c,ch:parseInt(n),type:'revision'})));
   let dixRev = melanger([...autres]).slice(0,10);
-  if (dixRev.length < 10) {
-    const deja = new Set([...vingt, ...dixRat].map(c => c.q));
-    dixRev = [...dixRev, ...melanger([...principal]).filter(c => !deja.has(c.q)).slice(0, 10 - dixRev.length).map(c => ({...c, type:'revision'}))];
+  if (dixRev.length<10) {
+    const deja = new Set([...vingt,...dixRat].map(c=>c.q));
+    dixRev = [...dixRev,...melanger([...principal]).filter(c=>!deja.has(c.q)).slice(0,10-dixRev.length).map(c=>({...c,type:'revision'}))];
   }
-  return melanger(dedup([...vingt, ...dixRat, ...dixRev])).slice(0,40);
+
+  return melanger(dedup([...vingt,...dixRat,...dixRev])).slice(0,40);
 }
 
+// ══════════════ ÉVALUATION — NIVEAU MOYEN (seuil 50%) ══════════════
 function evaluer(rep, att) {
   if (!rep || rep.length < 2) return { ok: false, t: 0, m: 'Écris une réponse.' };
+  
   const r = rep.toLowerCase().trim();
   const a = att.toLowerCase();
+  
   if (r === a) return { ok: true, t: 100, m: 'Parfait !' };
+  
+  // MOYEN : mots de PLUS de 4 lettres
   const mA = a.split(/[\s,;.()+->]+/).filter(m => m.length > 4);
   const mR = r.split(/[\s,;.()+->]+/).filter(m => m.length > 4);
+  
   let ok = 0;
-  mA.forEach(ma => { if (mR.some(mr => mr.includes(ma.slice(0,4)) || ma.includes(mr.slice(0,4)))) ok++; });
+  mA.forEach(ma => {
+    if (mR.some(mr => mr.includes(ma.slice(0, 4)) || ma.includes(mr.slice(0, 4)))) ok++;
+  });
+  
   let t = mA.length ? Math.round(ok / mA.length * 100) : 50;
+  
+  // Bonus réduit (+10 au lieu de +20), condition plus stricte
   if (mR.length <= 4 && t >= 45) t = Math.min(100, t + 10);
-  const cles = mA.slice(0,3).filter(m => mR.some(mr => mr.includes(m.slice(0,4))));
+  
+  const cles = mA.slice(0, 3).filter(m => 
+    mR.some(mr => mr.includes(m.slice(0, 4)))
+  );
   if (cles.length >= 2) t = Math.min(100, t + 5);
-  const motsTrouves = mA.filter(m => mR.some(mr => mr.includes(m.slice(0,4)))).length;
-  if (motsTrouves < mA.length / 2) return { ok: false, t: Math.min(t, 50), m: 'Il manque des éléments essentiels.' };
-  if (t >= 50) return { ok: true, t, m: t >= 80 ? 'Parfait !' : (t >= 70 ? 'Bien !' : 'Presque !') };
+  
+  // Exiger au moins 50% des mots-clés
+  const motsTrouves = mA.filter(m => 
+    mR.some(mr => mr.includes(m.slice(0, 4)))
+  ).length;
+  
+  if (motsTrouves < mA.length / 2) {
+    return { ok: false, t: Math.min(t, 50), m: 'Il manque des éléments essentiels.' };
+  }
+  
+  // SEUIL À 50% (au lieu de 55 ou 65)
+  if (t >= 50) {
+    return { ok: true, t, m: t >= 80 ? 'Parfait !' : (t >= 70 ? 'Bien !' : 'Presque !') };
+  }
+  
   return { ok: false, t, m: 'À retravailler.' };
 }
 
+// ══════════════ SESSION ══════════════
 function demarrer() {
   try {
     session = genSession();
     if (!session.length) { alert('Aucune carte disponible.'); return; }
-    idx = 0; score = { ok:0, total:0, chTaux:{} };
-    tps = 45*60;
+    idx=0; score={ok:0,total:0,chTaux:{}};
+    tps=45*60;
     showPhase('phaseSession');
     startTimer();
     affQ();
-  } catch(e) { alert('Erreur: ' + e.message); }
+  } catch(e) {
+    alert('Erreur démarrage: ' + e.message);
+    console.error(e);
+  }
 }
 
 function affQ() {
-  if (idx >= session.length) { fin(); return; }
-  const c = session[idx];
-  document.getElementById('progFill').style.width = Math.round(idx/session.length*100) + '%';
-  document.getElementById('qCount').textContent = 'Q ' + (idx+1) + '/' + session.length;
-  const tLabel = c.type === 'ratee' ? '🔴 À retravailler' : (c.type === 'revision' ? '🔵 Révision' : '🟢 Chapitre choisi');
-  const tCls = c.type === 'ratee' ? 'tp-r' : (c.type === 'revision' ? 'tp-n' : 'tp-p');
-  document.getElementById('qArea').innerHTML = '<div class="q-card"><div class="q-meta"><span class="q-badge ch">' + (CHAPITRES_FR[c.ch]?.titre || '') + '</span><span class="q-badge ' + tCls + '">' + tLabel + '</span><span class="q-badge ch">Niveau ' + getScore(c.ch, c.q) + '/3</span></div><div class="q-text">' + c.q + '</div><textarea class="rep" id="repIn" placeholder="Ta réponse..." rows="3"></textarea><div class="q-btns"><button class="btn-verif" onclick="verif()">✔ Vérifier</button></div></div>';
-  document.getElementById('fbArea').innerHTML = '';
-  document.getElementById('nextWrap').style.display = 'none';
-  setTimeout(() => document.getElementById('repIn')?.focus(), 80);
-  document.getElementById('repIn').addEventListener('keydown', e => { if(e.key === 'Enter' && e.ctrlKey) verif(); });
+  if (idx>=session.length){fin();return;}
+  const c=session[idx];
+  const pct=Math.round(idx/session.length*100);
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('qCount').textContent='Q '+(idx+1)+'/'+session.length;
+  const tLabel=c.type==='ratee'?'🔴 À retravailler':c.type==='revision'?'🔵 Révision':'🟢 Chapitre choisi';
+  const tCls=c.type==='ratee'?'tp-r':c.type==='revision'?'tp-n':'tp-p';
+  document.getElementById('qArea').innerHTML =
+    '<div class="q-card">'
+    +'<div class="q-meta"><span class="q-badge ch">'+(CHAPITRES_FR[c.ch]?.titre||'')+'</span>'
+    +'<span class="q-badge '+tCls+'">'+tLabel+'</span>'
+    +'<span class="q-badge ch">Niveau '+getScore(c.ch,c.q)+'/3</span></div>'
+    +'<div class="q-text">'+c.q+'</div>'
+    +'<textarea class="rep" id="repIn" placeholder="Ta réponse..." rows="3"></textarea>'
+    +'<div class="q-btns"><button class="btn-verif" onclick="verif()">✔ Vérifier</button></div>'
+    +'</div>';
+  document.getElementById('fbArea').innerHTML='';
+  document.getElementById('nextWrap').style.display='none';
+  setTimeout(()=>document.getElementById('repIn')?.focus(),80);
+  document.getElementById('repIn').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.ctrlKey)verif();});
 }
 
 function verif() {
-  const rep = document.getElementById('repIn')?.value.trim();
-  if (!rep) { alert('Écris une réponse.'); return; }
-  const c = session[idx];
-  const ev = evaluer(rep, c.r);
-  if (ev.ok) score.ok++;
+  const rep=document.getElementById('repIn')?.value.trim();
+  if(!rep){alert('Écris une réponse.');return;}
+  const c=session[idx];
+  const ev=evaluer(rep,c.r);
+  if(ev.ok) score.ok++;
   score.total++;
-  if (!score.chTaux[c.ch]) score.chTaux[c.ch] = { ok:0, t:0 };
+  if(!score.chTaux[c.ch]) score.chTaux[c.ch]={ok:0,t:0};
   score.chTaux[c.ch].t++;
-  if (ev.ok) score.chTaux[c.ch].ok++;
-  let s = getScore(c.ch, c.q);
-  s = ev.ok ? Math.min(s+1,3) : Math.max(0,s-1);
-  setScore(c.ch, c.q, s);
-  const rat = getRat();
-  const id = c.q.slice(0,40);
-  if (!ev.ok) { rat[id] = { count: (rat[id]?.count||0)+1, carte: c }; }
-  else if (rat[id]) { rat[id].count = Math.max(0, (rat[id].count||1)-1); if (!rat[id].count) delete rat[id]; }
-  localStorage.setItem(kRat(), JSON.stringify(rat));
-  const cls = ev.t >= 65 ? 'fb-ok' : (ev.t >= 40 ? 'fb-mid' : 'fb-bad');
-  const ico = ev.t >= 65 ? '✅' : (ev.t >= 40 ? '⚠️' : '❌');
-  document.getElementById('fbArea').innerHTML = '<div class="feedback show"><div class="' + cls + '">' + ico + ' ' + ev.m + ' — ' + ev.t + '%</div><div class="fb-rep"><strong>📖 Réponse attendue</strong>' + c.r + '</div></div>';
+  if(ev.ok) score.chTaux[c.ch].ok++;
+
+  // Progression carte
+  let s=getScore(c.ch,c.q);
+  s=ev.ok?Math.min(s+1,3):Math.max(0,s-1);
+  setScore(c.ch,c.q,s);
+
+  // Spaced repetition
+  const rat=getRat();
+  const id=c.q.slice(0,40);
+  if(!ev.ok){rat[id]={count:(rat[id]?.count||0)+1,carte:c};}
+  else if(rat[id]){rat[id].count=Math.max(0,(rat[id].count||1)-1);if(!rat[id].count)delete rat[id];}
+  localStorage.setItem(kRat(),JSON.stringify(rat));
+
+  const cls=ev.t>=65?'fb-ok':ev.t>=40?'fb-mid':'fb-bad';
+  const ico=ev.t>=65?'✅':ev.t>=40?'⚠️':'❌';
+  document.getElementById('fbArea').innerHTML=
+    '<div class="feedback show">'
+    +'<div class="'+cls+'">'+ico+' '+ev.m+' — '+ev.t+'%</div>'
+    +'<div class="fb-rep"><strong>📖 Réponse attendue</strong>'+c.r+'</div>'
+    +'</div>';
   idx++;
-  document.getElementById('nextWrap').style.display = 'block';
-  const bv = document.querySelector('#qArea .btn-verif');
-  if (bv) bv.disabled = true;
+  document.getElementById('nextWrap').style.display='block';
+  const bv=document.querySelector('#qArea .btn-verif');
+  if(bv)bv.disabled=true;
 }
 
-function suivante() { document.getElementById('nextWrap').style.display = 'none'; affQ(); }
+function suivante(){document.getElementById('nextWrap').style.display='none';affQ();}
 
-function startTimer() {
+// ══════════════ TIMER ══════════════
+function startTimer(){
   clearInterval(timerInt);
-  timerInt = setInterval(() => {
-    if (tps <= 0) { clearInterval(timerInt); fin(); return; }
+  timerInt=setInterval(()=>{
+    if(tps<=0){clearInterval(timerInt);fin();return;}
     tps--;
-    const m = Math.floor(tps/60), s = tps%60;
-    const el = document.getElementById('timerVal');
-    if (el) { el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0'); el.className = 'timer-val' + (tps < 300 ? ' urgent' : ''); }
-  }, 1000);
+    const m=Math.floor(tps/60),s=tps%60;
+    const el=document.getElementById('timerVal');
+    if(el){el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');el.className='timer-val'+(tps<300?' urgent':'');}
+  },1000);
 }
 
-function fin() {
+// ══════════════ FIN + SUIVI PARENTAL ══════════════
+function fin(){
   clearInterval(timerInt);
   const totalQuestions = score.total;
   const bonnesReponses = score.ok;
   const pct = totalQuestions ? Math.round(bonnesReponses / totalQuestions * 100) : 0;
-  const chapitres = getSel().map(n => CHAPITRES_FR[n]?.titre).filter(Boolean);
-  const chapitresTaux = {};
-  Object.entries(score.chTaux).forEach(([ch,d]) => { chapitresTaux[CHAPITRES_FR[ch]?.titre || 'Ch'+ch] = Math.round(d.ok/d.t*100); });
-  const sessions = JSON.parse(localStorage.getItem(kSuivi()) || '[]');
-  sessions.unshift({ id: Date.now(), date: new Date().toISOString(), matiere: 'francais', eleve, pourcentage: pct, noteSur: totalQuestions, noteObtenue: bonnesReponses, chapitres, chapitresTaux });
-  localStorage.setItem(kSuivi(), JSON.stringify(sessions.slice(0,200)));
+  const chapitres=getSel().map(n=>CHAPITRES_FR[n]?.titre).filter(Boolean);
+
+  // chapitresTaux : titre -> pourcentage (pour suivi-parent)
+  const chapitresTaux={};
+  Object.entries(score.chTaux).forEach(([ch,d])=>{
+    chapitresTaux[CHAPITRES_FR[ch]?.titre||'Ch'+ch]=Math.round(d.ok/d.t*100);
+  });
+
+  // Sauvegarder pour suivi-parent.html
+  const sessions=JSON.parse(localStorage.getItem(kSuivi())||'[]');
+  sessions.unshift({
+    id:Date.now(),
+    date:new Date().toISOString(),
+    matiere:'francais',
+    eleve,
+    pourcentage:pct,
+    noteSur: totalQuestions,
+    noteObtenue: bonnesReponses,
+    chapitres,
+    chapitresTaux
+  });
+  localStorage.setItem(kSuivi(),JSON.stringify(sessions.slice(0,200)));
+
   showPhase('phaseRes');
-  const cls = pct >= 80 ? 'ex' : (pct >= 60 ? 'bi' : 'ef');
-  const msg = pct >= 80 ? '🌟 Excellent !' : (pct >= 60 ? '👍 Bien joué !' : (pct >= 40 ? '💪 Courage !' : '📚 Continue.'));
-  document.getElementById('scoreGrand').className = 'score-grand ' + cls;
+  const cls=pct>=80?'ex':pct>=60?'bi':'ef';
+  const msg=pct>=80?'🌟 Excellent !':pct>=60?'👍 Bien joué !':pct>=40?'💪 Courage !':'📚 Continue.';
+  document.getElementById('scoreGrand').className='score-grand '+cls;
+  // Affichage de la note sur le nombre total de questions
   document.getElementById('scoreGrand').textContent = bonnesReponses + '/' + totalQuestions;
   document.getElementById('scoreDetail').textContent = bonnesReponses + ' bonnes réponses sur ' + totalQuestions + ' (' + pct + '%)';
-  document.getElementById('msgFin').textContent = msg;
-  const faibles = Object.entries(chapitresTaux).filter(([,t]) => t < 60).map(([ch]) => ch);
-  if (faibles.length) {
-    document.getElementById('faiblesRes').innerHTML = '<div class="faibles-box"><h4>⚠ Chapitres à retravailler (< 60%)</h4><ul>' + faibles.map(f => '<li>• ' + f + '</li>').join('') + '</ul></div>';
+  document.getElementById('msgFin').textContent=msg;
+
+  const faibles=Object.entries(chapitresTaux).filter(([,t])=>t<60).map(([ch])=>ch);
+  if(faibles.length){
+    document.getElementById('faiblesRes').innerHTML=
+      '<div class="faibles-box"><h4>⚠ Chapitres à retravailler (< 60%)</h4><ul>'
+      +faibles.map(f=>'<li>• '+f+'</li>').join('')+'</ul></div>';
   }
 }
 
-function showPhase(id) {
-  ['phaseSelect', 'phaseSession', 'phaseRes'].forEach(p => document.getElementById(p).className = 'phase' + (p === id ? ' active' : ''));
+function showPhase(id){
+  ['phaseSelect','phaseSession','phaseRes'].forEach(p=>document.getElementById(p).className='phase'+(p===id?' active':''));
 }
 
+// INIT
 function initApp() {
   setEleve('eleve1');
   document.getElementById('btnStart').addEventListener('click', demarrer);
@@ -590,8 +857,11 @@ function initApp() {
   document.getElementById('btn2').addEventListener('click', () => setEleve('eleve2'));
 }
 
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp);
-else initApp();
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp);
+} else {
+  initApp();
+}
 </script>
 </body>
 </html>

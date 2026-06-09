@@ -90,8 +90,6 @@ textarea.rep::placeholder{color:var(--muted);}
 .ptab{padding:5px 14px;border-radius:20px;border:1px solid var(--br);background:var(--s2);color:var(--dim);font-size:11px;cursor:pointer;font-family:'Syne',sans-serif;}
 .ptab.active{border-color:var(--acc);color:var(--acc);}
 </style>
-<script src="monetization.js"></script>
-<script src="proxy-client.js"></script>
 </head>
 <body>
 <div class="page-header">
@@ -100,8 +98,8 @@ textarea.rep::placeholder{color:var(--muted);}
     <div class="page-title"><span>Automatismes</span> Mathématiques</div>
     <span style="font-size:1.5rem">📐</span>
     <div class="eleve-bar">
-      <button class="eleve-btn aw" id="btnW">⭐ Élève 1</button>
-      <button class="eleve-btn" id="btnN">⭐ Élève 2</button>
+      <button class="eleve-btn aw" id="btnW">🌊 Wassil</button>
+      <button class="eleve-btn" id="btnN">⚡ Nawal</button>
     </div>
   </div>
 </div>
@@ -199,7 +197,7 @@ var CHAPITRES_MA = {
 </script>
 <script>
 
-let eleve = 'eleve1';
+let eleve = 'wassil';
 let session = [], idx = 0;
 let score = { ok:0, total:0, chTaux:{} };
 let timerInt = null, tps = 45*60;
@@ -229,8 +227,8 @@ function getFaibles() {
 }
 function setEleve(e) {
   eleve = e;
-  document.getElementById('btnW').className = 'eleve-btn' + (e==='eleve1'?' aw':'');
-  document.getElementById('btnN').className = 'eleve-btn' + (e==='eleve2'?' an':'');
+  document.getElementById('btnW').className = 'eleve-btn' + (e==='wassil'?' aw':'');
+  document.getElementById('btnN').className = 'eleve-btn' + (e==='nawal'?' an':'');
   buildGrid(); updateStats();
 }
 function buildGrid() {
@@ -497,14 +495,14 @@ function fin(){
 }
 function showPhase(id){['phaseSelect','phaseSession','phaseRes'].forEach(p=>document.getElementById(p).className='phase'+(p===id?' active':''));}
 function initApp() {
-  setEleve('eleve1');
+  setEleve('wassil');
   document.getElementById('btnStart').addEventListener('click', demarrer);
   document.getElementById('btnAll').addEventListener('click', () => selectAll(true));
   document.getElementById('btnNone').addEventListener('click', () => selectAll(false));
   document.getElementById('btnFaibles').addEventListener('click', selFaibles);
   document.getElementById('btnReset').addEventListener('click', resetProg);
-  document.getElementById('btnW').addEventListener('click', () => setEleve('eleve1'));
-  document.getElementById('btnN').addEventListener('click', () => setEleve('eleve2'));
+  document.getElementById('btnW').addEventListener('click', () => setEleve('wassil'));
+  document.getElementById('btnN').addEventListener('click', () => setEleve('nawal'));
   document.getElementById('btnNext').addEventListener('click', () => { document.getElementById('nextWrap').style.display='none'; affQ(); });
   document.getElementById('btnNouv').addEventListener('click', () => location.reload());
   document.getElementById('btnSuivi').addEventListener('click', () => window.location.href='suivi-parent.html');
