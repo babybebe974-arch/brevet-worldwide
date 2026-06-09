@@ -87,6 +87,8 @@ textarea.rep::placeholder{color:var(--muted);}
 .faibles-box h4{color:var(--red);font-size:12px;font-family:'Syne',sans-serif;margin-bottom:6px;}
 .faibles-box li{font-size:12px;color:var(--dim);padding:2px 0;}
 </style>
+<script src="monetization.js"></script>
+<script src="proxy-client.js"></script>
 </head>
 <body>
 <div class="page-header">
@@ -94,8 +96,8 @@ textarea.rep::placeholder{color:var(--muted);}
     <a href="index.html" class="page-back">← Hub</a>
     <div class="page-title"><span>Automatismes</span> Sciences 🔬</div>
     <div class="eleve-bar">
-      <button class="eleve-btn aw" id="btnW">🌊 Wassil</button>
-      <button class="eleve-btn" id="btnN">⚡ Nawal</button>
+      <button class="eleve-btn aw" id="btnW">🌊 Élève 1</button>
+      <button class="eleve-btn" id="btnN">⚡ Élève 2</button>
     </div>
   </div>
 </div>
@@ -510,7 +512,7 @@ console.log("Chapitres Sciences chargés :", Object.keys(CHAPITRES_SC).length);
 </script>
 <script>
 
-let eleve = 'wassil';
+let eleve = 'eleve1';
 let session = [], idx = 0;
 let score = { ok:0, total:0, chTaux:{} };
 let timerInt = null, tps = 45*60;
@@ -540,8 +542,8 @@ function getFaibles() {
 }
 function setEleve(e) {
   eleve = e;
-  document.getElementById('btnW').className = 'eleve-btn' + (e==='wassil'?' aw':'');
-  document.getElementById('btnN').className = 'eleve-btn' + (e==='nawal'?' an':'');
+  document.getElementById('btnW').className = 'eleve-btn' + (e==='eleve1'?' aw':'');
+  document.getElementById('btnN').className = 'eleve-btn' + (e==='eleve2'?' an':'');
   buildGrid(); updateStats();
 }
 function buildGrid() {
@@ -721,14 +723,14 @@ function fin(){
 }
 function showPhase(id){['phaseSelect','phaseSession','phaseRes'].forEach(p=>document.getElementById(p).className='phase'+(p===id?' active':''));}
 function initApp() {
-  setEleve('wassil');
+  setEleve('eleve1');
   document.getElementById('btnStart').addEventListener('click', demarrer);
   document.getElementById('btnAll').addEventListener('click', () => selectAll(true));
   document.getElementById('btnNone').addEventListener('click', () => selectAll(false));
   document.getElementById('btnFaibles').addEventListener('click', selFaibles);
   document.getElementById('btnReset').addEventListener('click', resetProg);
-  document.getElementById('btnW').addEventListener('click', () => setEleve('wassil'));
-  document.getElementById('btnN').addEventListener('click', () => setEleve('nawal'));
+  document.getElementById('btnW').addEventListener('click', () => setEleve('eleve1'));
+  document.getElementById('btnN').addEventListener('click', () => setEleve('eleve2'));
   document.getElementById('btnNext').addEventListener('click', () => { document.getElementById('nextWrap').style.display='none'; affQ(); });
   document.getElementById('btnNouv').addEventListener('click', () => location.reload());
   document.getElementById('btnSuivi').addEventListener('click', () => window.location.href='suivi-parent.html');
