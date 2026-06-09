@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suivi Parental — Brevet 2026</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#09090f;color:#e8e8f0;font-family:Arial,sans-serif;padding:1rem;}
+.box{max-width:1000px;margin:0 auto;}
+
+.header{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.header h1{font-size:1.4rem;color:#e8c87a;}
+.header p{font-size:12px;color:#9090a8;margin-top:3px;}
+a.back{color:#5ecfb1;text-decoration:none;font-size:13px;}
+
+/* ONGLETS ELEVE */
+.eleve-tabs{display:flex;gap:8px;margin-bottom:1.5rem;}
+.etab{padding:10px 32px;border-radius:50px;border:2px solid #2a2a38;cursor:pointer;font-weight:700;font-size:14px;background:#111118;color:#9090a8;}
+.etab.w{border-color:#7eb8f5;color:#09090f;background:#7eb8f5;}
+.etab.n{border-color:#f59eb8;color:#09090f;background:#f59eb8;}
+
+/* ALERTE */
+.alerte{background:rgba(232,122,122,.15);border:2px solid #e87a7a;border-radius:10px;padding:14px 18px;margin-bottom:1.5rem;font-size:14px;color:#e87a7a;display:none;}
+
+/* NOTE GLOBALE */
+.note-globale{background:#111118;border:1px solid #2a2a38;border-radius:14px;padding:1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+.note-cercle{width:100px;height:100px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;flex-shrink:0;}
+.note-num{font-size:2rem;font-weight:800;line-height:1;}
+.note-denom{font-size:12px;color:#9090a8;}
+.note-infos{flex:1;}
+.note-titre{font-size:15px;font-weight:700;margin-bottom:6px;}
+.note-sub{font-size:13px;color:#9090a8;line-height:1.6;}
+.badge{display:inline-block;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:700;margin-top:8px;}
+
+/* CARTES MATIERES */
+.matieres-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-bottom:1.5rem;}
+.matiere-card{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.2rem;position:relative;overflow:hidden;}
+.matiere-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.mat-fr::before{background:#4f8ef7;}
+.mat-ma::before{background:#e8c87a;}
+.mat-hi::before{background:#f5a623;}
+.mat-sc::before{background:#5eaacf;}
+.mat-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.mat-nom{font-size:13px;font-weight:700;}
+.mat-note{font-size:1.6rem;font-weight:800;line-height:1;}
+.mat-note-label{font-size:10px;color:#9090a8;}
+.mat-bar-wrap{margin-bottom:8px;}
+.mat-bar{height:8px;background:#2a2a38;border-radius:4px;overflow:hidden;margin-bottom:4px;}
+.mat-fill{height:100%;border-radius:4px;}
+.mat-bar-label{display:flex;justify-content:space-between;font-size:10px;color:#9090a8;}
+.mat-sessions{font-size:11px;color:#5a5a72;margin-top:4px;}
+
+/* CHAPITRES */
+.chapitres-section{background:#111118;border:1px solid #2a2a38;border-radius:12px;margin-bottom:1.2rem;overflow:hidden;}
+.chap-head{padding:14px 18px;border-bottom:1px solid #2a2a38;display:flex;align-items:center;gap:10px;}
+.chap-head h3{font-size:13px;font-weight:700;}
+.chap-body{padding:14px 18px;}
+.chap-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+.ctab{padding:5px 14px;border-radius:20px;border:1px solid #2a2a38;background:#1a1a24;color:#9090a8;font-size:11px;cursor:pointer;}
+.ctab.active{border-color:#e8c87a;color:#e8c87a;background:rgba(232,200,122,.08);}
+.chap-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;}
+.chap-item{border-radius:8px;padding:10px 12px;border:1px solid;}
+.chap-item.faible{background:rgba(232,122,122,.08);border-color:rgba(232,122,122,.3);}
+.chap-item.fort{background:rgba(94,207,177,.08);border-color:rgba(94,207,177,.3);}
+.chap-item.moyen{background:rgba(232,200,122,.08);border-color:rgba(232,200,122,.3);}
+.chap-nom{font-size:12px;margin-bottom:4px;color:#e8e8f0;}
+.chap-note{font-size:13px;font-weight:700;}
+.chap-note.rouge{color:#e87a7a;}
+.chap-note.vert{color:#5ecfb1;}
+.chap-note.orange{color:#e8c87a;}
+
+/* SESSIONS */
+.sessions-table{width:100%;border-collapse:collapse;font-size:13px;}
+.sessions-table th{color:#9090a8;font-size:11px;font-weight:400;text-align:left;padding:8px 12px;border-bottom:1px solid #2a2a38;text-transform:uppercase;}
+.sessions-table td{padding:10px 12px;border-bottom:1px solid #1a1a24;vertical-align:top;}
+.sessions-table tr:last-child td{border-bottom:none;}
+.sessions-table tr:hover td{background:#1a1a24;}
+.score-ok{color:#5ecfb1;font-weight:700;font-size:15px;}
+.score-mid{color:#e8c87a;font-weight:700;font-size:15px;}
+.score-bad{color:#e87a7a;font-weight:700;font-size:15px;}
+.mat-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:4px;margin-bottom:3px;}
+
+.vide{text-align:center;padding:2rem;color:#5a5a72;font-size:13px;}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:1.5rem;}
+.btn{padding:8px 18px;border-radius:8px;border:1px solid #2a2a38;background:#1a1a24;color:#9090a8;font-size:12px;cursor:pointer;}
+.btn:hover{border-color:#5ecfb1;color:#5ecfb1;}
+.btn-danger{border-color:rgba(232,122,122,.4);color:#e87a7a;}
+.btn-danger:hover{background:rgba(232,122,122,.1);}
+</style>
+</head>
+<body>
+<div class="box">
+
+  <div class="header">
+    <div>
+      <h1>📊 Suivi Parental — Brevet 2026</h1>
+      <p>Note réelle sur le nombre de questions · Chapitres faibles et forts · Dernières sessions</p>
+    </div>
+    <a href="index.html" class="back">← Hub</a>
+  </div>
+
+  <div class="eleve-tabs">
+    <button class="etab w" id="tabW">🌊 Wassil</button>
+    <button class="etab" id="tabN">⚡ Nawal</button>
+  </div>
+
+  <div class="alerte" id="alerte"></div>
+
+  <!-- NOTE GLOBALE -->
+  <div class="note-globale" id="noteGlobale"></div>
+
+  <!-- CARTES PAR MATIERE -->
+  <div class="matieres-grid" id="matieresGrid"></div>
+
+  <!-- CHAPITRES FAIBLES ET FORTS -->
+  <div class="chapitres-section">
+    <div class="chap-head">
+      <span style="font-size:1.2rem">📋</span>
+      <h3>Chapitres par matière</h3>
+    </div>
+    <div class="chap-body">
+      <div class="chap-tabs" id="chapTabs"></div>
+      <div id="chapContent"></div>
+    </div>
+  </div>
+
+  <!-- SESSIONS RECENTES -->
+  <div class="chapitres-section">
+    <div class="chap-head">
+      <span style="font-size:1.2rem">🕐</span>
+      <h3>Dernières sessions</h3>
+    </div>
+    <div class="chap-body" id="sessionsBody"></div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn" id="btnRefresh">🔄 Actualiser</button>
+    <button class="btn" id="btnExport">📤 Exporter</button>
+    <button class="btn btn-danger" id="btnReset">⚠ Réinitialiser</button>
+  </div>
+
+</div>
+
+<script>
+var eleve = 'wassil';
+var chapMatiere = 'francais';
+
+var MATIERES = [
+  {id:'francais', nom:'Français',     ico:'🇫🇷', couleur:'#4f8ef7', cls:'mat-fr'},
+  {id:'maths',    nom:'Maths',        ico:'📐', couleur:'#e8c87a', cls:'mat-ma'},
+  {id:'histoire', nom:'Histoire-Géo', ico:'🌍', couleur:'#f5a623', cls:'mat-hi'},
+  {id:'sciences', nom:'Sciences',     ico:'🔬', couleur:'#5eaacf', cls:'mat-sc'}
+];
+
+// ─── Lecture localStorage avec gestion de l'ancien format (pourcentage seul) ───
+function getSessions(matiere) {
+  try { 
+    var sessions = JSON.parse(localStorage.getItem('suivi_sessions_'+matiere+'_'+eleve)||'[]');
+    // Conversion pour compatibilité avec l'ancien format (noteSur non défini)
+    return sessions.map(function(s){
+      if(s.noteSur === undefined && s.pourcentage !== undefined) {
+        // Ancien format : on simule une note sur 20 (pour compatibilité)
+        return Object.assign({}, s, {noteSur: 20, noteObtenue: Math.round(s.pourcentage * 20 / 100)});
+      }
+      return s;
+    });
+  }
+  catch(e){ return []; }
+}
+
+function getAllSessions() {
+  var all = [];
+  MATIERES.forEach(function(m){
+    getSessions(m.id).forEach(function(s){ 
+      all.push(Object.assign({}, s, {
+        matiereId: m.id, 
+        matiereNom: m.nom, 
+        matiereIco: m.ico, 
+        couleur: m.couleur
+      })); 
+    });
+  });
+  return all.sort(function(a,b){ return new Date(b.date)-new Date(a.date); });
+}
+
+// ─── Formater une note (X/Y) ───
+function formatNote(obtenue, sur) {
+  if(sur === undefined || sur === 0) return obtenue + '/?';
+  return obtenue + '/' + sur;
+}
+
+// ─── Calculer le pourcentage à partir de noteObtenue/noteSur ───
+function calculerPourcentage(session) {
+  if(session.noteSur && session.noteSur > 0) {
+    return Math.round(session.noteObtenue / session.noteSur * 100);
+  }
+  return session.pourcentage || 0;
+}
+
+// ─── Note sur 10 (pour l'affichage global) : pourcentage >= 50% = bonne réponse ───
+function pctToNote(pct) {
+  return Math.round(pct / 10);
+}
+
+function noteClass(n) {
+  return n >= 8 ? 'vert' : n >= 5 ? 'orange' : 'rouge';
+}
+
+function noteBg(n) {
+  return n >= 8 ? 'rgba(94,207,177,.15)' : n >= 5 ? 'rgba(232,200,122,.15)' : 'rgba(232,122,122,.15)';
+}
+
+function noteBorder(n) {
+  return n >= 8 ? '#5ecfb1' : n >= 5 ? '#e8c87a' : '#e87a7a';
+}
+
+function noteLibelle(n) {
+  return n >= 9 ? '🌟 Excellent' : n >= 8 ? '👍 Très bien' : n >= 6 ? '👌 Bien' : n >= 5 ? '💪 Passable' : '📚 À retravailler';
+}
+
+function fmtDate(str) {
+  try { var d=new Date(str); return d.toLocaleDateString('fr-FR',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'}); }
+  catch(e){ return str; }
+}
+
+// ─── Alerte ───
+function renderAlerte() {
+  var all = getAllSessions();
+  var el = document.getElementById('alerte');
+  if(!all.length){ el.style.display='none'; return; }
+  var diff = Math.floor((Date.now()-new Date(all[0].date))/(1000*60*60*24));
+  if(diff >= 2) {
+    el.style.display='block';
+    el.innerHTML = '⚠️ <strong>'+(eleve==='wassil'?'Wassil':'Nawal')+'</strong> n\'a pas travaillé depuis <strong>'+diff+' jours</strong>. Dernière session : '+fmtDate(all[0].date);
+  } else {
+    el.style.display='none';
+  }
+}
+
+// ─── Note globale (moyenne des pourcentages, affichée en X/Y simulé) ───
+function renderNoteGlobale() {
+  var all = getAllSessions().slice(0,10);
+  var el = document.getElementById('noteGlobale');
+  if(!all.length) {
+    el.innerHTML = '<div class="vide" style="width:100%">Aucune session enregistrée pour l\'instant.</div>';
+    return;
+  }
+  var moyPct = Math.round(all.reduce(function(a,s){return a + calculerPourcentage(s);},0)/all.length);
+  var note = pctToNote(moyPct);
+  var coulBg = noteBg(note);
+  var coulBord = noteBorder(note);
+  var libelle = noteLibelle(note);
+  var nb = getAllSessions().length;
+  var dern = all[0];
+  var diff = Math.floor((Date.now()-new Date(dern.date))/(1000*60*60*24));
+  var diffTxt = diff===0?'aujourd\'hui':diff===1?'hier':'il y a '+diff+' jours';
+  
+  // tendance
+  var t5 = all.slice(0,5).map(function(s){return calculerPourcentage(s);});
+  var tend = t5.length>=2?(t5[0]>t5[t5.length-1]?'↑ En progression':t5[0]<t5[t5.length-1]?'↓ En baisse':'→ Stable'):'—';
+  var tendCol = tend.includes('↑')?'#5ecfb1':tend.includes('↓')?'#e87a7a':'#9090a8';
+
+  el.innerHTML =
+    '<div class="note-cercle" style="background:'+coulBg+';border:3px solid '+coulBord+'">'
+    +'<div class="note-num" style="color:'+coulBord+'">'+note+'</div>'
+    +'<div class="note-denom">/10</div>'
+    +'</div>'
+    +'<div class="note-infos">'
+    +'<div class="note-titre">Note globale de '+(eleve==='wassil'?'Wassil':'Nawal')+' — moyenne des 10 dernières sessions</div>'
+    +'<div class="note-sub">'
+    +'<strong>'+moyPct+'%</strong> de bonnes réponses en moyenne<br>'
+    +'<strong>'+nb+'</strong> session'+(nb>1?'s':'')+' enregistrée'+(nb>1?'s':'')+' · Dernière : <strong>'+fmtDate(dern.date)+'</strong><br>'
+    +'<span style="color:'+tendCol+'"><strong>'+tend+'</strong></span> sur les 5 dernières sessions'
+    +'</div>'
+    +'<span class="badge" style="background:'+coulBg+';color:'+coulBord+';border:1px solid '+coulBord+'">'+libelle+'</span>'
+    +'</div>';
+}
+
+// ─── Cartes matières (avec note sur le vrai dénominateur) ───
+function renderMatieres() {
+  var html = '';
+  MATIERES.forEach(function(m){
+    var sessions = getSessions(m.id);
+    if(!sessions.length) {
+      html += '<div class="matiere-card '+m.cls+'">'
+        +'<div class="mat-head"><span class="mat-nom">'+m.ico+' '+m.nom+'</span>'
+        +'<div style="text-align:right"><div class="mat-note" style="color:#5a5a72">—</div><div class="mat-note-label">/10</div></div></div>'
+        +'<div class="mat-bar-wrap"><div class="mat-bar"><div class="mat-fill" style="width:0%;background:'+m.couleur+'"></div></div>'
+        +'<div class="mat-bar-label"><span>0%</span><span>100%</span></div></div>'
+        +'<div class="mat-sessions">0 session</div></div>';
+      return;
+    }
+    // Prendre les 5 dernières sessions pour la moyenne
+    var recentes = sessions.slice(0,5);
+    var moyPct = Math.round(recentes.reduce(function(a,s){return a + calculerPourcentage(s);},0)/recentes.length);
+    var note = pctToNote(moyPct);
+    var col = noteBorder(note);
+    
+    // Dernière session avec note réelle
+    var dern = sessions[0];
+    var dernNote = dern.noteSur ? formatNote(dern.noteObtenue, dern.noteSur) : dern.pourcentage+'%';
+    
+    html += '<div class="matiere-card '+m.cls+'">'
+      +'<div class="mat-head"><span class="mat-nom">'+m.ico+' '+m.nom+'</span>'
+      +'<div style="text-align:right"><div class="mat-note" style="color:'+col+'">'+note+'</div><div class="mat-note-label">/10 (moy)</div></div></div>'
+      +'<div class="mat-bar-wrap"><div class="mat-bar"><div class="mat-fill" style="width:'+moyPct+'%;background:'+m.couleur+'"></div></div>'
+      +'<div class="mat-bar-label"><span style="color:'+col+'">'+moyPct+'%</span><span style="color:#5a5a72">100%</span></div></div>'
+      +'<div class="mat-sessions">'+sessions.length+' session'+(sessions.length>1?'s':'')+' · Dernière : '+dernNote+' · '+noteLibelle(note)+'</div></div>';
+  });
+  document.getElementById('matieresGrid').innerHTML = html || '<div class="vide">Aucune donnée.</div>';
+}
+
+// ─── Chapitres faibles / forts ───
+function buildChapTabs() {
+  var html = '';
+  MATIERES.forEach(function(m){
+    html += '<button class="ctab'+(m.id===chapMatiere?' active':'')
+      +'" data-id="'+m.id+'">'+m.ico+' '+m.nom+'</button>';
+  });
+  document.getElementById('chapTabs').innerHTML = html;
+  document.querySelectorAll('.ctab').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      chapMatiere = this.dataset.id;
+      document.querySelectorAll('.ctab').forEach(function(b){b.classList.remove('active');});
+      this.classList.add('active');
+      renderChapitres();
+    });
+  });
+}
+
+function renderChapitres() {
+  var sessions = getSessions(chapMatiere).slice(0,5);
+  var el = document.getElementById('chapContent');
+  if(!sessions.length){
+    el.innerHTML='<div class="vide">Pas encore de données pour cette matière.</div>';
+    return;
+  }
+  // Calculer la moyenne par chapitre sur les 5 dernières sessions
+  var taux = {};
+  sessions.forEach(function(s){
+    if(s.chapitresTaux) Object.keys(s.chapitresTaux).forEach(function(ch){
+      if(!taux[ch]) taux[ch]=[];
+      taux[ch].push(s.chapitresTaux[ch]);
+    });
+  });
+  if(!Object.keys(taux).length){
+    el.innerHTML='<div class="vide">Pas encore de données chapitres.</div>';
+    return;
+  }
+
+  var items = Object.keys(taux).map(function(ch){
+    var moy = Math.round(taux[ch].reduce(function(a,b){return a+b;},0)/taux[ch].length);
+    return {ch:ch, moy:moy, note:pctToNote(moy)};
+  }).sort(function(a,b){return a.moy-b.moy;});
+
+  var faibles = items.filter(function(i){return i.moy<60;});
+  var moyens  = items.filter(function(i){return i.moy>=60&&i.moy<80;});
+  var forts   = items.filter(function(i){return i.moy>=80;});
+
+  function renderGroupe(titre, liste, cls, coulNote) {
+    if(!liste.length) return '';
+    var cards = liste.map(function(i){
+      var nc = noteClass(i.note);
+      return '<div class="chap-item '+cls+'">'
+        +'<div class="chap-nom">'+i.ch+'</div>'
+        +'<div class="chap-note '+nc+'">'+i.note+'/10 <span style="font-size:10px;font-weight:400;color:#9090a8">('+i.moy+'%)</span></div>'
+        +'</div>';
+    }).join('');
+    return '<div style="margin-bottom:1rem">'
+      +'<div style="font-size:11px;color:#9090a8;text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px">'+titre+'</div>'
+      +'<div class="chap-grid">'+cards+'</div>'
+      +'</div>';
+  }
+
+  el.innerHTML =
+    renderGroupe('⚠ À retravailler (note < 6/10)', faibles, 'faible', '#e87a7a')
+    + renderGroupe('💪 En progression (6-8/10)', moyens, 'moyen', '#e8c87a')
+    + renderGroupe('✅ Points forts (≥ 8/10)', forts, 'fort', '#5ecfb1');
+}
+
+// ─── Sessions récentes (affichage X/Y) ───
+function renderSessions() {
+  var all = getAllSessions().slice(0,15);
+  var el = document.getElementById('sessionsBody');
+  if(!all.length){ el.innerHTML='<div class="vide">Aucune session enregistrée.</div>'; return; }
+
+  var rows = all.map(function(s){
+    var pct = calculerPourcentage(s);
+    var note = pctToNote(pct);
+    var cls = note>=8?'score-ok':note>=5?'score-mid':'score-bad';
+    var chaps = Array.isArray(s.chapitres)?s.chapitres.slice(0,3).join(', ')+(s.chapitres.length>3?'…':''):'—';
+    var noteAffichage = s.noteSur ? formatNote(s.noteObtenue, s.noteSur) : pct+'%';
+    
+    return '<tr>'
+      +'<td style="white-space:nowrap">'+fmtDate(s.date)+'</td>'
+      +'<td><span class="mat-badge" style="background:rgba(232,200,122,.1);color:'+s.couleur+';border:1px solid '+s.couleur+'">'+s.matiereIco+' '+s.matiereNom+'</span></td>'
+      +'<td style="font-size:11px;color:#9090a8">'+chaps+'</td>'
+      +'<td><span class="'+cls+'">'+noteAffichage+'</span><span style="font-size:11px;color:#5a5a72"> ('+pct+'%)</span></td>'
+      +'</tr>';
+  }).join('');
+
+  el.innerHTML = '<table class="sessions-table">'
+    +'<thead><tr><th>Date</th><th>Matière</th><th>Chapitres révisés</th><th>Note</th></tr></thead>'
+    +'<tbody>'+rows+'</tbody></table>';
+}
+
+// ─── Main ───
+function setEleve(e) {
+  eleve = e;
+  document.getElementById('tabW').className='etab'+(e==='wassil'?' w':'');
+  document.getElementById('tabN').className='etab'+(e==='nawal'?' n':'');
+  chapMatiere = 'francais';
+  render();
+}
+
+function render() {
+  renderAlerte();
+  renderNoteGlobale();
+  renderMatieres();
+  buildChapTabs();
+  renderChapitres();
+  renderSessions();
+}
+
+function exporterJSON() {
+  var data = {};
+  MATIERES.forEach(function(m){ data[m.id]=getSessions(m.id); });
+  var blob = new Blob([JSON.stringify({date:new Date().toISOString(),eleve:eleve,data:data},null,2)],{type:'application/json'});
+  var url = URL.createObjectURL(blob);
+  var a=document.createElement('a'); a.href=url;
+  a.download='suivi_'+eleve+'_'+new Date().toISOString().slice(0,10)+'.json';
+  a.click(); URL.revokeObjectURL(url);
+}
+
+function reinitialiser() {
+  if(!confirm('Supprimer toutes les données de '+(eleve==='wassil'?'Wassil':'Nawal')+' ?')) return;
+  MATIERES.forEach(function(m){ localStorage.removeItem('suivi_sessions_'+m.id+'_'+eleve); });
+  render();
+}
+
+window.onload = function() {
+  document.getElementById('tabW').addEventListener('click',function(){setEleve('wassil');});
+  document.getElementById('tabN').addEventListener('click',function(){setEleve('nawal');});
+  document.getElementById('btnRefresh').addEventListener('click',render);
+  document.getElementById('btnExport').addEventListener('click',exporterJSON);
+  document.getElementById('btnReset').addEventListener('click',reinitialiser);
+  setEleve('wassil');
+};
+</script>
+</body>
+</html>

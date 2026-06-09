@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>📖 Fiches Révision Français — Brevet 2026</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#09090f;color:#e8e8f0;font-family:Arial,sans-serif;padding:1rem;}
+.box{max-width:1100px;margin:0 auto;}
+
+/* HEADER */
+.header{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.header h1{font-size:1.4rem;color:#5ecfb1;}
+.header p{font-size:12px;color:#9090a8;margin-top:3px;}
+a.back{color:#5ecfb1;text-decoration:none;font-size:13px;}
+
+/* NAV */
+.nav{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1rem 1.5rem;margin-bottom:1.5rem;display:flex;gap:1rem;align-items:flex-end;flex-wrap:wrap;}
+.nav-group{display:flex;flex-direction:column;gap:4px;flex:1;min-width:200px;}
+.nav-group label{font-size:11px;color:#9090a8;text-transform:uppercase;letter-spacing:.05em;}
+select{background:#1a1a24;border:1px solid #2a2a38;border-radius:8px;padding:8px 12px;color:#e8e8f0;font-size:13px;cursor:pointer;width:100%;outline:none;}
+select:focus{border-color:#5ecfb1;}
+
+/* FICHE */
+.fiche{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.5rem;}
+
+.fiche-title{font-size:1.1rem;font-weight:700;color:#5ecfb1;margin-bottom:1rem;padding-bottom:8px;border-bottom:1px solid #2a2a38;}
+
+.objectif{background:#1a1a24;border-left:4px solid #5ecfb1;border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:1.2rem;font-size:13px;color:#e8e8f0;}
+
+/* NOTIONS TABLEAU */
+.notions-title{font-size:11px;color:#9090a8;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;margin-top:1.2rem;}
+table{width:100%;border-collapse:collapse;margin-bottom:1.2rem;font-size:13px;}
+th{background:#1a1a24;color:#5ecfb1;padding:8px 12px;text-align:left;border:1px solid #2a2a38;font-size:11px;text-transform:uppercase;letter-spacing:.05em;}
+td{padding:8px 12px;border:1px solid #2a2a38;vertical-align:top;color:#e8e8f0;}
+tr:nth-child(even) td{background:#0f0f18;}
+tr:hover td{background:#1a1a24;}
+
+/* NOTION EN ROUGE */
+.notion{color:#e84249;font-weight:600;background:rgba(232,66,74,.12);padding:1px 5px;border-radius:4px;display:inline;}
+
+/* SECTIONS */
+.section-box{background:#1a1a24;border-radius:8px;padding:12px 16px;margin-bottom:1rem;}
+.section-box h4{font-size:12px;color:#e8c87a;margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;}
+.section-box p{font-size:13px;color:#9090a8;line-height:1.6;}
+
+/* FLASHCARDS MINI */
+.fc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:8px;}
+.fc-item{background:#0f0f18;border:1px solid #2a2a38;border-radius:8px;padding:8px 10px;font-size:11px;cursor:pointer;transition:.15s;}
+.fc-item:hover{border-color:#5ecfb1;}
+.fc-q{color:#5ecfb1;margin-bottom:4px;font-weight:600;}
+.fc-r{color:#9090a8;display:none;}
+.fc-item.open .fc-r{display:block;}
+.fc-item.open{border-color:#5ecfb1;background:#111118;}
+
+/* PIED */
+.footer{font-size:11px;color:#5a5a72;text-align:center;margin-top:1.5rem;}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="header">
+    <div>
+      <h1>📖 Fiches Révision — Français 🇫🇷</h1>
+      <p>26 chapitres · Notions en <span class="notion">rouge</span> = à maîtriser absolument</p>
+    </div>
+    <a href="index.html" class="back">← Hub</a>
+  </div>
+
+  <div class="nav">
+    <div class="nav-group">
+      <label>Chapitre</label>
+      <select id="chapSelect"></select>
+    </div>
+  </div>
+
+  <div class="fiche" id="ficheZone">
+    <div style="text-align:center;padding:2rem;color:#5a5a72">Chargement...</div>
+  </div>
+
+  <div class="footer">Notions en <span class="notion">rouge</span> = flashcards à maîtriser · Clique sur une carte pour voir la réponse</div>
+</div>
+
+<script>
+// ══════════ DONNÉES 260 CARTES FRANÇAIS ══════════
+const CHAPITRES_FR = {
+  1:{titre:"Classes grammaticales",cartes:[
+    {q:"Quelles sont les 9 classes grammaticales ?",r:"Nom, déterminant, adjectif, pronom, verbe, adverbe, préposition, conjonction, interjection."},
+    {q:"Donnez 3 déterminants.",r:"le, la, les / un, une, des / mon, ton, son"},
+    {q:"Citez les 7 conjonctions de coordination.",r:"Mais, ou, et, donc, or, ni, car."},
+    {q:"Différence adverbe / préposition ?",r:"Adverbe modifie un verbe/adjectif. Préposition introduit un complément."},
+    {q:"Déterminant possessif ?",r:"mon, ton, son, notre, votre, leur"},
+    {q:"Déterminant démonstratif ?",r:"ce, cet, cette, ces"},
+    {q:"Pronom personnel ?",r:"je, tu, il, elle, on, nous, vous, ils, elles, me, te, se, le, la, lui, y, en"},
+    {q:"Pronom relatif ?",r:"qui, que, quoi, dont, où, lequel"},
+    {q:"Pronom démonstratif ?",r:"celui, celle, ceux, celles, ce, ceci, cela"},
+    {q:"Interjection ?",r:"Mot-phrase exprimant une émotion (Ah ! Oh ! Hélas !)"}
+  ]},
+  2:{titre:"Fonctions grammaticales",cartes:[
+    {q:"Qu'est-ce que le COD ?",r:"Complément d'objet direct. Répond à quoi ou qui."},
+    {q:"Qu'est-ce que le COI ?",r:"Complément d'objet indirect. Répond à à qui ou de quoi."},
+    {q:"Attribut du sujet ?",r:"Donne une qualité au sujet, relié par verbe d'état"},
+    {q:"Complément d'agent ?",r:"Dans une phrase passive, indique qui fait l'action"},
+    {q:"CC de temps ?",r:"Indique quand l'action se passe"},
+    {q:"CC de lieu ?",r:"Indique où l'action se passe"},
+    {q:"CC de manière ?",r:"Indique comment l'action se passe"},
+    {q:"CC de cause ?",r:"Indique pourquoi l'action se passe"},
+    {q:"CC de but ?",r:"Indique dans quel but"},
+    {q:"CC de concession ?",r:"Indique une opposition"}
+  ]},
+  3:{titre:"La phrase",cartes:[
+    {q:"Phrase simple ?",r:"Une seule proposition (un verbe)"},
+    {q:"Phrase complexe ?",r:"Plusieurs propositions"},
+    {q:"Proposition indépendante ?",r:"Ne dépend d'aucune autre"},
+    {q:"Proposition principale ?",r:"Dont dépend une subordonnée"},
+    {q:"Subordonnée relative ?",r:"Introduite par qui, que, dont, où"},
+    {q:"Subordonnée complétive ?",r:"Introduite par que"},
+    {q:"Sub. circ. de cause ?",r:"parce que, puisque, comme"},
+    {q:"Sub. circ. de conséquence ?",r:"si bien que, de sorte que"},
+    {q:"Sub. circ. de but ?",r:"pour que, afin que"},
+    {q:"Sub. circ. de temps ?",r:"quand, lorsque, pendant que"}
+  ]},
+  4:{titre:"Temps et modes verbaux",cartes:[
+    {q:"À quoi sert l'imparfait ?",r:"Description ou habitude dans le passé"},
+    {q:"À quoi sert le passé composé ?",r:"Action ponctuelle ou bilan (oral)"},
+    {q:"À quoi sert le passé simple ?",r:"Action ponctuelle (récit littéraire)"},
+    {q:"À quoi sert le plus-que-parfait ?",r:"Antériorité par rapport à une action passée"},
+    {q:"À quoi sert le futur simple ?",r:"Action à venir"},
+    {q:"À quoi sert le futur antérieur ?",r:"Action achevée avant une autre future"},
+    {q:"À quoi sert le présent ?",r:"Actualité, vérité générale, habitude"},
+    {q:"À quoi sert le subjonctif ?",r:"Doute, souhait, émotion, obligation"},
+    {q:"À quoi sert le conditionnel ?",r:"Hypothèse, condition, souhait"},
+    {q:"À quoi sert l'impératif ?",r:"Ordre ou conseil"}
+  ]},
+  5:{titre:"Les accords",cartes:[
+    {q:"Accord sujet-verbe",r:"Le verbe s'accorde en personne et nombre avec le sujet"},
+    {q:"Participe passé avec avoir",r:"S'accorde avec le COD si placé avant"},
+    {q:"Participe passé avec être",r:"S'accorde avec le sujet"},
+    {q:"Accord adjectifs de couleur",r:"Invariables s'ils viennent d'un nom (marron, orange)"},
+    {q:"Accord adjectifs composés",r:"Seul le dernier adjectif s'accorde"},
+    {q:"Accord groupe nominal",r:"Déterminant, nom et adjectif s'accordent"},
+    {q:"Accord verbe plusieurs sujets",r:"Le verbe se met au pluriel"},
+    {q:"Accord PP verbes pronominaux",r:"S'accorde avec le sujet si COD"},
+    {q:"Accord de tout",r:"Tout = déterminant, adverbe, pronom ou nom"},
+    {q:"Accord noms composés",r:"Dépend de la nature des mots"}
+  ]},
+  6:{titre:"Les homophones",cartes:[
+    {q:"Différence a/à",r:"a = avoir ; à = préposition"},
+    {q:"Différence ou/où",r:"ou = conjonction ; où = pronom/adverbe"},
+    {q:"Différence on/ont",r:"on = pronom ; ont = avoir"},
+    {q:"Différence son/sont",r:"son = possessif ; sont = être"},
+    {q:"Différence ce/se",r:"ce = démonstratif ; se = pronom"},
+    {q:"Différence ces/ses",r:"ces = démonstratif ; ses = possessif"},
+    {q:"Différence quand/quant",r:"quand = temps ; quant = en ce qui concerne"},
+    {q:"Différence peu/peut/peuvent",r:"peu = quantité ; peut/peuvent = pouvoir"},
+    {q:"Différence leur/leurs",r:"leur = pronom ; leurs = déterminant"},
+    {q:"Différence quel/qu'elle",r:"quel = interrogatif ; qu'elle = que + elle"}
+  ]},
+  7:{titre:"Conjugaison",cartes:[
+    {q:"Terminaisons présent 1er groupe",r:"e, es, e, ons, ez, ent"},
+    {q:"Terminaisons présent 2e groupe",r:"is, is, it, issons, issez, issent"},
+    {q:"Terminaisons imparfait",r:"ais, ais, ait, ions, iez, aient"},
+    {q:"Terminaisons futur simple",r:"ai, as, a, ons, ez, ont"},
+    {q:"Terminaisons passé simple 1er groupe",r:"ai, as, a, âmes, âtes, èrent"},
+    {q:"Être au présent",r:"suis, es, est, sommes, êtes, sont"},
+    {q:"Avoir au présent",r:"ai, as, a, avons, avez, ont"},
+    {q:"Aller au présent",r:"vais, vas, va, allons, allez, vont"},
+    {q:"Faire au présent",r:"fais, fais, fait, faisons, faites, font"},
+    {q:"Prendre au présent",r:"prends, prends, prend, prenons, prenez, prennent"}
+  ]},
+  8:{titre:"Valeurs des temps",cartes:[
+    {q:"Valeur du présent",r:"Actualité, vérité générale, habitude"},
+    {q:"Valeur de l'imparfait",r:"Description, habitude, action qui dure"},
+    {q:"Valeur du passé simple",r:"Action ponctuelle (récit écrit)"},
+    {q:"Valeur du passé composé",r:"Action ponctuelle (oral)"},
+    {q:"Valeur du plus-que-parfait",r:"Antériorité par rapport à une action passée"},
+    {q:"Valeur du futur simple",r:"Action à venir"},
+    {q:"Valeur du futur antérieur",r:"Action achevée avant une autre future"},
+    {q:"Valeur du conditionnel",r:"Hypothèse, condition, souhait"},
+    {q:"Valeur du subjonctif",r:"Doute, souhait, émotion, obligation"},
+    {q:"Valeur de l'impératif",r:"Ordre, conseil, interdiction"}
+  ]},
+  9:{titre:"Formation des mots",cartes:[
+    {q:"Radical ?",r:"Partie qui porte le sens principal"},
+    {q:"Préfixe ?",r:"Élément avant le radical (re-, in-, dé-)"},
+    {q:"Suffixe ?",r:"Élément après le radical (-able, -age, -tion)"},
+    {q:"Famille de mots ?",r:"Mots formés à partir du même radical"},
+    {q:"Exemple préfixe + suffixe",r:"in-juste-ment"},
+    {q:"3 préfixes de négation",r:"in-, im-, il-, ir-, dé-, dés-"},
+    {q:"3 suffixes de nom",r:"-tion, -age, -ment, -eur, -ance"},
+    {q:"3 suffixes d'adjectif",r:"-able, -ible, -eux, -al, -ique"},
+    {q:"Mot composé ?",r:"Mot formé de plusieurs mots (ex: porte-monnaie)"},
+    {q:"Néologisme ?",r:"Mot nouveau créé dans une langue"}
+  ]},
+  10:{titre:"Figures de style",cartes:[
+    {q:"Comparaison ?",r:"Rapprochement avec outil (comme, tel)"},
+    {q:"Métaphore ?",r:"Analogie sans outil"},
+    {q:"Personnification ?",r:"Qualités humaines à un objet"},
+    {q:"Antithèse ?",r:"Deux termes opposés rapprochés"},
+    {q:"Oxymore ?",r:"Mots contradictoires"},
+    {q:"Hyperbole ?",r:"Exagération"},
+    {q:"Litote ?",r:"Dire moins pour suggérer plus"},
+    {q:"Euphémisme ?",r:"Atténuer une réalité désagréable"},
+    {q:"Énumération ?",r:"Succession de mots"},
+    {q:"Gradation ?",r:"Suite de mots d'intensité croissante"}
+  ]},
+  11:{titre:"Champs lexicaux",cartes:[
+    {q:"Champ lexical ?",r:"Ensemble des mots liés à un même thème"},
+    {q:"3 registres de langue",r:"Soutenu, courant, familier"},
+    {q:"Argot ?",r:"Langage propre à un groupe"},
+    {q:"3 mots champ lexical mer",r:"vague, bateau, pêche, marée, port, plage"},
+    {q:"3 mots champ lexical guerre",r:"combat, arme, soldat, bataille, victoire, mort"},
+    {q:"3 mots champ lexical amour",r:"coeur, passion, désir, tendresse, amoureux"},
+    {q:"3 mots champ lexical peur",r:"crainte, terreur, angoisse, panique, effroi"},
+    {q:"3 mots champ lexical joie",r:"bonheur, gaieté, sourire, plaisir, rire"},
+    {q:"Champ sémantique ?",r:"Ensemble des sens d'un même mot"},
+    {q:"Diff. champ lexical / sémantique",r:"Lexical = thème ; Sémantique = sens d'un mot"}
+  ]},
+  12:{titre:"Synonymes, antonymes, homonymes",cartes:[
+    {q:"Synonyme ?",r:"Mot de sens proche"},
+    {q:"Antonyme ?",r:"Mot de sens contraire"},
+    {q:"Homonyme ?",r:"Même prononciation, sens différent"},
+    {q:"Paronyme ?",r:"Sons proches, sens différent (collision/collusion)"},
+    {q:"Synonyme de rapidement",r:"vite, promptement, prestement"},
+    {q:"Antonyme de grand",r:"petit, minuscule, court"},
+    {q:"Homonyme de ver",r:"vert, verre, vers"},
+    {q:"Homonyme de sang",r:"cent, sans, sent"},
+    {q:"Homonyme de peau",r:"pot, paume"},
+    {q:"Paronyme de collision",r:"collusion"}
+  ]},
+  13:{titre:"Genres littéraires",cartes:[
+    {q:"4 grands genres littéraires",r:"Roman, théâtre, poésie, argumentation"},
+    {q:"Roman épistolaire ?",r:"Roman composé de lettres"},
+    {q:"Roman aventures ?",r:"Récit d'actions palpitantes"},
+    {q:"Roman policier ?",r:"Enquête autour d'un crime"},
+    {q:"Roman fantastique ?",r:"Hésitation entre réel et irréel"},
+    {q:"Tragédie ?",r:"Pièce où les personnages subissent un destin fatal"},
+    {q:"Comédie ?",r:"Pièce qui fait rire, fin heureuse"},
+    {q:"Poème lyrique ?",r:"Exprime des sentiments personnels"},
+    {q:"Fable ?",r:"Courte histoire avec une morale"},
+    {q:"Essai ?",r:"Texte argumentatif en prose"}
+  ]},
+  14:{titre:"Mouvements littéraires",cartes:[
+    {q:"Mouvement du XVIe siècle",r:"Humanisme (Rabelais, Montaigne)"},
+    {q:"Mouvement du XVIIe siècle",r:"Classicisme (Molière, Racine, La Fontaine)"},
+    {q:"Mouvement du XVIIIe siècle",r:"Les Lumières (Voltaire, Rousseau, Diderot)"},
+    {q:"Mouvement du XIXe siècle",r:"Romantisme, Réalisme, Naturalisme, Symbolisme"},
+    {q:"Mouvement du XXe siècle",r:"Surréalisme, Existentialisme, Nouveau Roman"},
+    {q:"Idées de l'Humanisme",r:"Exaltation de l'homme, confiance dans la raison"},
+    {q:"Idées des Lumières",r:"Raison, liberté, tolérance, progrès"},
+    {q:"Idées du Romantisme",r:"Exaltation des sentiments, de la nature, de la mélancolie"},
+    {q:"Idées du Réalisme",r:"Représenter la réalité, sans idéalisation"},
+    {q:"Idées du Surréalisme",r:"Rêve, inconscient, automatisme (Breton)"}
+  ]},
+  15:{titre:"Registres littéraires",cartes:[
+    {q:"Registre comique",r:"Provoque le rire"},
+    {q:"Registre tragique",r:"Inspire terreur et pitié"},
+    {q:"Registre épique",r:"Célèbre des héros, des exploits"},
+    {q:"Registre lyrique",r:"Exprime des sentiments personnels"},
+    {q:"Registre satirique",r:"Critique de manière moqueuse"},
+    {q:"Registre pathétique",r:"Suscite l'émotion, la tristesse"},
+    {q:"Registre fantastique",r:"Hésitation entre réel et irréel"},
+    {q:"Registre polémique",r:"Attaque vigoureusement un adversaire"},
+    {q:"Registre didactique",r:"Instruit, transmet un savoir"},
+    {q:"Registre élégiaque",r:"Exprime la plainte, la tristesse"}
+  ]},
+  16:{titre:"Le récit",cartes:[
+    {q:"Étapes du schéma narratif",r:"SI -> perturbateur -> péripéties -> résolution -> SF"},
+    {q:"Élément perturbateur ?",r:"Événement qui déclenche l'histoire"},
+    {q:"Péripéties ?",r:"Aventures, rebondissements"},
+    {q:"Résolution ?",r:"Moment où le problème se résout"},
+    {q:"Situation finale ?",r:"Situation après l'histoire"},
+    {q:"Narrateur omniscient",r:"Sait tout des personnages"},
+    {q:"Narrateur externe",r:"Ne décrit que les actions (caméra)"},
+    {q:"Narrateur interne",r:"Raconte à la 1ère personne"},
+    {q:"Analepse ?",r:"Retour en arrière (flashback)"},
+    {q:"Prolepse ?",r:"Anticipation (flashforward)"}
+  ]},
+  17:{titre:"La rédaction",cartes:[
+    {q:"Structure d'une introduction",r:"Amorce, présentation, problématique, annonce du plan"},
+    {q:"Amorce ?",r:"Phrase d'accroche pour capter l'attention"},
+    {q:"Problématique ?",r:"Question centrale du devoir"},
+    {q:"Connecteurs de cause",r:"car, parce que, puisque"},
+    {q:"Connecteurs de conséquence",r:"donc, ainsi, par conséquent"},
+    {q:"Connecteurs d'opposition",r:"mais, cependant, pourtant"},
+    {q:"Connecteurs d'addition",r:"et, de plus, en outre, également"},
+    {q:"Connecteurs d'illustration",r:"par exemple, comme, notamment"},
+    {q:"Structure de la conclusion",r:"Bilan, réponse à la problématique, ouverture"},
+    {q:"Ouverture ?",r:"Élargir le sujet vers une question plus large"}
+  ]},
+  18:{titre:"Contraction de texte",cartes:[
+    {q:"Règle d'or",r:"Ne pas commenter, ne pas juger"},
+    {q:"À combien réduire ?",r:"Au tiers environ"},
+    {q:"Que conserver ?",r:"Les idées essentielles, la thèse, l'ordre logique"},
+    {q:"Que supprimer ?",r:"Les exemples trop détaillés, les répétitions"},
+    {q:"Peut-on ajouter des mots ?",r:"Non, seulement reformuler"},
+    {q:"Peut-on changer l'ordre ?",r:"Non, respecter l'ordre de l'auteur"},
+    {q:"Doit-on citer l'auteur ?",r:"Oui, en introduction"},
+    {q:"Le titre compte-t-il ?",r:"Non"},
+    {q:"Comment compter les mots ?",r:"Chaque mot compte"},
+    {q:"Notation ?",r:"Sur 10 points (fond 6, forme 4)"}
+  ]},
+  19:{titre:"Commentaire composé",cartes:[
+    {q:"Structure du commentaire",r:"Introduction, développement (2-3 axes), conclusion"},
+    {q:"Que ne faut-il pas faire ?",r:"Ne pas résumer le texte"},
+    {q:"Comment justifier son analyse ?",r:"Citer, nommer le procédé, expliquer l'effet"},
+    {q:"Que contient la conclusion ?",r:"Bilan, réponse à la problématique, ouverture"},
+    {q:"Comment nommer les procédés ?",r:"Comparaison, métaphore, champ lexical, etc."},
+    {q:"Axe de lecture ?",r:"Grande partie du commentaire"},
+    {q:"Combien d'axes ?",r:"2 ou 3 axes"},
+    {q:"Comment rédiger une transition ?",r:"Entre deux axes, phrase de liaison"},
+    {q:"Faut-il une accroche ?",r:"Oui, en introduction"},
+    {q:"Diff. commentaire/contraction ?",r:"Commentaire = analyse ; Contraction = résumé"}
+  ]},
+  20:{titre:"Oral : présentation",cartes:[
+    {q:"Durée de l'oral du brevet",r:"5 min exposé + 10 min échange"},
+    {q:"Peut-on lire son texte ?",r:"Non, utiliser des notes (mots-clés)"},
+    {q:"Structure de l'exposé",r:"Introduction, développement, conclusion"},
+    {q:"Peut-on avoir des notes ?",r:"Oui, mais discrètes"},
+    {q:"Comment gérer son stress ?",r:"Respirer, bien dormir, bien préparer"},
+    {q:"Introduction de l'exposé ?",r:"Présentation du sujet, annonce du plan"},
+    {q:"Développement ?",r:"2 ou 3 parties argumentées"},
+    {q:"Conclusion ?",r:"Bilan, ouverture"},
+    {q:"Peut-on utiliser un support visuel ?",r:"Oui, sobre et sans texte lu"},
+    {q:"Que faut-il préparer ?",r:"Un plan détaillé, des notes, des exemples précis"}
+  ]},
+  21:{titre:"Oral : expression",cartes:[
+    {q:"Posture à l'oral",r:"Debout, gestes naturels, regarder le jury"},
+    {q:"Comment bien utiliser sa voix ?",r:"Articuler, parler fort, débit calme"},
+    {q:"Comment bien articuler ?",r:"Ouvrir la bouche, parler lentement"},
+    {q:"Trou de mémoire ?",r:"Prendre une inspiration, regarder ses notes, reformuler"},
+    {q:"Comment regarder le jury ?",r:"Regarder toutes les personnes"},
+    {q:"Faut-il sourire ?",r:"Oui, cela montre sa bonne volonté"},
+    {q:"Comment gérer sa respiration ?",r:"Respirer calmement avant de parler"},
+    {q:"Comment s'habiller ?",r:"Sobre et confortable"},
+    {q:"Faut-il faire des gestes ?",r:"Oui, mais naturels et mesurés"},
+    {q:"Réagir face au stress ?",r:"Le considérer comme une énergie positive"}
+  ]},
+  22:{titre:"Oral : échange",cartes:[
+    {q:"Si on ne sait pas ?",r:"L'admettre honnêtement"},
+    {q:"Question incomprise ?",r:"Demander une reformulation poliment"},
+    {q:"Ne pas couper la parole",r:"Attendre que le jury ait fini"},
+    {q:"Question difficile ?",r:"Prendre le temps de réfléchir, reformuler"},
+    {q:"Peut-on dire je ne sais pas ?",r:"Oui, en montrant qu'on a réfléchi"},
+    {q:"Comment reformuler une question ?",r:"Si je comprends bien, vous me demandez..."},
+    {q:"Comment argumenter ?",r:"Donner des exemples précis"},
+    {q:"Faut-il regarder le jury ?",r:"Oui, pour montrer qu'on s'adresse à eux"},
+    {q:"Comment terminer l'oral ?",r:"Merci de votre attention"},
+    {q:"Peut-on prendre des notes ?",r:"Oui, rapidement"}
+  ]},
+  23:{titre:"Dictée",cartes:[
+    {q:"Que vérifier en priorité ?",r:"Accords, homophones, terminaisons"},
+    {q:"Vérifier a/à",r:"Remplacer par avait"},
+    {q:"Vérifier on/ont",r:"Remplacer par avaient"},
+    {q:"PP avec être",r:"S'accorde avec le sujet"},
+    {q:"PP avec avoir",r:"S'accorde avec le COD si placé avant"},
+    {q:"Vérifier les homophones",r:"Remplacer par un autre mot équivalent"},
+    {q:"Terminaisons en é",r:"Remplacer par manger"},
+    {q:"Terminaisons en er",r:"Remplacer par vendre"},
+    {q:"Pluriel des noms",r:"Ajouter un s ou x"},
+    {q:"Accord des adjectifs",r:"Regarder le nom qu'ils qualifient"}
+  ]},
+  24:{titre:"Grammaire (analyse)",cartes:[
+    {q:"Différence nature/fonction",r:"Nature = classe grammaticale, fonction = rôle dans la phrase"},
+    {q:"Trouver le COD",r:"Poser quoi après le verbe"},
+    {q:"Trouver le COI",r:"Poser à qui ou de quoi"},
+    {q:"Trouver le sujet",r:"Poser qui est-ce qui avant le verbe"},
+    {q:"Trouver le CC",r:"Poser quand, où, comment, pourquoi"},
+    {q:"Nature de que",r:"Conjonction de subordination ou pronom relatif"},
+    {q:"Nature de dont",r:"Pronom relatif"},
+    {q:"Fonction d'un adjectif",r:"Épithète ou attribut"},
+    {q:"Fonction d'un nom",r:"Sujet, COD, COI, attribut, complément du nom"},
+    {q:"Comment justifier une fonction",r:"Poser la question adaptée"}
+  ]},
+  25:{titre:"Réécriture",cartes:[
+    {q:"Changer je en nous",r:"Verbe à la 1ère personne du pluriel"},
+    {q:"Changer féminin en masculin",r:"Modifier déterminants, adjectifs et participes"},
+    {q:"Changer singulier en pluriel",r:"Ajouter s ou x, adapter le verbe"},
+    {q:"Présent en imparfait",r:"Terminaisons -ais, -ais, -ait, -ions, -iez, -aient"},
+    {q:"Présent en futur",r:"Terminaisons -ai, -as, -a, -ons, -ez, -ont"},
+    {q:"Présent en passé composé",r:"Auxiliaire avoir/être + participe passé"},
+    {q:"Phrase active en passive",r:"COD devient sujet, complément d'agent"},
+    {q:"Phrase passive en active",r:"Sujet devient COD, suppression du complément d'agent"},
+    {q:"Discours direct en indirect",r:"Changer les pronoms et les temps"},
+    {q:"Vérifier les accords après réécriture",r:"Relire attentivement"}
+  ]},
+  26:{titre:"Essai",cartes:[
+    {q:"Structure de l'essai",r:"Introduction, développement (thèse/antithèse), conclusion"},
+    {q:"Comment trouver des idées ?",r:"Brainstorming"},
+    {q:"Comment illustrer ses arguments ?",r:"Exemples précis (oeuvres, films, expériences)"},
+    {q:"Structure paragraphe argumentatif",r:"1. Idée. 2. Exemple. 3. Explication du lien"},
+    {q:"Comment conclure un essai ?",r:"Rappeler la réponse, ouvrir sur une question plus large"},
+    {q:"Pas d'idée ?",r:"Chercher des exemples concrets, penser à des oeuvres étudiées"},
+    {q:"Faut-il donner son avis ?",r:"Oui, mais justifié"},
+    {q:"Faut-il des connecteurs logiques ?",r:"Oui, pour structurer"},
+    {q:"Combien de paragraphes dans le développement ?",r:"2 ou 3 paragraphes"},
+    {q:"Peut-on utiliser le je ?",r:"Oui, mais avec modération"}
+  ]}
+};
+
+// ══════════ CONTENU DES FICHES ══════════
+var FICHES = {
+  1:{obj:"Identifier et utiliser les 9 classes grammaticales.",pieges:"Confondre la nature (classe) et la fonction. Ne pas oublier les 7 conjonctions de coordination.",conseil:"Pour chaque mot, se demander : à quelle classe appartient-il ?"},
+  2:{obj:"Identifier les fonctions des mots dans une phrase.",pieges:"Confondre COD et COI. Le COI est toujours précédé d'une préposition (à, de).",conseil:"Poser la bonne question après le verbe pour identifier la fonction."},
+  3:{obj:"Distinguer et analyser les types de propositions.",pieges:"Confondre subordonnée relative et complétive. La relative complète un nom, la complétive complète un verbe.",conseil:"Chercher le verbe conjugué = trouver la proposition."},
+  4:{obj:"Choisir le temps verbal adapté au contexte.",pieges:"Confondre imparfait (durée) et passé simple (ponctuel). Ne pas utiliser passé simple à l'oral.",conseil:"Se demander : l'action dure ou est-elle ponctuelle ? Récit littéraire ou oral ?"},
+  5:{obj:"Appliquer correctement toutes les règles d'accord.",pieges:"Oublier d'accorder le PP avec l'auxiliaire avoir quand le COD est avant. Adjectifs de couleur invariables.",conseil:"Systématiquement retrouver le COD et sa position pour les PP avec avoir."},
+  6:{obj:"Ne plus confondre les homophones grammaticaux.",pieges:"Confondre son/sont, ce/se, ces/ses. Tester en remplaçant : 'avait' pour 'a', 'avaient' pour 'ont'.",conseil:"Apprendre les remplacements par coeur pour chaque paire."},
+  7:{obj:"Conjuguer correctement les verbes à tous les temps.",pieges:"Oublier les irréguliers (aller, être, avoir, faire, prendre). Confondre terminaisons 1er/2e groupe.",conseil:"Conjuguer chaque verbe irrégulier quotidiennement."},
+  8:{obj:"Connaître la valeur sémantique de chaque temps.",pieges:"Confondre les valeurs du présent (actualité, habitude, vérité générale). Oublier le plus-que-parfait pour l'antériorité.",conseil:"Pour chaque temps, mémoriser sa valeur principale avec un exemple."},
+  9:{obj:"Analyser la formation des mots pour enrichir le vocabulaire.",pieges:"Confondre préfixe et suffixe. Oublier que le radical porte le sens.",conseil:"Décomposer chaque mot inconnu en préfixe + radical + suffixe."},
+  10:{obj:"Identifier et utiliser les figures de style dans les textes.",pieges:"Confondre métaphore (sans outil) et comparaison (avec outil). Distinguer litote et euphémisme.",conseil:"Mémoriser la définition + un exemple type pour chaque figure."},
+  11:{obj:"Identifier les champs lexicaux et les registres de langue.",pieges:"Confondre champ lexical (thème) et champ sémantique (sens). Oublier l'argot dans les registres.",conseil:"Relever tous les mots d'un même thème dans un texte."},
+  12:{obj:"Enrichir le vocabulaire avec synonymes, antonymes, homonymes.",pieges:"Confondre homonyme (même son) et synonyme (même sens). Paronyme = sons proches mais différents.",conseil:"Mémoriser les paires d'homonymes les plus fréquents."},
+  13:{obj:"Connaître les genres et sous-genres littéraires.",pieges:"Confondre roman policier et roman noir. L'essai n'est pas un genre narratif.",conseil:"Associer chaque genre à un exemple d'oeuvre connue."},
+  14:{obj:"Situer les oeuvres dans leur mouvement littéraire.",pieges:"Confondre Réalisme et Naturalisme. Mémoriser les siècles de chaque mouvement.",conseil:"Faire une frise chronologique des mouvements littéraires."},
+  15:{obj:"Identifier le registre d'un texte pour mieux l'analyser.",pieges:"Confondre registre épique (héros) et tragique (destin fatal). Le pathétique cherche l'émotion.",conseil:"Pour chaque texte étudié, identifier le registre dominant."},
+  16:{obj:"Analyser la structure narrative d'un récit.",pieges:"Oublier la situation initiale et finale. Confondre résolution et situation finale.",conseil:"Appliquer le schéma narratif à chaque récit étudié."},
+  17:{obj:"Rédiger une introduction et une conclusion structurées.",pieges:"Oublier la problématique. Terminer par un résumé au lieu d'une ouverture.",conseil:"Structurer chaque écrit avec les 4 étapes de l'introduction."},
+  18:{obj:"Réduire un texte au tiers sans commenter ni juger.",pieges:"Paraphraser au lieu de reformuler. Changer l'ordre des idées. Ajouter son opinion.",conseil:"Lire entièrement, identifier les idées, reformuler dans ses propres mots."},
+  19:{obj:"Rédiger un commentaire composé méthodique.",pieges:"Résumer le texte au lieu de l'analyser. Citer sans nommer le procédé.",conseil:"Pour chaque citation : nommer le procédé + expliquer l'effet produit."},
+  20:{obj:"Préparer et structurer un exposé oral pour le brevet.",pieges:"Lire ses notes au lieu de parler. Oublier l'annonce du plan.",conseil:"Pratiquer l'exposé à voix haute plusieurs fois avant le jour J."},
+  21:{obj:"Maîtriser sa voix et son corps à l'oral.",pieges:"Parler trop vite par stress. Regarder ses notes au lieu du jury.",conseil:"Filmer sa répétition pour identifier les points à améliorer."},
+  22:{obj:"Gérer l'échange avec le jury avec aisance.",pieges:"Répondre à côté de la question. Paniquer si on ne sait pas.",conseil:"Reformuler la question pour gagner du temps et montrer qu'on a compris."},
+  23:{obj:"Écrire sans faute d'orthographe en dictée.",pieges:"Oublier d'accorder les adjectifs. Confondre é/er/ez en fin de verbe.",conseil:"Relire la dictée en vérifiant systématiquement chaque accord."},
+  24:{obj:"Analyser correctement les fonctions grammaticales.",pieges:"Confondre nature et fonction. Oublier de justifier la fonction par une question.",conseil:"Toujours justifier une fonction par la question adaptée."},
+  25:{obj:"Réussir les exercices de réécriture au brevet.",pieges:"Oublier de changer les temps des verbes quand on change la personne. Oublier l'accord des adjectifs.",conseil:"Lire plusieurs fois après réécriture pour vérifier tous les accords."},
+  26:{obj:"Rédiger un essai argumenté et structuré.",pieges:"Manquer d'exemples précis. Oublier les connecteurs logiques.",conseil:"Préparer 2-3 exemples par thème avant de commencer à écrire."}
+};
+
+// ══════════ RENDU ══════════
+function buildSelect() {
+  var sel = document.getElementById('chapSelect');
+  sel.innerHTML = '';
+  Object.keys(CHAPITRES_FR).forEach(function(n) {
+    var opt = document.createElement('option');
+    opt.value = n;
+    opt.textContent = n + '. ' + CHAPITRES_FR[n].titre;
+    sel.appendChild(opt);
+  });
+}
+
+function afficherFiche() {
+  var n = parseInt(document.getElementById('chapSelect').value);
+  var ch = CHAPITRES_FR[n];
+  var fiche = FICHES[n];
+  if (!ch) return;
+
+  // Tableau des 10 cartes
+  var rows = '';
+  ch.cartes.forEach(function(c) {
+    rows += '<tr><td><span class="notion">' + c.q + '</span></td><td>' + c.r + '</td></tr>';
+  });
+
+  // Mini flashcards cliquables
+  var fcItems = '';
+  ch.cartes.forEach(function(c) {
+    fcItems += '<div class="fc-item" onclick="this.classList.toggle(\'open\')">'
+      + '<div class="fc-q">📖 ' + c.q + '</div>'
+      + '<div class="fc-r">→ ' + c.r + '</div>'
+      + '</div>';
+  });
+
+  document.getElementById('ficheZone').innerHTML =
+    '<div class="fiche-title">Chapitre ' + n + ' — ' + ch.titre + '</div>'
+
+    + (fiche ? '<div class="objectif">🎯 <strong>Objectif :</strong> ' + fiche.obj + '</div>' : '')
+
+    + '<div class="notions-title">Toutes les notions du chapitre</div>'
+    + '<table><thead><tr><th>Notion clé</th><th>Définition / Réponse</th></tr></thead><tbody>'
+    + rows + '</tbody></table>'
+
+    + (fiche ? '<div class="section-box"><h4>⚠ Pièges classiques</h4><p>' + fiche.pieges + '</p></div>' : '')
+    + (fiche ? '<div class="section-box"><h4>💡 Conseil méthode</h4><p>' + fiche.conseil + '</p></div>' : '')
+
+    + '<div class="section-box"><h4>🃏 Flashcards interactives — clique pour voir la réponse</h4>'
+    + '<div class="fc-grid">' + fcItems + '</div></div>';
+}
+
+window.onload = function() {
+  buildSelect();
+  afficherFiche();
+  document.getElementById('chapSelect').addEventListener('change', afficherFiche);
+};
+</script>
+</body>
+</html>

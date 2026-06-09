@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMART LEARN · 40 sujets · correction personnalisée</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f6f9fc 0%, #e9eef3 100%);
+            font-family: 'Segoe UI', 'Poppins', 'DM Sans', system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 32px 24px;
+        }
+
+        .a4 {
+            max-width: 1050px;
+            width: 100%;
+            background: white;
+            border-radius: 48px;
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.08);
+            padding: 28px 32px 32px;
+            border: 1px solid rgba(255, 140, 0, 0.15);
+        }
+
+        /* TITRE FUN */
+        .hero {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .hero h1 {
+            font-size: 2.3rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #1E2A5E, #FF8C00, #FFB347);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+        .badge-main {
+            background: #FF8C10;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 4px 20px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-bottom: 8px;
+            box-shadow: 0 2px 8px rgba(255, 140, 0, 0.3);
+        }
+
+        /* GAIN DE TEMPS */
+        .time-block {
+            background: linear-gradient(115deg, #FFF7EB 0%, #FFF2E0 100%);
+            border-radius: 30px;
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 12px 0 18px;
+            border: 1px solid #FFE0B5;
+        }
+        .time-item {
+            flex: 1;
+            text-align: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+            background: white;
+            padding: 8px 6px;
+            border-radius: 60px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+        }
+        .time-item span {
+            font-size: 1.7rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #FF8C00, #FFB347);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
+            margin-right: 6px;
+        }
+
+        /* CORRECTION PERSONNALISÉE : SURVOLET BLEU */
+        .highlight-blue {
+            background: #E8F0FE;
+            border-radius: 28px;
+            padding: 14px 20px;
+            text-align: center;
+            margin: 8px 0 16px;
+            border: 1px solid #B5D0FF;
+            box-shadow: 0 4px 12px rgba(0, 110, 255, 0.08);
+        }
+        .highlight-blue strong {
+            font-size: 0.95rem;
+            background: #1E2A5E;
+            color: white;
+            padding: 4px 16px;
+            border-radius: 40px;
+            display: inline-block;
+            margin-bottom: 6px;
+        }
+        .highlight-detail {
+            font-size: 0.75rem;
+            margin-top: 6px;
+            color: #1E2A5E;
+        }
+
+        /* GRILLE FONCTIONS */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 14px 0 12px;
+        }
+        .fonction-card {
+            background: #FCFDFF;
+            border-radius: 24px;
+            padding: 12px 16px;
+            border: 1px solid #f0f2f5;
+            transition: transform 0.15s ease, box-shadow 0.2s;
+        }
+        .fonction-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 20px -12px rgba(0, 0, 0, 0.15);
+            border-color: #FFCD94;
+        }
+        .fonction-titre {
+            font-weight: 800;
+            font-size: 1rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .fonction-desc {
+            font-size: 0.75rem;
+            color: #2c3e4e;
+            margin-bottom: 8px;
+        }
+        .fonction-etude {
+            font-size: 0.65rem;
+            color: #9b6a3c;
+            background: #FFF2E5;
+            padding: 5px 8px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        /* TROIS PILIERS */
+        .trois-piliers {
+            display: flex;
+            gap: 12px;
+            margin: 16px 0 12px;
+        }
+        .pilier {
+            flex: 1;
+            background: #F2F5FF;
+            border-radius: 24px;
+            padding: 10px 6px;
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 1px solid #e0e8f5;
+        }
+        .pilier span {
+            font-size: 0.6rem;
+            font-weight: 400;
+            color: #5c6b7e;
+        }
+
+        hr {
+            margin: 16px 0 12px;
+            border: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #FFCD94, #FF8C00, #FFCD94);
+            border-radius: 5px;
+        }
+        .small-note {
+            font-size: 0.65rem;
+            color: #8f9bb3;
+            text-align: center;
+            margin-top: 12px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 700px) {
+            .a4 { padding: 20px 18px; }
+            .grid-2, .trois-piliers { grid-template-columns: 1fr; flex-direction: column; }
+            .time-item span { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="a4">
+
+    <div class="hero">
+        <div class="badge-main">🎯 40 vrais sujets DNB · annales 2022→2025</div>
+        <h1>⚡ Gagnez du temps pour le Brevet</h1>
+    </div>
+
+    <!-- POURQUOI ON GAGNE DU TEMPS -->
+    <div class="time-block">
+        <div class="time-item"><span>🚀 −40%</span> de révisions inutiles</div>
+        <div class="time-item"><span>🧠 3×</span> de rétention</div>
+        <div class="time-item"><span>🎯 repérage immédiat</span> des chapitres faibles</div>
+    </div>
+
+    <!-- BLOC SURVOLET BLEU : 40 SUJETS ANNALES -->
+    <div class="highlight-blue">
+        <strong>📚 40 sujets annales des années précédentes · correction personnalisée</strong>
+        <div class="highlight-detail">✔ cours suivi ✔ transfert des connaissances ✔ rédaction + méthodologie → note détaillée + pistes concrètes</div>
+    </div>
+
+    <!-- 4 FONCTIONS CLÉS -->
+    <div class="grid-2">
+        <div class="fonction-card">
+            <div class="fonction-titre">📋 40 sujets officiels</div>
+            <div class="fonction-desc">annales PDF · conditions réelles d’examen</div>
+            <div class="fonction-etude">🎓 entraînement sur documents authentiques</div>
+        </div>
+        <div class="fonction-card">
+            <div class="fonction-titre">🤖⚡ Correcteur intégré</div>
+            <div class="fonction-desc">analyse fond + forme · pas de réponse binaire</div>
+            <div class="fonction-etude">💡 feedback épistémique : savoir POURQUOI c’est perfectible</div>
+        </div>
+        <div class="fonction-card">
+            <div class="fonction-titre">🎤🎙️ Agent oral</div>
+            <div class="fonction-desc">3 questions sur l’exposé + 7 questions culture · feedback sur mesure</div>
+            <div class="fonction-etude">🎧 préparation active à l’épreuve orale</div>
+        </div>
+        <div class="fonction-card">
+            <div class="fonction-titre">📊👪 Suivi parental</div>
+            <div class="fonction-desc">fréquence, notes, chapitres faibles/forts · alerte inactivité</div>
+            <div class="fonction-etude">📈 monitoring visuel : repérage immédiat des progrès</div>
+        </div>
+    </div>
+
+    <!-- TROIS PILIERS SCIENTIFIQUES -->
+    <div class="trois-piliers">
+        <div class="pilier">🧠 <strong>Spaced learning</strong><br><span>révision espacée = on oublie moins</span></div>
+        <div class="pilier">⚡ <strong>Automatismes</strong><br><span>40 questions / session · ciblage des erreurs</span></div>
+        <div class="pilier">🃏 <strong>Flashcards</strong><br><span>score 0→3 · mémorisation longue durée</span></div>
+    </div>
+
+    <hr>
+
+    <div class="small-note">
+        ⚡ SMART LEARN · 40 sujets réels · correction sur mesure · basé sur spaced learning & feedback épistémique
+    </div>
+
+</div>
+</body>
+</html>

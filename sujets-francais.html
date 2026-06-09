@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sujets Français — Brevet 2026</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#09090f;color:#e8e8f0;font-family:Arial,sans-serif;min-height:100vh;}
+#landing{max-width:1000px;margin:0 auto;padding:1.5rem;}
+.header{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.header h1{font-size:1.4rem;color:#c97de8;}
+.header p{font-size:12px;color:#9090a8;margin-top:3px;}
+a.back{color:#5ecfb1;text-decoration:none;font-size:13px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;}
+.card{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.2rem;cursor:pointer;transition:border-color .2s;}
+.card:hover{border-color:#c97de8;}
+.card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.card-num{font-size:11px;color:#5a5a72;font-family:monospace;}
+.badge{font-size:10px;padding:2px 8px;border-radius:4px;background:rgba(201,125,232,.12);color:#c97de8;border:1px solid rgba(201,125,232,.25);}
+.card-titre{font-size:13px;color:#e8e8f0;margin-bottom:6px;line-height:1.4;}
+.card-meta{font-size:11px;color:#5a5a72;}
+.card-pdf{display:inline-block;margin-top:8px;font-size:11px;color:#5ecfb1;text-decoration:none;}
+.card-pdf:hover{text-decoration:underline;}
+#sujetView{display:none;max-width:900px;margin:0 auto;padding:1.5rem;}
+#sujetView.active{display:block;}
+.sv-header{background:#111118;border:1px solid #2a2a38;border-radius:12px;padding:1.2rem 1.5rem;margin-bottom:1.2rem;display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.sv-titre{font-size:1.1rem;font-weight:700;color:#c97de8;}
+.sv-sub{font-size:12px;color:#9090a8;margin-top:3px;}
+.sv-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.btn-retour{color:#5ecfb1;font-size:13px;cursor:pointer;background:none;border:none;}
+.sv-dl{color:#c97de8;font-size:12px;padding:5px 12px;border-radius:6px;background:rgba(201,125,232,.1);border:1px solid rgba(201,125,232,.3);text-decoration:none;}
+.sv-dl:hover{background:rgba(201,125,232,.2);}
+.btn-dl{color:#5ecfb1;font-size:12px;padding:5px 12px;border-radius:6px;background:rgba(94,207,177,.08);border:1px solid rgba(94,207,177,.25);cursor:pointer;}
+.section-box{background:#111118;border:1px solid #2a2a38;border-radius:12px;margin-bottom:1.2rem;overflow:visible;}
+.section-head{padding:10px 16px;border-bottom:1px solid #2a2a38;display:flex;align-items:center;gap:10px;}
+.sec-badge{font-size:10px;padding:3px 10px;border-radius:20px;font-weight:700;text-transform:uppercase;}
+.badge-red{background:rgba(201,125,232,.15);color:#c97de8;border:1px solid rgba(201,125,232,.25);}
+.badge-dict{background:rgba(94,207,177,.15);color:#5ecfb1;border:1px solid rgba(94,207,177,.25);}
+.badge-redac{background:rgba(245,166,35,.15);color:#f5a623;border:1px solid rgba(245,166,35,.25);}
+.badge-gram{background:rgba(94,170,207,.15);color:#5eaacf;border:1px solid rgba(94,170,207,.25);}
+.section-body{padding:14px 16px;}
+.dictee-box{background:#0d0d14;border:1px solid #2a2a38;border-radius:8px;padding:12px;font-size:13px;color:#9090a8;font-style:italic;line-height:1.6;margin-bottom:8px;}
+.dictee-consigne{font-size:12px;color:#5a5a72;margin-bottom:8px;}
+.redac-sujet{background:#0d0d14;border:1px solid #2a2a38;border-radius:8px;padding:12px;font-size:13px;line-height:1.6;margin-bottom:10px;}
+.question{padding:14px 0;border-bottom:1px solid #1a1a24;}
+.question:last-child{border-bottom:none;}
+.q-texte{font-size:13px;line-height:1.6;margin-bottom:10px;color:#e8e8f0;white-space:pre-wrap;}
+.q-badge{display:inline-block;font-size:10px;padding:1px 7px;border-radius:3px;margin-bottom:6px;font-weight:600;}
+.qb-comp{background:rgba(201,125,232,.1);color:#c97de8;}
+.qb-gram{background:rgba(94,170,207,.1);color:#5eaacf;}
+.answer-area{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:8px;color:#e8e8f0;font-size:13px;padding:10px;font-family:inherit;resize:vertical;min-height:80px;outline:none;}
+.answer-area:focus{border-color:#c97de8;}
+.btn-corriger{margin-top:8px;padding:7px 16px;border-radius:7px;border:1px solid rgba(201,125,232,.4);background:rgba(201,125,232,.08);color:#c97de8;font-size:12px;cursor:pointer;}
+.btn-corriger:hover{background:rgba(201,125,232,.15);}
+.btn-corriger:disabled{opacity:.4;cursor:not-allowed;}
+.panel{display:none;margin-top:10px;background:#0d0d14;border-radius:8px;border:1px solid #2a2a38;padding:14px;font-size:13px;}
+.panel.show{display:block;}
+.loading{display:flex;align-items:center;gap:8px;color:#9090a8;}
+.dot{width:8px;height:8px;border-radius:50%;background:#c97de8;animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}
+.corr-note{font-size:1.1rem;font-weight:800;color:#5ecfb1;margin-bottom:8px;}
+.corr-conseil{background:#1a1a24;border-radius:6px;padding:8px 12px;margin-bottom:6px;font-size:12px;line-height:1.5;}
+.corr-txt{font-size:13px;line-height:1.6;color:#e8e8f0;margin-bottom:8px;}
+.corr-off{margin-top:12px;padding-top:12px;border-top:1px solid #2a2a38;font-size:12px;color:#9090a8;}
+.corr-off strong{color:#5ecfb1;display:block;margin-bottom:4px;}
+.btn-copy{margin-top:8px;padding:5px 12px;border-radius:6px;border:1px solid #2a2a38;background:#1a1a24;color:#9090a8;font-size:11px;cursor:pointer;}
+.dictee-area{width:100%;background:#0d0d14;border:1px solid #2a2a38;border-radius:8px;color:#e8e8f0;font-size:13px;padding:10px;font-family:inherit;resize:vertical;min-height:100px;outline:none;}
+.dictee-area:focus{border-color:#5ecfb1;}
+.btn-corriger-dict{margin-top:8px;padding:7px 16px;border-radius:7px;border:1px solid rgba(94,207,177,.4);background:rgba(94,207,177,.08);color:#5ecfb1;font-size:12px;cursor:pointer;}
+.btn-corriger-dict:hover{background:rgba(94,207,177,.15);}
+</style>
+<script src="monetization.js"></script>
+</head>
+<body>
+<div id="landing">
+  <div class="header">
+    <div>
+      <h1>📖 Sujets Français — Brevet DNB</h1>
+      <p>10 vrais sujets officiels · Compréhension · Grammaire · Dictée · Rédaction · 2019→2025</p>
+    </div>
+    <a href="index.html" class="back">← Hub</a>
+  </div>
+  <div class="grid" id="grid"></div>
+</div>
+<div id="sujetView">
+  <div class="sv-header">
+    <div>
+      <div class="sv-titre" id="svTitre"></div>
+      <div class="sv-sub" id="svSub"></div>
+    </div>
+    <div class="sv-actions">
+      <a class="sv-dl" id="svDl" href="#" target="_blank">⬇ PDF officiel</a>
+      <button class="btn-dl" id="btnDl">📥 Télécharger mes corrections</button>
+      <button class="btn-retour" onclick="retour()">← Retour</button>
+    </div>
+  </div>
+  <div id="svContent"></div>
+</div>
+<script>
+const STORE = {};
+const _STORE_KEY = 'fr_corrections_ia';
+try {
+  const _saved = JSON.parse(localStorage.getItem(_STORE_KEY) || '{}');
+  Object.assign(STORE, _saved);
+} catch(e) {}
+
+const SUJETS = [
+  {
+    id:1, annee:'2025', session:'Métropole (juin)',
+    titre:'25GENFRQGME1 — Simone de Beauvoir, La Force de l\'âge (1960) — Arrivée à Marseille',
+    pdf:'https://www.education.gouv.fr/media/228009/download',
+    dictee_auteur:'Simone de Beauvoir, La Force de l\'âge, 1960',
+    redaction_s1:'SUJET D\'IMAGINATION — Quelque temps plus tard, la narratrice écrit une lettre à ses parents dans laquelle elle raconte les jours qui ont suivi son arrivée dans la ville. Vous décrirez les expériences vécues, les lieux explorés, les personnes rencontrées et exprimerez les impressions que lui procurent ces découvertes.',
+    redaction_s2:'SUJET DE RÉFLEXION — Pensez-vous que la littérature et les arts permettent aux lecteurs et aux spectateurs de découvrir des lieux, réels ou fictifs, comme s\'ils y étaient ? Développez en vous appuyant sur des exemples précis issus de vos lectures et de votre culture artistique personnelle.',
+    texte_sujet:'1   Dans toute mon existence, je n\'ai connu aucun instant que je puisse qualifier de\n2   décisif ; mais certains se sont rétrospectivement chargés d\'un sens si lourd qu\'ils\n3   émergent de mon passé avec l\'éclat des grands événements. Je me rappelle mon arrivée\n4   à Marseille comme si elle avait marqué dans mon histoire un tournant absolument neuf.\n5   J\'avais laissé ma valise à la consigne et je m\'immobilisai en haut du grand escalier.\n6   « Marseille », me dis-je. Sous le ciel bleu, des tuiles ensoleillées, des trous d\'ombre, des\n7   platanes couleur d\'automne ; au loin des collines et le bleu de la mer ; une rumeur montait\n8   de la ville avec une odeur d\'herbes brûlées et des gens allaient, venaient au creux des\n9   rues noires. Marseille. J\'étais là, seule, les mains vides, séparée de mon passé et de tout\n10  ce que j\'aimais, et je regardais la grande cité inconnue où j\'allais sans secours tailler au\n11  jour le jour ma vie. Jusqu\'alors, j\'avais dépendu étroitement d\'autrui ; on m\'avait imposé\n12  des cadres et des buts ; et puis, un grand bonheur m\'avait été donné. Ici, je n\'existais\n13  pour personne ; quelque part, sous un de ces toits, j\'aurais à faire quatorze heures de\n14  cours chaque semaine : rien d\'autre n\'était prévu pour moi, pas même le lit où je\n15  dormirais ; mes occupations, mes habitudes, mes plaisirs, c\'était à moi de les inventer.\n16  Je me mis à descendre l\'escalier ; je m\'arrêtais à chaque marche, émue par ces maisons,\n17  ces arbres, ces eaux, ces rochers, ces trottoirs qui peu à peu allaient se révéler à moi et\n18  me révéler à moi-même.\n19  Sur l\'avenue de la gare, à droite, à gauche, il y avait des restaurants aux terrasses\n20  abritées par de hautes verrières. Contre une des vitres, j\'aperçus un écriteau : « Chambre\n21  à louer ». Ce n\'était pas une chambre selon mon cœur : un lit volumineux, des chaises\n22  et une armoire ; mais je pensai que la grande table serait commode pour travailler, et la\n23  patronne me proposait un prix de pension qui me convenait. J\'allai chercher ma valise,\n24  et je la déposai au Restaurant de l\'Amirauté. Deux heures plus tard, j\'avais rendu visite\n25  à la directrice du lycée, mon emploi du temps était fixé ; sans connaître Marseille, déjà j\'y\n26  habitais. Je partis à sa découverte.\n27  J\'eus le coup de foudre. Je grimpai sur toutes ses rocailles, je rôdai dans toutes ses\n28  ruelles, je respirai le goudron et les oursins du Vieux-Port, je me mêlai aux foules de la\n29  Canebière, je m\'assis dans des allées, dans des jardins, sur des cours paisibles où la\n30  provinciale odeur des feuilles mortes étouffait celle du vent marin.\n    Simone de Beauvoir, La Force de l\'âge, 1960',
+    questions:[
+      {type:'comprehension',pts:4,texte:'Q1 — Que vient faire la narratrice à Marseille ? Justifiez votre réponse par deux citations du texte. (4 pts)',rep:'Elle vient enseigner au lycée : « j\'avais rendu visite à la directrice du lycée, mon emploi du temps était fixé ». Elle commence une vie indépendante, seule.'},
+      {type:'comprehension',pts:4,texte:'Q2 — Lignes 1 à 4 : À quoi voit-on que la narratrice vit un moment important de sa vie ? Deux éléments justifiés par des citations. (4 pts)',rep:'1) Rupture avec le passé : « séparée de mon passé et de tout ce que j\'aimais ». 2) Solitude assumée : « seule, les mains vides ».'},
+      {type:'comprehension',pts:6,texte:'Q3 — Lignes 5 à 18 : Qu\'est-ce qui permet de dire qu\'une vie nouvelle commence pour elle ? Trois éléments justifiés chacun par une citation. (6 pts)',rep:'1) Découverte de la ville. 2) Liberté : « je construisais sans secours mon bonheur ». 3) Émerveillement : « une vie toujours neuve me remplissait les yeux ».'},
+      {type:'comprehension',pts:6,texte:'Q4 — Comment l\'émerveillement de la narratrice se manifeste-t-il ? Deux éléments, chacun appuyé sur un procédé d\'écriture identifié et analysé. (6 pts)',rep:'1) Accumulation (« vieux escaliers, vieilles ruelles, marchés aux poissons ») → sensation d\'abondance. 2) Hyperbole (« Marseille ne s\'épuisait pas ») → ville infinie.'},
+      {type:'comprehension',pts:6,texte:'Q5 — Quels traits de caractère attribuez-vous à la narratrice ? Trois éléments justifiés chacun par une citation. (6 pts)',rep:'1) Indépendante : « je construisais sans secours mon bonheur ». 2) Curieuse : « je me perdais dans la tristesse des docks ». 3) Lucide et mélancolique : « je trouvais de la douceur à cette nostalgie ».'},
+      {type:'comprehension',pts:6,texte:'Q6 — Ce tableau (Frédéric Bazille, La Robe rose, 1864) pourrait-il illustrer le texte ? Développez en trois arguments, chacun justifié par le texte et l\'image. (6 pts)',rep:'Réponse ouverte : solitude du personnage, lumière méditerranéenne, posture contemplative, couleurs chaudes.'},
+      {type:'grammaire',pts:2,texte:'Q7 — « J\'étais là, seule les mains vides... » a) Classe grammaticale du mot souligné « seule ». b) Justifiez la terminaison. (2 pts)',rep:'a) Adjectif qualificatif attribut du sujet. b) -e car accord féminin singulier avec le sujet « je ».'},
+      {type:'grammaire',pts:3,texte:'Q8 — « j\'avais rendu visite à la directrice du lycée, mon emploi du temps était fixé ». a) Placez entre crochets les propositions et précisez leur classe. b) Comment sont-elles reliées ? (3 pts)',rep:'a) [j\'avais rendu visite à la directrice du lycée] = proposition indépendante / [mon emploi du temps était fixé] = proposition indépendante. b) Juxtaposition (virgule).'},
+      {type:'grammaire',pts:3,texte:'Q9 — « je m\'immobilisai en haut du grand escalier ». a) Les trois éléments du mot souligné. b) Sens du verbe et mot de la même famille. (3 pts)',rep:'a) Préfixe im- + radical mobil(e) + suffixe -iser. b) S\'arrêter de bouger. Famille : mobile, immobile, mobilité.'},
+      {type:'grammaire',pts:10,texte:'Q10 — Réécrivez le passage en remplaçant « je » par « nous » (narratrice + une amie). Toutes les modifications nécessaires. (10 pts)',rep:'Accord au féminin pluriel : participes passés, adjectifs, pronoms. Ex : « nous étions là, seules, les mains vides... nous regardions... nous avions dépendu... »'}
+    ]
+  },
+  {
+    id:2, annee:'2025', session:'Amérique du Nord',
+    titre:'25GENFRQGCAN1 — Gaël Faye, Jacaranda (2024) — Rwanda, mémoire, exil',
+    pdf:'https://www.education.gouv.fr/media/227581/download',
+    dictee_auteur:'Gaël Faye, Jacaranda, 2024',
+    redaction_s1:'SUJET D\'IMAGINATION — Un soir, après avoir vu des images du Rwanda à la télévision, le narrateur, seul dans sa chambre, éprouve le besoin d\'écrire à sa mère. Rédigez cette lettre.',
+    redaction_s2:'SUJET DE RÉFLEXION — Les œuvres d\'art doivent-elles montrer la réalité, même lorsque celle-ci est violente ? Développement organisé avec exemples précis et variés.',
+    texte_sujet:'1   Comme elle taisait totalement ses origines, j\'en arrivais presque à oublier qu\'elle était\n2   née et avait grandi sous d\'autres cieux. Si bien que lorsque je la surprenais en train de parler\n3   kinyarwanda lors d\'une conversation téléphonique et l\'entendais s\'exprimer couramment\n4   dans cette langue inconnue, je m\'arrêtais, stupéfait. Je n\'ai jamais su avec qui elle\n5   conversait. Quand je l\'interrogeais, elle restait évasive, parlait de « vieilles connaissances »\n6   ou de sa « lointaine famille à Bruxelles ». Je profitais de ces appels pour l\'épier. Ses\n7   attitudes, les inflexions de sa voix, le maintien de son corps, jusqu\'au battement de ses\n8   mains dans l\'air, en faisaient une autre personne et lui conféraient une aura mystérieuse qui\n9   me troublait profondément. Lorsque je l\'observais dans cette incarnation nouvelle, une\n10  sensation fugace et désagréable me parcourait. Celle de ne rien savoir de cette personne\n11  avec qui je vivais depuis toujours. Le terrible sentiment de ne pas connaître cette femme.\n12  Ma propre mère.\n13  Le Rwanda est arrivé dans ma vie par la télévision, que nous regardions religieusement\n14  à l\'heure du dîner. La première fois que le présentateur en avait parlé, je m\'étais tourné\n15  instinctivement vers ma mère, tout excité, presque content qu\'il soit enfin question de son\n16  pays natal au journal télévisé. Mais elle n\'avait pas réagi, complètement absorbée par les\n17  images qui défilaient à l\'écran. Voyant ma fébrilité, mon père m\'avait lancé un regard gêné\n18  et dissuasif. À la fin de l\'émission, j\'avais attendu de la part de ma mère une réaction qui\n19  n\'était pas venue. Cette scène se répéta quasiment chaque soir. Des mois durant, un\n20  magma d\'images de mort, de violence et d\'exode s\'est déversé dans nos assiettes. Avant\n21  la diffusion, le présentateur prenait le soin d\'avertir que certains contenus étaient\n22  susceptibles de heurter la sensibilité des téléspectateurs. Nous restions ensuite silencieux,\n23  nos regards fixant l\'écran, nos fourchettes suspendues, figés comme des statues devant le\n24  spectacle de cette barbarie lointaine. Puis le présentateur réapparaissait pour annoncer un\n25  autre reportage. Un ange passait avant que les choses ne reprennent leur cours normal :\n26  mon père se versait un verre de vin, ma mère poivrait énergiquement sa purée de pommes\n27  de terre, je peinais à découper mon steak et à chasser les scènes d\'horreur qui venaient de\n28  me caramboler. Chez nous, la sensibilité du téléspectateur était avalée comme une bouchée\n29  de silence. Ce qui finissait par m\'infliger de terribles maux de ventre.\n    Gaël Faye, Jacaranda, 2024',
+    questions:[
+      {type:'comprehension',pts:3,texte:'Q1 — Quels sont les personnages présents dans ce texte ? Que sait-on du personnage féminin ? (3 pts)',rep:'Le narrateur (enfant), sa mère, son père. La mère est d\'origine rwandaise, arrivée en France en 1973, elle ne parle jamais de son passé.'},
+      {type:'comprehension',pts:4,texte:'Q2 — Pourquoi le narrateur observe-t-il sa mère dans le premier paragraphe ? Deux éléments illustrés chacun par une citation. (4 pts)',rep:'1) Elle téléphone en secret : « je profitais de ces appels pour l\'épier ». 2) Elle parle une langue inconnue, mystérieuse.'},
+      {type:'comprehension',pts:3,texte:'Q3a — Pourquoi le pays natal de la mère est-il évoqué dans les médias ? Deux éléments du texte. (3 pts)',rep:'Le Rwanda est en guerre civile/génocide : images de mort, de violence et d\'exode diffusées à la télévision.'},
+      {type:'comprehension',pts:4,texte:'Q3b — Comment réagissent les parents face aux images à la télévision ? Deux éléments développés. (4 pts)',rep:'Silence : « nous restions ensuite silencieux ». La mère est bouleversée mais ne parle pas.'},
+      {type:'comprehension',pts:6,texte:'Q4 — « Des mois durant, un magma d\'images de mort, de violence et d\'exode s\'est déversé dans nos assiettes. » Deux procédés nommés et expliqués. (6 pts)',rep:'1) Métaphore : « magma d\'images » → masse informe, écrasante. 2) Métaphore : « s\'est déversé dans nos assiettes » → violence qui envahit l\'espace intime familial.'},
+      {type:'comprehension',pts:6,texte:'Q5 — Comment expliquez-vous les « terribles maux de ventre » (l.29) ? Deux éléments appuyés sur le texte. (6 pts)',rep:'1) Stress et angoisse face aux images. 2) Le narrateur comprend inconsciemment la gravité de ce qui se passe en lien avec l\'origine de sa mère.'},
+      {type:'comprehension',pts:6,texte:'Q6 — Quels liens entre la photographie (femme devant le mur des noms) et le texte ? Trois éléments. (6 pts)',rep:'Thème de l\'exil, de la mémoire, des racines, de la famille déchirée par l\'histoire.'},
+      {type:'grammaire',pts:2,texte:'Q7 — « Nous restions ensuite silencieux ». a) Temps et mode du verbe souligné. b) Valeur. (2 pts)',rep:'a) Imparfait de l\'indicatif. b) Répétition/habitude dans le passé.'},
+      {type:'grammaire',pts:4,texte:'Q8 — « Le Rwanda est arrivé dans ma vie par la télévision, que nous regardions religieusement à l\'heure du dîner. » a) Classe grammaticale de « que ». b) Fonction + deux manipulations. (4 pts)',rep:'a) Pronom relatif. b) COD de « regardions ». Substitution par l\'antécédent ; suppression impossible.'},
+      {type:'grammaire',pts:2,texte:'Q9 — « Je profitais de ces appels pour l\'épier » : sens du mot souligné + synonyme. (2 pts)',rep:'Épier = observer discrètement, surveiller en secret. Synonymes : espionner, guetter.'},
+      {type:'grammaire',pts:10,texte:'Q10 — Réécrivez en remplaçant « la » par « les » au masculin pluriel. Commencez par « Si bien que lorsque je les surprenais... » Toutes les modifications. (10 pts)',rep:'Masculin pluriel : pronoms, participes passés, adjectifs. Ex : « les surprenais en train de parler... les entendais s\'exprimer... »'}
+    ]
+  },
+  {
+    id:3, annee:'2025', session:'Asie',
+    titre:'25GENFRQGAS1 — Salma Kojoc, Noir Liban — broche, Beyrouth, exil',
+    pdf:'https://www.education.gouv.fr/media/228039/download',
+    dictee_auteur:'Laurent Gaudé, Eldorado, 2006',
+    redaction_s1:'SUJET D\'IMAGINATION — Un jour, vous retrouvez un objet qui évoque pour vous un souvenir. Racontez l\'histoire qui vous lie à cet objet.',
+    redaction_s2:'SUJET DE RÉFLEXION — Pourquoi les œuvres d\'art qui évoquent des souvenirs personnels peuvent-elles nous plaire ? Appuyez-vous sur des exemples variés.',
+    texte_sujet:'1   Au décès de ma grand-mère, vingt ans plus tard, j\'ai retrouvé le bijou dans sa chambre.\n2   Tout près, il y avait la boîte à chaussure. Je l\'ouvris, m\'arrêtai sur une image.\n3   C\'est à l\'aéroport d\'Abidjan, le jour du départ. Juillet 1995, j\'ai neuf ans, mon premier\n4   voyage vers le Liban. C\'est quelques heures avant la grande rupture. La photo met en scène\n5   la fiction familiale. Nous sommes, mon père et moi, dans le cadre. Lui se tient droit. Sa main\n6   gauche embarrassée d\'elle-même, rejetée vers le bas, fait une frontière avec la petite fille à\n7   ses côtés. L\'image photographique a fixé la représentation d\'une famille rompue, disloquée,\n8   l\'absence de la mère, la distance qui déjà s\'installe entre les corps. Si l\'on avance le regard,\n9   on voit sur la robe la broche.\n10  C\'est avec ce bijou, construit à partir d\'une perle en forme de larme, que je suis arrivée à\n11  Beyrouth, chez ma grand-mère. Plus tard, je m\'en suis souvenue, ou alors avais-je inventé\n12  le souvenir ; ma grand-mère m\'avait dit : Cette broche, ta mère l\'a trouvée un jour d\'orages\n13  sur la plage de Grand Bassam. Et j\'ai alors imaginé ma mère se promenant le long de la\n14  baie, découvrant l\'objet emmené par l\'écume, poli par les vagues d\'océan, l\'Atlantique,\n15  qui gardait encore la mémoire de l\'horreur des navires négriers, l\'Atlantique, qui conservait\n16  l\'écho des canons annonçant les armées coloniales accompagnées des marchands de\n17  pacotilles et de verrerie, de caoutchouc et de chair humaine, l\'Atlantique, un jour, avait\n18  aussi apporté ce cadeau à ma mère.\n19  Quels mondes la perle en broche avait-elle parcourus pour échouer sur le sable de Bassam\n20  et continuer sa traversée dans le tiroir de Beyrouth et puis se retrouver à nouveau là dans\n21  cette maison de Hamra où je te parle et c\'est encore la broche en perle que nous regardons\n22  tous deux pour tisser la toile entre nous, dans cette parole échangée en bord de\n23  Méditerranée ; et ces mots qui sortent de nous, d\'où puisent-ils leur source, quels fleuves\n24  ont-ils descendus, quelles forêts d\'enfance ont-ils traversées, dans quelle solitude ont-ils\n25  été couvés pour venir là cet après-midi se mêler à la première fraîcheur de l\'automne et\n26  nous envelopper au même moment ?\n    Salma Kojok, Noir Liban, 2023',
+    questions:[
+      {type:'comprehension',pts:6,texte:'Q1 — Quel titre donneriez-vous à cet extrait ? Justifiez avec deux éléments différents du texte. (6 pts)',rep:'Réponse ouverte. Ex : « La broche » ou « Le départ ». Justification sur 2 éléments précis du texte.'},
+      {type:'comprehension',pts:4,texte:'Q2 — « C\'est quelques heures avant la grande rupture ». De quelle grande rupture est-il question ? Justifiez par une citation expliquée. (4 pts)',rep:'Départ définitif du pays natal. Justification : exil en bateau, séparation de la famille.'},
+      {type:'comprehension',pts:4,texte:'Q3 — Deuxième paragraphe : quelles particularités la narratrice met-elle en avant dans le portrait de sa famille ? Justifiez. (4 pts)',rep:'Diversité des origines, cohabitation de cultures, liens familiaux complexes.'},
+      {type:'comprehension',pts:6,texte:'Q4 — Que représente « l\'Atlantique » pour la narratrice ? Justifiez par un procédé littéraire ou une figure de style expliquée. (6 pts)',rep:'La coupure définitive, le point de non-retour. Ex : métaphore de la frontière infranchissable.'},
+      {type:'comprehension',pts:6,texte:'Q5 — Quels rôles la broche joue-t-elle dans la relation entre la grand-mère et sa petite-fille ? Deux éléments. (6 pts)',rep:'1) Lien affectif et transmission entre générations. 2) Mémoire et identité : représente les racines familiales.'},
+      {type:'comprehension',pts:6,texte:'Q6 — Quels liens entre le texte et l\'image (valise de Soundirassane Nadaradjane, 1972) ? Deux éléments analysés. (6 pts)',rep:'Voyage, rupture, mémoire, objet symbolique qui concentre l\'identité de l\'exilé.'},
+      {type:'grammaire',pts:3,texte:'Q7 — « Au décès de ma grand-mère, vingt ans plus tard, j\'ai retrouvé le bijou dans sa chambre ». a) Fonction du groupe souligné. b) Deux manipulations syntaxiques. (3 pts)',rep:'a) Complément circonstanciel de temps. b) Déplacement possible ; suppression possible sans rendre la phrase agrammaticale.'},
+      {type:'grammaire',pts:3,texte:'Q8 — « c\'est encore la broche en perle que nous regardons tous deux pour tisser la toile entre nous ». a) Expansions du nom « broche » + classe grammaticale. b) Réécrivez avec une expansion d\'une autre nature. (3 pts)',rep:'a) « en perle » = GN complément du nom ; « que nous regardons... » = subordonnée relative. b) Ex : « la vieille broche en perle » (adjectif épithète).'},
+      {type:'grammaire',pts:2,texte:'Q9 — « représentation ». a) Formation du mot. b) Classe grammaticale. (2 pts)',rep:'a) Re- + présent- + -ation. b) Nom commun.'},
+      {type:'grammaire',pts:10,texte:'Q10 — Réécrivez en remplaçant « je suis arrivée » par « nous sommes arrivées » (narratrice + sa sœur). Toutes les modifications. (10 pts)',rep:'Féminin pluriel : participes passés, adjectifs, pronoms. Ex : « C\'est avec ce bijou que nous sommes arrivées... nous nous en sommes souvenues... »'}
+    ]
+  },
+  {
+    id:4, annee:'2024', session:'Métropole (juin)',
+    titre:'24GENFRQGME1 — Jorge Semprun, L\'Écriture ou la Vie — WW2, La Paloma',
+    pdf:'https://www.education.gouv.fr/media/195328/download',
+    dictee_auteur:'Erich-Maria Remarque, À l\'Ouest rien de nouveau, 1929',
+    redaction_s1:'SUJET D\'IMAGINATION — Vous avez fait l\'expérience d\'une musique qui vous transporte dans un souvenir. Racontez cette expérience à la 1ère personne et aux temps du passé en insistant sur les sensations et les sentiments éprouvés.',
+    redaction_s2:'SUJET DE RÉFLEXION — En quoi la littérature et les arts permettent-ils aux êtres humains de mieux se comprendre ? Appuyez-vous sur des exemples littéraires et artistiques précis.',
+    texte_sujet:'1   L\'Allemand était apparu sur la crête du rivage, à motocyclette. Le moteur de son engin\n2   ronronnait doucement. Il s\'était engagé sur le sentier qui descendait vers le plan d\'eau.\n3   Nous l\'attendions, Julien et moi.\n4   C\'est-à-dire, nous n\'attendions pas cet Allemand-là précisément. Ce gamin blond aux\n5   yeux bleus. (Attention : je fabule. Je n\'ai pas pu voir la couleur de ses yeux à ce\n6   moment-là. Plus tard seulement, lorsqu\'il fut mort. Mais il m\'avait tout l\'air d\'avoir des\n7   yeux bleus.) Nous attendions un Allemand, des Allemands. N\'importe lesquels. Nous\n8   savions que les soldats de la Wehrmacht avaient pris l\'habitude de venir en groupe, vers\n9   la fin de l\'après-midi, se rafraîchir à cet endroit. Nous étions venus, Julien et moi,\n10  étudier le terrain, voir s\'il serait possible de monter une embuscade avec l\'aide des\n11  maquis des environs.\n12  Mais cet Allemand semblait être seul. Aucune autre motocyclette, aucun autre véhicule\n13  n\'était apparu à sa suite sur le chemin de crête. Il faut dire que ce n\'était pas non plus\n14  l\'heure habituelle. C\'était vers le milieu de la matinée.\n15  Il a roulé jusqu\'au bord de l\'eau, est descendu de son engin, qu\'il a calé sur son trépied.\n16  Debout, respirant la douceur de la France profonde, il a défait le col de sa vareuse. Il\n17  était détendu, visiblement. Mais il était resté sur ses gardes : sa mitraillette lui barrait\n18  la poitrine, suspendue à la bretelle qu\'il avait passée autour du cou.\n19  Julien et moi nous sommes regardés. La même idée nous était venue.\n20  L\'Allemand était seul, nous avions nos Smith and Wesson. La distance qui nous séparait\n21  de l\'Allemand était bonne, il était tout à fait à portée de nos armes. Il y avait une moto\n22  à récupérer, une mitraillette.\n23  Nous étions à l\'abri, à l\'affût : c\'était une cible parfaite. La même idée nous était donc\n24  venue, à Julien et à moi.\n25  Mais soudain, le jeune soldat allemand a levé les yeux au ciel et il a commencé à chanter.\n26  Kommt eine weisse Taube zu Dir geflogen...\n27  Ça m\'a fait sursauter, j\'ai failli faire du bruit, en cognant le canon du Smith and Wesson\n28  contre le rocher qui nous abritait. Julien m\'a foudroyé du regard.\n29  Peut-être cette chanson ne lui rappelait rien. Peut-être ne savait-il même pas que c\'était\n30  La Paloma. Même s\'il le savait, peut-être que La Paloma ne lui rappelait rien. L\'enfance,\n31  les bonnes qui chantent à l\'office, les musiques des kiosques à musique, dans les squares\n32  ombragés des villégiatures, La Paloma ! Comment n\'aurais-je pas sursauté en entendant\n33  cette chanson ?\n34  L\'Allemand continuait de chanter, d\'une belle voix blonde.\n35  Ma main s\'était mise à trembler. Il m\'était devenu impossible de tirer sur ce jeune soldat\n36  qui chantait La Paloma. Comme si le fait de chanter cette mélodie de mon enfance, cette\n37  rengaine pleine de nostalgie, le rendait subitement innocent.\n    Jorge Semprun, L\'Écriture ou la Vie, 1994',
+    questions:[
+      {type:'comprehension',pts:4,texte:'Q1 — Identifiez les différents personnages dans cet extrait et précisez leurs liens. (4 pts)',rep:'Le narrateur (résistant/civil français), ses compagnons, un soldat allemand de la Wehrmacht. Liens : ennemis de guerre.'},
+      {type:'comprehension',pts:4,texte:'Q2 — « Nous attendions un Allemand, des Allemands. N\'importe lesquels. » Pourquoi ces trois formulations successives ? (4 pts)',rep:'Gradation : cible précise → indifférence froide → déshumanisation progressive de l\'acte envisagé.'},
+      {type:'comprehension',pts:6,texte:'Q3 — L\'Allemand représente-t-il « une cible parfaite » ? Justifiez sur les lignes 13 à 19. Deux éléments. (6 pts)',rep:'Oui : il est seul, isolé. Non : il chante → il est humain, absorbé par sa musique.'},
+      {type:'comprehension',pts:6,texte:'Q4 — Lignes 20 à 31 : Comment évolue la relation du narrateur avec les autres personnages ? Deux éléments sur pronoms, désignations et construction des phrases. (6 pts)',rep:'Ses compagnons : distanciation progressive. L\'Allemand : rapprochement inattendu grâce à la chanson.'},
+      {type:'comprehension',pts:6,texte:'Q5 — Pourquoi La Paloma rend l\'Allemand « subitement innocent » ? Deux éléments justifiés. (6 pts)',rep:'1) La musique humanise → il n\'est plus un soldat mais un homme. 2) Chanson partagée transcendant les frontières.'},
+      {type:'comprehension',pts:6,texte:'Q6 — Cette image peut-elle illustrer le texte ? Trois éléments descriptifs précis + citations. (6 pts)',rep:'Réponse ouverte : guerre, humanité partagée, ambiguïté de l\'ennemi.'},
+      {type:'grammaire',pts:3,texte:'Q7 — « L\'Allemand continuait de chanter, d\'une belle voix blonde. » a) Fonction du groupe souligné. b) Deux manipulations. (3 pts)',rep:'a) Complément circonstanciel de manière. b) Déplacement possible ; suppression possible.'},
+      {type:'grammaire',pts:3,texte:'Q8 — « Nous savions que les soldats de la Wehrmacht avaient pris l\'habitude... » a) Encadrez la subordonnée. b) Sa fonction. (3 pts)',rep:'a) [que les soldats de la Wehrmacht avaient pris l\'habitude de venir en groupe... à cet endroit]. b) Subordonnée conjonctive complétive COD de « savions ».'},
+      {type:'grammaire',pts:2,texte:'Q9 — « je fabule ». a) Deux mots de la même famille. b) Sens dans le texte. (2 pts)',rep:'a) Fable, fabuleux. b) Invente des histoires, imagine des choses qui ne correspondent pas à la réalité.'},
+      {type:'grammaire',pts:10,texte:'Q10 — Réécrivez en remplaçant « il » par « ils ». « mitraillette » reste au singulier. Toutes les modifications. (10 pts)',rep:'Masculin pluriel : verbes, pronoms, adjectifs. « Ils étaient détendus... Mais ils étaient restés sur leurs gardes : leur mitraillette leur barrait la poitrine... »'}
+    ]
+  },
+  {
+    id:5, annee:'2024', session:'Amérique du Nord',
+    titre:'24GENFRQGCAN1 — Alphonse Daudet, Wood\'stown (1873) — forêt vs ville',
+    pdf:'https://www.education.gouv.fr/media/195330/download',
+    dictee_auteur:'Alphonse Daudet, Wood\'stown, 1873',
+    redaction_s1:'SUJET D\'IMAGINATION — Imaginez une suite à ce texte en mettant en valeur le rôle de la forêt. Comme Daudet, écrivez à la 3ème personne du singulier et aux temps du passé.',
+    redaction_s2:'SUJET DE RÉFLEXION — L\'art peut-il nous rapprocher de la nature ? Développement organisé avec exemples précis.',
+    texte_sujet:'1   L\'emplacement était superbe pour bâtir une ville. Il n\'y avait qu\'à déblayer les bords du\n2   fleuve, en abattant une partie de la forêt, de l\'immense forêt vierge enracinée là depuis\n3   la naissance du monde. Alors abritée tout autour par des collines, la ville descendrait\n4   jusqu\'aux quais d\'un port magnifique, établi dans l\'embouchure de la Rivière-Rouge, à\n5   quatre milles seulement de la mer.\n6   Dès que le gouvernement de Washington eut accordé la concession, charpentiers et\n7   bûcherons se mirent à l\'œuvre ; mais vous n\'avez jamais vu une forêt pareille. Cramponnée\n8   au sol de toutes ses lianes, de toutes ses racines, quand on l\'abattait par un bout elle\n9   repoussait d\'un autre, se rajeunissait de ses blessures, et chaque coup de hache faisait\n10  sortir des bourgeons verts. Les rues, les places de la ville à peine tracées étaient envahies\n11  par la végétation. Les murailles grandissaient moins vite que les arbres et, sitôt élevées,\n12  croulaient sous l\'effort des racines toujours vivantes.\n13  Pour arriver à bout de cette résistance où s\'émoussait le fer des cognées et des haches,\n14  on fut obligé de recourir au feu. Jour et nuit une fumée étouffante emplit l\'épaisseur des\n15  fourrés, pendant que les grands arbres au-dessus flambaient comme des cierges. La forêt\n16  essaya de lutter encore, retardant l\'incendie avec des flots de sève et la fraîcheur sans\n17  air de ses feuillages pressés. Enfin l\'hiver arriva. La neige s\'abattit comme une seconde\n18  mort sur les grands terrains pleins de troncs noircis, de racines consumées. Désormais\n19  on pouvait bâtir.\n20  Bientôt une ville immense, toute en bois comme Chicago, s\'étendit aux bords de la\n21  Rivière-Rouge, avec ses larges rues alignées, numérotées, rayonnant autour des places,\n22  sa Bourse, ses halles, ses églises, ses écoles, et tout un attirail maritime de hangars, de\n23  douanes, de docks, d\'entrepôts, de chantiers de construction pour les navires. La ville de\n24  bois, Wood\'stown - comme on l\'appela, - fut vite peuplée par les essuyeurs de plâtres des\n25  villes neuves. Une activité fiévreuse circula dans tous ses quartiers ; mais sur les collines\n26  environnantes, dominant les rues pleines de foule et le port encombré de vaisseaux, une\n27  masse sombre et menaçante s\'étalait en demi-cercle. C\'était la forêt qui regardait.\n28  Elle regardait cette ville insolente qui lui avait pris sa place au bord du fleuve, et trois mille\n29  arbres gigantesques. Tout Wood\'stown était fait avec sa vie à elle.\n    Alphonse Daudet, Wood\'stown, 1873',
+    questions:[
+      {type:'comprehension',pts:5,texte:'Q1 — Quel titre donneriez-vous à ce passage ? Justifiez avec deux éléments du texte. (5 pts)',rep:'Ex : « La revanche de la forêt ». Justification sur 2 éléments précis.'},
+      {type:'comprehension',pts:5,texte:'Q2 — « Pour arriver à bout de cette résistance » — De quelle résistance est-il question ? Trois citations expliquées. (5 pts)',rep:'La résistance de la forêt à l\'avancée de la ville. Citations sur la forêt qui repousse, qui résiste, qui envahit.'},
+      {type:'comprehension',pts:6,texte:'Q3 — Pourquoi la ville est-elle désignée comme « ville insolente » ? Deux éléments développés. (6 pts)',rep:'Insolente = arrogante, qui a osé s\'installer à la place de la forêt. La ville mérite la revanche naturelle.'},
+      {type:'comprehension',pts:4,texte:'Q4 — Portrait de la forêt. a) Ce qui le caractérise. b) Deux procédés littéraires. (4 pts)',rep:'a) La forêt est personnifiée, vivante, vengeresse. b) Personnification + métaphore.'},
+      {type:'comprehension',pts:5,texte:'Q5 — Comment comprenez-vous les relations entre les hommes et la nature dans ce texte ? Appuyez-vous sur le texte. (5 pts)',rep:'Domination inversée : les hommes ont cru dominer la nature. La forêt reprend ses droits.'},
+      {type:'comprehension',pts:7,texte:'Q6 — Quels liens entre le texte et l\'image (photographie d\'une forêt) ? Réponse développée avec description de l\'image. (7 pts)',rep:'Nature vs ville, végétation envahissante, rapports de force entre nature et civilisation.'},
+      {type:'grammaire',pts:3,texte:'Q7 — « Elle regardait cette ville insolente qui lui avait pris sa place au bord du fleuve... » a) Verbes + temps. b) Valeur de chaque temps. (3 pts)',rep:'a) « regardait » imparfait ; « avait pris » plus-que-parfait. b) Durée/fond / antériorité.'},
+      {type:'grammaire',pts:2,texte:'Q8 — « Jour et nuit une fumée étouffante emplit l\'épaisseur des fourrés ». a) Fonction du groupe souligné. b) Manipulation. (2 pts)',rep:'a) CC de temps. b) Déplacement possible.'},
+      {type:'grammaire',pts:3,texte:'Q9 — « emplacement ». a) Formation. b) Classe grammaticale. c) Deux mots de la même famille. (3 pts)',rep:'a) Radical emplace- + suffixe -ment. b) Nom commun. c) Place, placer, déplacement.'},
+      {type:'grammaire',pts:10,texte:'Q10 — Réécrivez ce passage en conjuguant les verbes au futur de l\'indicatif. (10 pts)',rep:'Futur pour tous les verbes. Irréguliers : être→sera, avoir→aura, faire→fera, aller→ira.'}
+    ]
+  },
+  {
+    id:6, annee:'2023', session:'Centres étrangers (gr.1)',
+    titre:'23GENFRQGCE1 — Philippe Jaccottet, Et Néanmoins — rouge-gorge au jardin',
+    pdf:'https://www.education.gouv.fr/media/156294/download',
+    dictee_auteur:'Vinciane Desprêt, Habiter en oiseau, 2019',
+    redaction_s1:'SUJET D\'IMAGINATION — À votre tour, imaginez comme le poète un moment qui « n\'est presque rien ». Racontez cette rencontre inattendue en insistant sur les éléments descriptifs, les sensations et sentiments du narrateur.',
+    redaction_s2:'SUJET DE RÉFLEXION — Les œuvres artistiques vous touchent-elles plus lorsqu\'elles défendent une cause ou lorsqu\'elles mettent en lumière un « presque rien » ? Développez avec exemples.',
+    texte_sujet:'1   Travaillant au jardin, je vois soudain, à deux pas, un rouge-gorge ; on dirait qu\'il veut\n2   vous parler, au moins vous tenir compagnie : minuscule piéton, victime toute désignée\n3   des chats. Comment montrer la couleur de sa gorge ? Couleur moins proche du rose, ou\n4   du pourpre, ou du rouge sang, que du rouge brique ; si ce mot n\'évoquait une idée de\n5   mur, de pierre même, un bruit de pierre cassante, qu\'il faut oublier au profit de ce qu\'il\n6   évoquerait aussi de feu apprivoisé, de reflet de feu ; couleur que l\'on dirait comme\n7   amicale, sans plus rien de ce que le rouge peut avoir de brûlant, de cruel, de guerrier ou\n8   de triomphant. L\'oiseau porte dans son plumage, qui est couleur de la terre sur laquelle\n9   il aime tant à marcher, cette sorte de foulard couleur de feu apprivoisé, couleur de ciel\n10  au couchant. Ce n\'est presque rien, comme cet oiseau n\'est presque rien, et cet instant,\n11  et ces tâches, et ces paroles. À peine une braise qui sautillerait, ou un petit porte-drapeau,\n12  messager sans vrai message : l\'étrangeté insondable des couleurs. Cela ne pèserait\n13  presque rien, même dans une main d\'enfant.\n14  Cependant vous parvient aux oreilles, par intermittence, le bruit discret, comme prudent,\n15  des dernières feuilles du figuier ; celui plus ample mais plus lointain, des hauts platanes\n16  d\'un parc ; c\'est la rumeur du vent invisible, le bruit de l\'invisible. À l\'abri duquel le\n17  rouge-gorge et moi vaquons à nos besognes. Lui, le porte-lanterne, l\'imprudent, si rôde\n18  un chat.\n    Philippe Jaccottet, Et Néanmoins, 2001',
+    questions:[
+      {type:'comprehension',pts:1,texte:'Q1 — Qui parle dans ce texte ? Quel est le thème du poème ? (1 pt)',rep:'Le poète-narrateur à la 1ère personne. Thème : rencontre avec un rouge-gorge dans le jardin, contemplation.'},
+      {type:'comprehension',pts:3,texte:'Q2 — Que fait le poète ? Identifiez ses trois actions successives. (3 pts)',rep:'1) Il travaille au jardin. 2) Il voit soudain le rouge-gorge. 3) Il l\'observe et le contemple.'},
+      {type:'comprehension',pts:3,texte:'Q3a — Relevez six mots/groupes du champ lexical des couleurs. (3 pts)',rep:'Rouge-gorge, couleur, rouge, couleur de la terre, couleur de feu, couleur de ciel au couchant.'},
+      {type:'comprehension',pts:2,texte:'Q3b — Quelle couleur se distingue ? Pourquoi ? (2 pts)',rep:'Le rouge, couleur dominante, associée à l\'oiseau mais transformée en rouge doux, apprivoisé.'},
+      {type:'comprehension',pts:3,texte:'Q4 — « minuscule piéton » / « une braise qui sautillerait » / « messager sans vrai message » : expliquez la caractéristique de l\'oiseau dans chacune. (3 pts)',rep:'Petitesse et modestie / légèreté et chaleur vive / mystère et présence symbolique.'},
+      {type:'comprehension',pts:5,texte:'Q5 — Figure de style soulignée. Connotation du rouge. Cette connotation dans tout le poème ? Justifiez. (5 pts)',rep:'a) Énumération. b) Violence, guerre, danger. c) Non : dans le poème le rouge est apprivoisé, doux. Justification : « couleur comme amicale ».'},
+      {type:'comprehension',pts:6,texte:'Q6 — Expliquez les trois sentiments du poète. Appuyez-vous sur figures de style, champ lexical, rythme. (6 pts)',rep:'1) Émerveillement. 2) Douceur/tendresse. 3) Mélancolie légère (« messager sans vrai message »).'},
+      {type:'comprehension',pts:6,texte:'Q7 — En quoi ce tableau de Claude Monet illustre-t-il le poème ? Réponse développée avec éléments d\'analyse précis. (6 pts)',rep:'Nature, contemplation, couleurs chaudes, instant fugace saisi par l\'artiste.'},
+      {type:'grammaire',pts:5,texte:'Q8 — « l\'étrangeté insondable des couleurs ». a) Composition de « insondable ». b) Définissez ce mot. c) Nature de chaque expansion de « étrangeté ». (4,5 pts)',rep:'a) in- + sond- + -able. b) Qu\'on ne peut sonder, mystérieux. c) « insondable » = adj. épithète ; « des couleurs » = GN complément du nom.'},
+      {type:'grammaire',pts:3,texte:'Q9 — « Travaillant au jardin, je vois soudain, à deux pas, un rouge-gorge ». a) Fonction de l\'élément souligné. b) Deux manipulations. (3 pts)',rep:'a) Proposition participiale, CC de temps. b) Suppression possible ; remplacement par CC de temps.'},
+      {type:'grammaire',pts:3,texte:'Q10 — a) Proposition principale de la phrase complexe. b) Deux subordonnées. c) Nature des subordonnées. (3 pts)',rep:'a) « L\'oiseau porte... cette sorte de couleur de feu apprivoisé, couleur de ciel au couchant ». b) « qui est couleur de la terre » ; « sur laquelle il aime tant à marcher ». c) Relatives.'},
+      {type:'grammaire',pts:3,texte:'Q11 — a) Trois verbes au conditionnel présent. b) Valeur de cette forme verbale. (2,5 pts)',rep:'a) Sautillerait, dirait, pourrait... b) Supposition / hypothèse : le poète imagine l\'oiseau.'},
+      {type:'grammaire',pts:8,texte:'Q12 — Réécrivez en mettant « vent », « bruit » et « rouge-gorge » au pluriel. Toutes les modifications. (8 pts)',rep:'« Ce sont les rumeurs des vents invisibles, les bruits de l\'invisible. À l\'abri desquels les rouges-gorges et moi vaquons à nos besognes. Eux, les porte-lanternes, les imprudents, si rôde un chat. »'}
+    ]
+  },
+  {
+    id:7, annee:'2019', session:'Metropole (juin)',
+    titre:'19GENFRQGCAG1 — Victor Hugo, Les Contemplations — Leopoldine, souvenir, deuil',
+    pdf:'https://tiplanet.org/modules/archives/downloads2/1561806559/1561800194_15f4646b02.pdf',
+    dictee_auteur:'Victor Hugo, Les Contemplations, 1856',
+    dictee_texte:'Elle avait dix ans, et moi trente ; J\'etais pour elle l\'univers. Oh ! comme l\'herbe est odorante Sous les arbres profonds et verts ! Elle faisait mon sort prospere, Mon travail leger, mon ciel bleu. Lorsqu\'elle me disait : Mon pere, Tout mon coeur s\'ecriait : Mon Dieu !',
+    redaction_s1:'SUJET D\'IMAGINATION — Victor Hugo evoque dans ce poeme les souvenirs heureux passes avec sa fille Leopoldine. Racontez un souvenir precieux partage avec une personne qui vous est chere. Vous decrirez les moments vecus, les emotions ressenties et expliquerez en quoi ce souvenir est important pour vous.',
+    redaction_s2:'SUJET DE REFLEXION — La poesie est-elle selon vous le meilleur moyen d\'exprimer le deuil et la douleur ? Vous developperez votre point de vue en vous appuyant sur des exemples precis issus de vos lectures et de votre culture personnelle.',
+    texte_sujet:'1   Quand nous habitions tous ensemble\n2   Sur nos collines d\'autrefois,\n3   Ou l\'eau court, ou le buisson tremble,\n4   Dans la maison qui touche aux bois,\n5   Elle avait dix ans, et moi trente ;\n6   J\'etais pour elle l\'univers.\n7   Oh ! comme l\'herbe est odorante\n8   Sous les arbres profonds et verts !\n9   Elle faisait mon sort prospere,\n10  Mon travail leger, mon ciel bleu.\n11  Lorsqu\'elle me disait : Mon pere,\n12  Tout mon coeur s\'ecriait : Mon Dieu !\n13  A travers mes songes sans nombre,\n14  J\'ecoutais son parler joyeux,\n15  Et mon front s\'eclairait dans l\'ombre\n16  A la lumiere de ses yeux.\n17  Elle avait l\'air d\'une princesse\n18  Quand je la tenais par la main ;\n19  Elle cherchait des fleurs sans cesse\n20  Et des pauvres dans le chemin.\n21  Elle donnait comme on derobe,\n22  En se cachant aux yeux de tous.\n23  Oh ! la belle petite robe\n24  Qu\'elle avait, vous rappelez-vous ?\n25  Le soir, aupres de ma bougie,\n26  Elle jasait a petit bruit,\n27  Tandis qu\'a la vitre rougie\n28  Heurtaient les papillons de nuit.\n29  Les anges se miraient en elle.\n30  Que son bonjour etait charmant !\n31  Le ciel mettait dans sa prunelle\n32  Ce regard qui jamais ne ment.\n33  Oh ! je l\'avais, si jeune encore,\n34  Vue apparaitre en mon destin !\n35  C\'etait l\'enfant de mon aurore,\n36  Et mon etoile du matin !\n37  Quand la lune claire et sereine\n38  Brillait aux cieux, dans ces beaux mois,\n39  Comme nous allions dans la plaine !\n40  Comme nous courions dans les bois !\n41  Puis, vers la lumiere isolee\n42  Etoilant le logis obscur,\n43  Nous revenions par la vallee\n44  En tournant le coin du vieux mur ;\n45  Nous revenions, coeurs pleins de flamme,\n46  En parlant des splendeurs du ciel.\n47  Je composais cette jeune ame\n48  Comme l\'abeille fait son miel.\n49  Doux ange aux candides pensees,\n50  Elle etait gaie en arrivant... -\n51  Toutes ces choses sont passees\n52  Comme l\'ombre et comme le vent !\n    Victor Hugo, Les Contemplations, Livre IV, poeme VI, publie en 1856.',
+    questions:[
+      {type:'grammaire',pts:2,texte:'Q1 — Identifiez le temps du verbe dans « Quand nous habitions tous ensemble » (vers 1) et expliquez son emploi. (2 pts)',rep:'Imparfait. Emploi : valeur durative, evoque une epoque revolue, ancree dans la memoire. Souligne la duree du bonheur passe (opposition avec la mort de Leopoldine).'},
+      {type:'grammaire',pts:5,texte:'Q2 — a) Relevez les propositions subordonnees relatives dans la premiere strophe. b) Quels mots completent-elles ? c) Precisez leur fonction. (5 pts)',rep:'a) Ou l\'eau court / ou le buisson tremble / qui touche aux bois. b) Collines (x2) et maison. c) Complement de l\'antecedent (ou = dans lesquelles ; qui = maison).'},
+      {type:'grammaire',pts:2,texte:'Q3 — a) Quel est le type de phrases dominant dans les strophes 8, 9 et 10 (vers 29-40) ? b) Pourquoi Hugo a-t-il utilise ce type ? (2 pts)',rep:'a) Phrases exclamatives. b) Exprime l\'admiration du pere, l\'intensite de ses sentiments, l\'exaltation du souvenir heureux.'},
+      {type:'grammaire',pts:2,texte:'Q4 — Justifiez l\'accord du verbe « heurtaient » (vers 28). (2 pts)',rep:'Sujet = « les papillons de nuit » (3e personne du pluriel). Le sujet est postpose (inversion) mais accorde normalement : heurtaient = imparfait 3e pluriel.'},
+      {type:'grammaire',pts:3,texte:'Q5 — a) Expliquez la construction du mot « etoilant » (vers 42) en nommant les elements. b) Trouvez un mot de la meme famille dans le poeme. (3 pts)',rep:'a) Radical : etoile + suffixe -ant (participe present, formation verbale). b) « etoile du matin » (vers 36).'},
+      {type:'grammaire',pts:6,texte:'Q6 — Reecrivez la strophe 5 en changeant « elle » par « elles » et « je » par « nous » (6 pts) : Elle avait l\'air d\'une princesse / Quand je la tenais par la main ; / Elle cherchait des fleurs sans cesse / Et des pauvres dans le chemin.',rep:'Elles avaient l\'air de princesses / Quand nous les tenions par la main ; / Elles cherchaient des fleurs sans cesse / Et des pauvres dans le chemin.'},
+      {type:'comprehension',pts:4,texte:'Q7 — Quelles qualites de l\'enfant Victor Hugo met-il en avant ? Identifiez deux qualites justifiees par des citations. (4 pts)',rep:'1) Generosite : « Elle donnait comme on derobe / En se cachant aux yeux de tous ». 2) Beaute et grace angelique : « Les anges se miraient en elle » / « Elle avait l\'air d\'une princesse ».'},
+      {type:'comprehension',pts:5,texte:'Q8 — Dans les trois premieres strophes, expliquez ce que ressentent le pere et la fille l\'un pour l\'autre. Justifiez par deux citations. (5 pts)',rep:'Le pere : admiration et amour total (« J\'etais pour elle l\'univers »). La fille : confiance absolue, lien filial sacre (« Lorsqu\'elle me disait : Mon pere, / Tout mon coeur s\'ecriait : Mon Dieu ! »).'},
+      {type:'comprehension',pts:4,texte:'Q9 — Vers 15-16 : a) Relevez et nommez une figure de style. b) Expliquez son sens. (4 pts)',rep:'a) Metaphore : « mon front s\'eclairait dans l\'ombre / A la lumiere de ses yeux ». b) Les yeux de Leopoldine sont compares a une lumiere qui dissipe les tenebres, symbolisant la joie et l\'espoir qu\'elle apporte a son pere.'},
+      {type:'comprehension',pts:2,texte:'Q10 — Dans la strophe 10 (vers 37-40), quel sentiment est associe au theme de la nature ? Justifiez. (2 pts)',rep:'La joie et la liberte : « Comme nous allions dans la plaine ! / Comme nous courions dans les bois ! » La nature est espace de bonheur partage, les exclamatives soulignent l\'enthousiasme.'},
+      {type:'comprehension',pts:5,texte:'Q11 — Quels sentiments Hugo exprime-t-il dans la derniere strophe ? Appuyez-vous sur les figures de style, la ponctuation et les sonorites. (5 pts)',rep:'Douleur du deuil et sentiment de perte irreversible. Figures : comparaisons (« Comme l\'ombre et comme le vent ») = disparition rapide, insaisissable. Ponctuation : tiret (—) rupture brutale, suspension de la parole. Sonorites : alliteration en [s] (« ces choses sont passees ») = souffle, evanescence.'},
+      {type:'comprehension',pts:6,texte:'Q12 — Pourquoi Hugo a-t-il ecrit ce poeme ? Donnez votre point de vue en developpant trois idees appuyees sur le texte. (6 pts)',rep:'1) Garder vivante la memoire de Leopoldine (details precis : la robe, les promenades). 2) Exprimer et surmonter le deuil par l\'ecriture poetique (date : « 4 septembre 1844 », 1 an apres sa mort). 3) Transmettre un message universel sur l\'amour paternel et la fragile beaute de la vie.'},
+      {type:'comprehension',pts:4,texte:'Q13 — Observez la sculpture d\'Oedipe a Colone (Hugues, 1885). Quels liens etablissez-vous entre le poeme et cette oeuvre ? (4 pts)',rep:'Lien : relation pere/enfant, guidance et protection. Antigone guide Oedipe aveugle comme Leopoldine « eclairait » son pere (vers 15-16). Les deux oeuvres exaltent l\'amour filial, la devotion de l\'enfant et la dependance affective du parent.'}
+    ]
+  },
+  {
+    id:8, annee:'2020', session:'Métropole (juin)',
+    titre:'20GENFRQGME1 — Molière, Monsieur de Pourceaugnac — scène d\'exposition, comédie',
+    pdf:'https://www.education.gouv.fr/media/102618/download',
+    dictee_auteur:'Théophile Gautier, Le Capitaine Fracasse, 1863',
+    redaction_s1:'SUJET D\'IMAGINATION — Julie et Éraste quittent la scène. Oronte, le père de Julie, entre. Nérine tente de le convaincre de renoncer au mariage. Écrivez leur échange sous forme de dialogue théâtral.',
+    redaction_s2:'SUJET DE RÉFLEXION — Attendez-vous des œuvres littéraires et artistiques qu\'elles vous procurent « le plaisir de la surprise » ? Appuyez-vous sur vos expériences de lecteur et de spectateur.',
+    texte_sujet:'JULIE, ÉRASTE, NÉRINE.\n1   JULIE. – Mon Dieu, Éraste, gardons d\'être surpris ; je tremble qu\'on ne nous voie\n2   ensemble ; et tout serait perdu, après la défense que l\'on m\'a faite.\n3   ÉRASTE. – Je regarde de tous côtés, et je n\'aperçois rien.\n4   JULIE. – Aie aussi l\'œil au guet, Nérine, et prends bien garde qu\'il ne vienne personne.\n5   NÉRINE. – Reposez-vous sur moi, et dites hardiment ce que vous avez à vous dire.\n6   JULIE. – Avez-vous imaginé pour notre affaire quelque chose de favorable ? et croyez-vous,\n7   Éraste, pouvoir venir à bout de détourner ce fâcheux mariage que mon père s\'est mis en tête ?\n8   ÉRASTE. – Au moins y travaillons-nous fortement ; et déjà nous avons préparé un bon\n9   nombre de batteries pour renverser ce dessein ridicule.\n10  NÉRINE. – Par ma foi, voilà votre père.\n11  JULIE. – Ah séparons-nous vite.\n12  NÉRINE. – Non, non, non, ne bougez, je m\'étais trompée.\n13  JULIE. – Mon Dieu, Nérine, que tu es sotte, de nous donner de ces frayeurs !\n14  ÉRASTE. – Oui, belle Julie, nous avons dressé pour cela quantité de machines, et nous ne\n15  feignons point de mettre tout en usage, sur la permission que vous m\'avez donnée. Ne nous\n16  demandez point tous les ressorts que nous ferons jouer, vous en aurez le divertissement ;\n17  et comme aux comédies, il est bon de vous laisser le plaisir de la surprise, et de ne vous\n18  avertir point de tout ce qu\'on vous fera voir ; c\'est assez de vous dire que nous avons en\n19  main divers stratagèmes tous prêts à produire dans l\'occasion, et que l\'ingénieuse Nérine\n20  et l\'adroit Sbrigani entreprennent l\'affaire.\n21  NÉRINE. – Assurément. Votre père se moque-t-il de vouloir vous marier de son avocat de\n22  Limoges, Monsieur de Pourceaugnac, qu\'il n\'a vu de sa vie, et qui vient par le coche vous\n23  enlever à notre barbe ? Faut-il que trois ou quatre mille écus de plus, sur la parole de votre\n24  oncle, lui fassent rejeter un amant qui vous agrée ? Et une personne comme vous, est-elle\n25  faite pour un Limosin ? S\'il a envie de se marier, que ne prend-il une Limosine, et ne\n26  laisse-t-il en repos les chrétiens ? Le seul nom de Monsieur de Pourceaugnac m\'a mis dans\n27  une colère effroyable. J\'enrage de Monsieur de Pourceaugnac. Quand il n\'y aurait que ce\n28  nom-là, Monsieur de Pourceaugnac, j\'y brûlerai mes livres, ou je romprai ce mariage, et\n29  vous ne serez point Madame de Pourceaugnac. Pourceaugnac ! Cela se peut-il souffrir ?\n30  Non, Pourceaugnac est une chose que je ne saurais supporter, et nous lui jouerons tant de\n31  pièces, nous lui ferons tant de niches sur niches, que nous renverrons à Limoges Monsieur\n32  de Pourceaugnac.\n    Molière, Monsieur de Pourceaugnac, 1670',
+    questions:[
+      {type:'comprehension',pts:4,texte:'Q1a — Lignes 1 à 14 : situation de Julie et sujet de discussion avec Éraste et Nérine. (4 pts)',rep:'Julie est fiancée contre son gré à Pourceaugnac. Elle discute d\'un plan pour empêcher ce mariage forcé.'},
+      {type:'comprehension',pts:4,texte:'Q1b — Comment comprend-on que l\'entrevue doit rester secrète ? Quatre éléments précis. (4 pts)',rep:'Lieu discret, ton urgent, présence d\'une confidente, urgence de la situation (le fiancé arrive bientôt).'},
+      {type:'comprehension',pts:3,texte:'Q2a — Lignes 9 à 21 : À quoi travaillent Éraste, Nérine et Sbrigani ? Deux expressions. (3 pts)',rep:'Un stratagème, une ruse. « machines », « mettre tout en usage ».'},
+      {type:'comprehension',pts:4,texte:'Q2b — Expliquez la comparaison « comme aux comédies ». Rôle d\'Éraste. (4 pts)',rep:'La situation ressemble à une comédie avec des rôles joués. Éraste = metteur en scène du stratagème.'},
+      {type:'comprehension',pts:4,texte:'Q3a — Réplique de Nérine : quatre éléments sur Monsieur de Pourceaugnac. (4 pts)',rep:'Homme de province (Limoges), grossier, sans manières, prétentieux, ignorant des usages parisiens.'},
+      {type:'comprehension',pts:2,texte:'Q3b — Deux reproches principaux de Nérine. (2 pts)',rep:'1) Il est de province. 2) Il a des manières ridicules et grossières.'},
+      {type:'comprehension',pts:5,texte:'Q3c — Comment ces reproches prennent-ils une dimension comique ? (5 pts)',rep:'Nérine exagère et caricature. Comique de caractère (Pourceaugnac ridicule) et de situation (Nérine juge avec prétention).'},
+      {type:'comprehension',pts:3,texte:'Q4a — Décrivez l\'affiche de spectacle (Opéra de Rennes, 2012). (3 pts)',rep:'Description libre : personnages, costumes, décor, couleurs, mise en scène suggérée.'},
+      {type:'comprehension',pts:3,texte:'Q4b — Cette affiche vous paraît-elle un bon choix après la lecture ? (3 pts)',rep:'Réponse argumentée : correspondance ou non entre l\'affiche et les personnages de la pièce.'},
+      {type:'grammaire',pts:2,texte:'Q5 — Remplacez la subordonnée relative de « une chose que je ne saurais supporter » par un adjectif. Analysez sa composition. (2 pts)',rep:'Insupportable. Composition : in- + support- + -able.'},
+      {type:'grammaire',pts:2,texte:'Q6 — a) Réécrivez « Au moins y travaillons-nous fortement » en remplaçant « y » par le groupe auquel il renvoie. b) Fonction de « y ». (2 pts)',rep:'a) « Au moins travaillons-nous fortement à cette affaire ». b) CC (remplace « à cette affaire »).'},
+      {type:'grammaire',pts:4,texte:'Q7 — a) Soulignez tous les verbes conjugués des lignes 15-17. b) Que peut-on dire sur la phrase ? (4 pts)',rep:'a) avons dressé, ne feignons point, avez donnée. b) Phrase complexe avec plusieurs propositions.'},
+      {type:'grammaire',pts:10,texte:'Q8 — Réécrivez au discours indirect en commençant par « Julie demanda à Éraste... » (10 pts)',rep:'Transposition des temps (conditionnel pour futur, imparfait pour présent), pronoms modifiés, mots interrogatifs adaptés.'}
+    ]
+  },
+  {
+    id:9, annee:'2019', session:'Métropole (juin) — Léopoldine',
+    titre:'19GENFRQGCAG1 — Victor Hugo, Les Contemplations — Léopoldine, souvenir, deuil',
+    pdf:'https://www.education.gouv.fr/media/86059/download',
+    dictee_auteur:'Victor Hugo, Les Misérables, 1862',
+    redaction_s1:'SUJET D\'IMAGINATION — Dans votre quartier, les habitants s\'interrogent sur la soudaine fortune d\'un voisin. Les rumeurs les plus extravagantes circulent. Imaginez les conversations jusqu\'à ce que la vérité éclate. Caractérisez les personnages, mêlez récit et dialogue. Votre texte produira un effet comique.',
+    redaction_s2:'SUJET DE RÉFLEXION — Faut-il redouter, rechercher ou même désirer le pouvoir de la parole ? Appuyez-vous sur votre expérience, les textes étudiés et votre culture personnelle.',
+    texte_sujet:'1   Quand nous habitions tous ensemble\n    Sur nos collines d\'autrefois,\n    Où l\'eau court, où le buisson tremble,\n    Dans la maison qui touche aux bois,\n5   Elle avait dix ans, et moi trente ;\n    J\'étais pour elle l\'univers.\n    Oh ! comme l\'herbe est odorante\n    Sous les arbres profonds et verts !\n    Elle faisait mon sort prospère,\n10  Mon travail léger, mon ciel bleu.\n    Lorsqu\'elle me disait : Mon père,\n    Tout mon cœur s\'écriait : Mon Dieu !\n    À travers mes songes sans nombre,\n    J\'écoutais son parler joyeux,\n15  Et mon front s\'éclairait dans l\'ombre\n    À la lumière de ses yeux.\n    Elle avait l\'air d\'une princesse\n    Quand je la tenais par la main ;\n    Elle cherchait des fleurs sans cesse\n20  Et des pauvres dans le chemin.\n    Elle donnait comme on dérobe,\n    En se cachant aux yeux de tous.\n    Oh ! la belle petite robe\n    Qu\'elle avait, vous rappelez-vous ?\n25  Le soir, auprès de ma bougie,\n    Elle jasait à petit bruit,\n    Tandis qu\'à la vitre rougie\n    Heurtaient les papillons de nuit.\n    Les anges se miraient en elle.\n30  Que son bonjour était charmant !\n    Le ciel mettait dans sa prunelle\n    Ce regard qui jamais ne ment.\n    Oh ! je l\'avais, si jeune encore,\n    Vue apparaître en mon destin !\n35  C\'était l\'enfant de mon aurore,\n    Et mon étoile du matin !\n    Quand la lune claire et sereine\n    Brillait aux cieux, dans ces beaux mois,\n    Comme nous allions dans la plaine !\n40  Comme nous courions dans les bois !\n    Puis, vers la lumière isolée\n    Étoilant le logis obscur,\n    Nous revenions par la vallée\n    En tournant le coin du vieux mur ;\n45  Nous revenions, cœurs pleins de flamme,\n    En parlant des splendeurs du ciel.\n    Je composais cette jeune âme\n    Comme l\'abeille fait son miel.\n    Doux ange aux candides pensées,\n50  Elle était gaie en arrivant... -\n    Toutes ces choses sont passées\n    Comme l\'ombre et comme le vent !\n    Villequier, 4 septembre 1844.\n    Victor Hugo, Les Contemplations, Livre IV, poème VI, 1856',
+    questions:[
+      {type:'grammaire',pts:2,texte:'Q1 — « Quand nous habitions tous ensemble » (vers 1) : temps du verbe et son emploi. (2 pts)',rep:'Imparfait de l\'indicatif. Emploi : état passé, habituel, révolu. Exprime la nostalgie.'},
+      {type:'grammaire',pts:5,texte:'Q2 — Première strophe : a) Relevez les subordonnées relatives. b) Quels mots complètent-elles ? c) Fonction de ces subordonnées. (5 pts)',rep:'a) Selon le texte exact du poème. b) Les antécédents de chaque pronom relatif. c) Épithètes (complément de l\'antécédent).'},
+      {type:'grammaire',pts:2,texte:'Q3 — Strophes 8, 9, 10 (vers 29 à 40) : a) Type de phrases dominant. b) Pourquoi ? (2 pts)',rep:'a) Phrases exclamatives. b) Pour exprimer l\'intensité de l\'émotion, la douleur du deuil.'},
+      {type:'grammaire',pts:2,texte:'Q4 — Justifiez l\'accord du verbe « heurtaient » (vers 28). (2 pts)',rep:'Le sujet est pluriel → accord au pluriel. Identifier le sujet exact dans le vers.'},
+      {type:'grammaire',pts:3,texte:'Q5 — a) Construction du mot « étoilant » (vers 42). b) Un mot de la même famille dans le poème. (3 pts)',rep:'a) Radical étoile + suffixe -ant (participe présent du verbe étoiler). b) Étoile (selon le texte).'},
+      {type:'grammaire',pts:6,texte:'Q6 — Réécrivez la strophe 5 en changeant « elle » par « elles » et « je » par « nous ». (6 pts)',rep:'Féminin pluriel pour « elles », 1ère personne pluriel pour « nous ». Accords des verbes, adjectifs, participes.'},
+      {type:'comprehension',pts:4,texte:'Q7 — Portrait de Léopoldine : deux qualités justifiées par des citations. (4 pts)',rep:'Gaieté/joie de vivre, générosité (cherche des pauvres). Selon le texte exact du poème.'},
+      {type:'comprehension',pts:5,texte:'Q8 — Trois premières strophes : sentiments père/fille. Deux citations. (5 pts)',rep:'Amour intense, complicité, tendresse. Citations directes du poème.'},
+      {type:'comprehension',pts:4,texte:'Q9 — Vers 15-16 : a) Figure de style + nom. b) Expliquez son sens. (4 pts)',rep:'Selon les vers exacts. Ex : métaphore, comparaison ou personnification. Explication de l\'image.'},
+      {type:'comprehension',pts:2,texte:'Q10 — Strophe 10 (vers 37-40) : sentiment associé à la nature. Justifiez. (2 pts)',rep:'Mélancolie, tristesse. La nature reflète et amplifie le deuil du poète.'},
+      {type:'comprehension',pts:5,texte:'Q11 — Dernière strophe : sentiments du poète. Figures de style, ponctuation, sonorités. (5 pts)',rep:'Désespoir, douleur du deuil. Analyser les figures, les points d\'exclamation, les allitérations.'},
+      {type:'comprehension',pts:6,texte:'Q12 — Pourquoi Hugo a-t-il écrit ce poème ? Trois idées distinctes appuyées sur le texte. (6 pts)',rep:'1) Garder vivante la mémoire de Léopoldine. 2) Exprimer sa douleur de père. 3) Témoigner de l\'amour paternel comme universel.'},
+      {type:'comprehension',pts:4,texte:'Q13 — Sculpture de Jean-Baptiste Hugues (Œdipe à Colone) : liens avec le poème. (4 pts)',rep:'Père et fille / tendresse / deuil / souvenir partagé.'}
+    ]
+  },
+  {
+    id:10, annee:'2019', session:'Métropole (juin) — La Rumeur',
+    titre:'19GENFRQGME1 — Victor Hugo, Toute la Lyre — La Rumeur, pouvoir de la parole',
+    pdf:'https://www.education.gouv.fr/media/86060/download',
+    dictee_auteur:'Michel Onfray, Le Corps de mon père, 2012',
+    redaction_s1:'SUJET D\'IMAGINATION — Faites le portrait de quelqu\'un qui a compté pour vous dans votre enfance. Évoquez des moments de complicité. Prêtez attention à l\'expression des sentiments.',
+    redaction_s2:'SUJET DE RÉFLEXION — Pour quelles raisons un artiste peut-il être amené à écrire son autobiographie ou à faire son autoportrait ? Appuyez-vous sur les textes étudiés et vos lectures personnelles.',
+    texte_sujet:'1   Jeunes gens, prenez garde aux choses que vous dites.\n2   Tout peut sortir d\'un mot qu\'en passant vous perdîtes.\n3   Tout, la haine et le deuil ! – Et ne m\'objectez pas\n4   Que vos amis sont sûrs et que vous parlez bas… –\n5   Écoutez bien ceci : Tête-à-tête, en pantoufle,\n6   Portes closes, chez vous, sans un témoin qui souffle,\n7   Vous dites à l\'oreille au plus mystérieux\n8   De vos amis de cœur, ou, si vous l\'aimez mieux,\n9   Vous murmurez tout seul, croyant presque vous taire,\n10  Dans le fond d\'une cave à trente pieds sous terre,\n11  Un mot désagréable à quelque individu ;\n12  Ce mot que vous croyez qu\'on n\'a pas entendu,\n13  Que vous disiez si bas dans un lieu sourd et sombre,\n14  Court à peine lâché, part, bondit, sort de l\'ombre !\n15  Tenez, il est dehors ! Il connaît son chemin.\n16  Il marche, il a deux pieds, un bâton à la main,\n17  De bons souliers ferrés, un passeport en règle ;\n18  – Au besoin, il prendrait des ailes comme l\'aigle ! –\n19  Il vous échappe, il fuit, rien ne l\'arrêtera.\n20  Il suit le quai, franchit la place, et cætera,\n21  Passe l\'eau sans bateau dans la saison des crues,\n22  Et va, tout à travers un dédale de rues,\n23  Droit chez l\'individu dont vous avez parlé.\n24  Il sait le numéro, l\'étage ; il a la clé,\n25  Il monte l\'escalier, ouvre la porte, passe,\n26  Entre, arrive, et, railleur, regardant l\'homme en face,\n27  Dit : – Me voilà ! je sors de la bouche d\'un tel. –\n28  Et c\'est fait. Vous avez un ennemi mortel.\n    Victor Hugo, Toute la Lyre, III, XXI, 1888',
+    questions:[
+      {type:'grammaire',pts:4,texte:'Q1 — Mode et temps de « prenez » (v.1), « objectez » (v.3), « Écoutez » (v.5). Pourquoi ce mode ? (4 pts)',rep:'Impératif présent. Pour donner des ordres/conseils directs aux « jeunes gens ». Le poète interpelle son lecteur.'},
+      {type:'grammaire',pts:2,texte:'Q2 — Vers 1 à 3 : relevez les déterminants dans les trois premières phrases. (2 pts)',rep:'Les, vos, les, des, vos... (selon le texte exact du poème).'},
+      {type:'grammaire',pts:10,texte:'Q3 — Réécrivez le passage en remplaçant « il » par « ils ». Toutes les modifications. (10 pts)',rep:'Masculin pluriel : verbes, pronoms, adjectifs. « Ils vous échappent, ils fuient... Ils suivent le quai, franchissent la place... »'},
+      {type:'grammaire',pts:4,texte:'Q4 — « Et ne m\'objectez pas / Que vos amis sont sûrs ». a) Nature de « que ». b) Justifiez. (4 pts)',rep:'a) Conjonction de subordination (subordonnée complétive COD). b) Remplacement par « le fait que » possible ; COD de « objectez ».'},
+      {type:'comprehension',pts:4,texte:'Q5 — Conséquences d\'un « mot désagréable » (v.11). Deux éléments justifiés. (4 pts)',rep:'Le mot se répand, circule de bouche en bouche, revient à celui qui l\'a prononcé → incontrôlable.'},
+      {type:'comprehension',pts:4,texte:'Q6 — Vers 3 à 11 : précautions estimées par les « jeunes gens ». Deux éléments. (4 pts)',rep:'1) Parler à des amis sûrs. 2) Parler tout bas dans un lieu isolé et sombre.'},
+      {type:'comprehension',pts:6,texte:'Q7 — Vers 12 à 27 : a) À quoi renvoie « il » ? b) Figure de style. c) Effet. (6 pts)',rep:'a) Au mot, à la parole prononcée. b) Personnification : le mot est traité comme un être vivant. c) Rend la parole menaçante et dangereuse.'},
+      {type:'comprehension',pts:5,texte:'Q8 — Vers 13 : a) Effet sonore. b) Pourquoi le poète l\'emploie-t-il ? (5 pts)',rep:'a) Allitération en « s » : son sifflant, évoque le murmure. b) Pour imiter le chuchotement, créer une atmosphère de secret.'},
+      {type:'comprehension',pts:5,texte:'Q9 — Quel conseil le poète adresse-t-il ? Quel passage l\'illustre le plus fortement ? Expliquez. (5 pts)',rep:'Conseil : méfiance des paroles, elles ont un pouvoir incontrôlable. Passage le plus fort : le mot qui court seul dans la ville (personnification + mouvement irrésistible).'},
+      {type:'comprehension',pts:6,texte:'Q10 — Tableau de Norman Rockwell (The Gossips) : a) Pourquoi chaque personnage est-il représenté deux fois ? b) Comparez texte et tableau : comment la parole se retourne-t-elle contre son locuteur ? (6 pts)',rep:'a) Pour montrer la chaîne de la rumeur : chaque personne reçoit et transmet. b) Poème : le mot revient à celui qui l\'a dit. Tableau : la rumeur encercle et piège.'}
+    ]
+  }
+
+];
+
+// ============================================================
+// PROXY APPS SCRIPT
+// ============================================================
+const PROXY = 'https://script.google.com/macros/s/AKfycbxxQCRDZvKAb9fuXkDslK7LYMXjcIrIi-_EpA8DWT1-tTelSpYcMxPkiSPG5bKheLTY/exec';
+
+function getUserId() {
+  var id = localStorage.getItem('user_id');
+  if (!id) { id = (crypto.randomUUID ? crypto.randomUUID() : 'user_' + Date.now()); localStorage.setItem('user_id', id); }
+  return id;
+}
+function getSessionId() {
+  var sid = sessionStorage.getItem('session_id');
+  if (!sid) { sid = 'sess_' + Date.now(); sessionStorage.setItem('session_id', sid); }
+  return sid;
+}
+function isPaid() { return false; }
+function getJoursRestantsEssai() { return 3; }
+
+async function callIA(prompt, system) {
+  var timeout = new Promise(function(_, reject) {
+    setTimeout(function() { reject(new Error('Timeout 45s')); }, 45000);
+  });
+  var payload = JSON.stringify({
+    userId: getUserId(),
+    action: 'correction_ia',
+    prompt: prompt,
+    system: system,
+    estPayant: isPaid(),
+    sessionId: getSessionId(),
+    joursRestantsEssai: getJoursRestantsEssai(),
+    source: document.title,
+    matiere: 'francais'
+  });
+  var req = fetch(PROXY, {
+    method: 'POST',
+    body: new URLSearchParams({ data: payload })
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.success && d.content) return d.content;
+    throw new Error(d.error || 'Erreur API');
+  });
+  return Promise.race([req, timeout]);
+}
+
+function safeJSON(t) {
+  try { return JSON.parse(t.replace(/```json|```/g, '').trim()); }
+  catch(e) { return null; }
+}
+
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function sauvegarder(sid, entry) {
+  if (!STORE[sid]) STORE[sid] = [];
+  STORE[sid].push(entry);
+  try { localStorage.setItem(_STORE_KEY, JSON.stringify(STORE)); } catch(e) {}
+}
+
+function buildGrid() {
+  var html = '';
+  SUJETS.forEach(function(s, idx) {
+    html += '<div class="card" onclick="ouvrirSujet(' + idx + ')">'
+      + '<div class="card-top"><span class="card-num">Sujet ' + s.id + '</span><span class="badge">' + s.annee + '</span></div>'
+      + '<div class="card-titre">' + esc(s.titre) + '</div>'
+      + '<div class="card-meta">' + esc(s.session) + '</div>'
+      + '<a class="card-pdf" href="' + s.pdf + '" target="_blank" onclick="event.stopPropagation()">📄 Sujet officiel PDF</a>'
+      + '</div>';
+  });
+  document.getElementById('grid').innerHTML = html;
+}
+
+function ouvrirSujet(idx) {
+  var s = SUJETS[idx];
+  document.getElementById('svTitre').innerHTML = 'DNB ' + s.annee + ' — ' + s.session;
+  document.getElementById('svSub').textContent = s.titre;
+  document.getElementById('svDl').href = s.pdf;
+  document.getElementById('btnDl').onclick = function() { telecharger(idx); };
+
+  var html = '';
+
+  // SECTION DICTEE
+  var didx = 'dict_' + idx;
+  html += '<div class="section-box">'
+    + '<div class="section-head"><span class="sec-badge badge-dict">Dictée</span><span style="font-size:12px;color:#9090a8">' + esc(s.dictee_auteur) + '</span></div>'
+    + '<div class="section-body">'
+    + '<div class="dictee-consigne">Le professeur lit la dictée à voix haute. Tapez ce que vous entendez.</div>'
+    + '<textarea class="dictee-area" id="' + didx + '" placeholder="Écrivez la dictée ici..."></textarea>'
+    + '<button class="btn-corriger-dict" onclick="corrigerDictee(' + idx + ',\"' + didx + '\")">✦ Corriger la dict\u00e9e</button>'
+    + '<div class="panel" id="panel_' + didx + '"></div>'
+    + '</div></div>';
+
+  // SECTION QUESTIONS (compréhension + grammaire)
+  html += '<div class="section-box">'
+    + '<div class="section-head"><span class="sec-badge badge-red">Compréhension &amp; Grammaire</span><span style="font-size:12px;color:#9090a8">' + s.questions.length + ' questions</span></div>';
+  s.questions.forEach(function(q, qi) {
+    var qid = 'q_' + idx + '_' + qi;
+    var badge = q.type === 'comprehension' ? '<span class="q-badge qb-comp">Compréhension</span>' : '<span class="q-badge qb-gram">Grammaire</span>';
+    html += '<div class="question" style="padding:14px 16px">'
+      + badge
+      + '<div class="q-texte">' + esc(q.texte) + '</div>'
+      + '<textarea class="answer-area" id="ans_' + qid + '" placeholder="Réponse..."></textarea>'
+      + '<button class="btn-corriger" onclick="corriger(' + idx + ',' + qi + ',\"' + qid + '\")">✦ Corriger avec IA</button>'
+      + '<div class="panel" id="panel_' + qid + '"></div>'
+      + '</div>';
+  });
+  html += '</div>';
+
+  // SECTION REDACTION
+  html += '<div class="section-box">'
+    + '<div class="section-head"><span class="sec-badge badge-redac">Rédaction</span></div>'
+    + '<div class="section-body">'
+    + '<div class="redac-sujet"><strong>Sujet 1 :</strong> ' + esc(s.redaction_s1) + '</div>'
+    + '<div class="redac-sujet"><strong>Sujet 2 :</strong> ' + esc(s.redaction_s2) + '</div>'
+    + '<textarea class="answer-area" id="redac_' + idx + '" style="min-height:180px" placeholder="Rédigez votre texte ici..."></textarea>'
+    + '<button class="btn-corriger" onclick="corrigerRedac(' + idx + ')">✦ Corriger la rédaction</button>'
+    + '<div class="panel" id="panel_redac_' + idx + '"></div>'
+    + '</div></div>';
+
+  document.getElementById('svContent').innerHTML = html;
+  document.getElementById('landing').style.display = 'none';
+  var sv = document.getElementById('sujetView');
+  sv.style.display = 'block';
+  sv.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+function retour() {
+  document.getElementById('sujetView').style.display = 'none';
+  document.getElementById('sujetView').classList.remove('active');
+  document.getElementById('landing').style.display = 'block';
+  window.scrollTo(0,0);
+}
+
+
+function badge(val) {
+  var ok=(val==='Oui'||val==='OK'), partiel=(val==='Partiel');
+  var bg=ok?'rgba(94,207,177,.15)':partiel?'rgba(245,166,35,.15)':'rgba(232,122,122,.15)';
+  var col=ok?'#5ecfb1':partiel?'#f5a623':'#e87a7a';
+  var icon=ok?'\u2713':partiel?'\u25d1':'\u2717';
+  return '<span style="background:'+bg+';color:'+col+';border:1px solid '+col+';border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;">'+icon+' '+esc(val)+'</span>';
+}
+
+async function corrigerDictee(sIdx, did) {
+  var s = SUJETS[sIdx];
+  var texteEleve = document.getElementById(did).value.trim();
+  if (!texteEleve) { alert('Ecris ta dictee dabord !'); return; }
+
+  var panel = document.getElementById('panel_' + did);
+  var btn = panel.previousElementSibling;
+  panel.classList.add('show');
+  panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction en cours...</div>';
+  if (btn) btn.disabled = true;
+
+  var system = 'Tu es correcteur expert DNB FRANCAIS DICTEE, exigeant et bienveillant.'
+    + ' Compare le texte officiel et le texte eleve avec precision absolue.'
+    + ' NOTATION sur 10 pts : -0.5 par faute, meme faute repetee = -0.5 une fois.'
+    + ' COURS SU : les regles de base sont-elles maitrisees ? (Oui/Partiel/Non)'
+    + ' Pour CHAQUE faute : forme incorrecte, forme correcte, regle precise.'
+    + ' CORRECTION MODELE : reecrire les 2-3 phrases les plus fautives corrigees.'
+    + ' Reponds UNIQUEMENT en JSON valide sans markdown :'
+    + ' {"note":X,"sur":10,"cours_su":"Oui/Partiel/Non","fautes":{"lexicale":N,"sujet_verbe":N,"nom_adj":N,"participe":N,"homophone":N,"ponctuation":N},"total_fautes":N,"liste_fautes":[{"incorrect":"...","correct":"...","regle":"..."}],"correction_modele":"phrases corrigees...","regles":"regles a retravailler","commentaire":"bilan general"}';
+
+  var prompt = 'Texte officiel : ' + s.dictee_texte + '\nTexte de l eleve : ' + texteEleve;
+
+  try {
+    var txt = await callIA(prompt, system);
+    var json = safeJSON(txt);
+    sauvegarder(s.id, {
+      type:'dictee', reponseEleve: texteEleve,
+      correctionIA: json ? json.commentaire : txt,
+      correctionOff: s.dictee_texte,
+      note: json ? json.note : null, pts: 10
+    });
+    
+    // TRACKER
+    if (typeof trackAction === 'function') {
+      trackAction('correction_ia', 'francais', 'dictee', json?.note || null);
+    }
+
+    var listeFautes = (json && json.liste_fautes && json.liste_fautes.length)
+      ? json.liste_fautes.map(function(f){ return '&bull; <em>'+esc(f.incorrect||'')+'</em> &rarr; <strong>'+esc(f.correct||'')+'</strong> &mdash; '+esc(f.regle||''); }).join('<br>')
+      : '';
+    panel.innerHTML = '<div class="corr-ia">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">'
+      +   '<div class="corr-note">Note : ' + (json ? json.note : '?') + ' / 10</div>'
+      +   '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">'
+      +     '<span style="font-size:10px;color:#9090a8;margin-right:2px;">Cours</span>' + badge(json ? json.cours_su : '?')
+      +     (json && json.total_fautes != null ? '<span style="font-size:11px;color:#e87a7a;margin-left:8px;">Fautes: ' + json.total_fautes + '</span>' : '')
+      +   '</div>'
+      + '</div>'
+      + (listeFautes ? '<div style="margin-bottom:10px;"><div style="font-size:10px;color:#e87a7a;font-weight:700;text-transform:uppercase;margin-bottom:5px;">Fautes detectees</div><div style="background:rgba(232,122,122,.06);border-left:3px solid #e87a7a;border-radius:0 6px 6px 0;padding:10px 13px;font-size:13px;line-height:1.8;">' + listeFautes + '</div></div>' : '')
+      + (json && json.correction_modele ? '<div style="margin-bottom:10px;"><div style="font-size:10px;color:#c97de8;font-weight:700;text-transform:uppercase;margin-bottom:5px;">Correction modele</div><div style="background:rgba(201,125,232,.06);border-left:3px solid #c97de8;border-radius:0 6px 6px 0;padding:10px 13px;font-size:13px;line-height:1.6;">' + esc(json.correction_modele) + '</div></div>' : '')
+      + '<div style="margin-bottom:10px;"><div style="font-size:10px;color:#5ecfb1;font-weight:700;text-transform:uppercase;margin-bottom:5px;">Bilan</div><div class="corr-txt" style="font-size:13px;">' + esc(json ? json.commentaire : txt) + '</div></div>'
+      + (json && json.regles ? '<div><div style="font-size:10px;color:#9090a8;font-weight:700;text-transform:uppercase;margin-bottom:5px;">A retravailler</div><div class="corr-conseil" style="font-size:13px;">' + esc(json.regles) + '</div></div>' : '')
+      + '</div>'
+      + '<div class="corr-off"><strong>TEXTE OFFICIEL</strong><br>' + esc(s.dictee_texte) + '</div>'
+      + '<button class="btn-copy" onclick="copier(this)">Copier</button>';
+  } catch(err) {
+    panel.innerHTML = '<div style="color:#e87a7a">❌ ' + err.message + '</div>';
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function corriger(sIdx, qi, qid) {
+  var s = SUJETS[sIdx];
+  var q = s.questions[qi];
+  var ans = document.getElementById('ans_' + qid).value.trim();
+  if (!ans) { alert('Ecris ta reponse dabord !'); return; }
+
+  var panel = document.getElementById('panel_' + qid);
+  var btn = panel.previousElementSibling;
+  panel.classList.add('show');
+  panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction en cours...</div>';
+  if (btn) btn.disabled = true;
+
+  var pts = q.pts;
+  var disc = q.type === 'comprehension' ? 'COMPREHENSION ET INTERPRETATION' : 'GRAMMAIRE ET COMPETENCES LINGUISTIQUES';
+  var qTexte = q.texte.split('\n').join(' ').substring(0, 300);
+
+  var methodeDetail = (q.type === 'comprehension')
+    ? 'citation exacte avec guillemets + numero de ligne, reformulation en mots propres, figures de style nommees avec leur effet, nombre d elements demandes respecte, structure : point de vue + justification + citation'
+    : 'regle grammaticale/orthographique explicite, accords justifies (genre, nombre, personne), pour une reecriture : TOUS les changements verifies (pronoms, verbes, adjectifs, participes), regle precise citee';
+
+  var system = 'Tu es correcteur expert DNB FRANCAIS ' + disc + ', exigeant et bienveillant.'
+    + ' Sujet : ' + s.titre + ', session ' + s.annee + ', ' + s.session + '.'
+    + ' METHODE ' + disc + ' attendue au DNB : ' + methodeDetail + '.'
+    + ' Correction APPROFONDIE. Reponds UNIQUEMENT en JSON valide sans markdown :'
+    + ' {"note":X,"sur":' + pts + ',"cours_su":"Oui/Partiel/Non","transfert":"Oui/Partiel/Non","methode":"Oui/Partiel/Non","correction_experte":"reponse modele complete avec citations, procedes nommes, vocabulaire precis. 3 a 6 phrases.","analyse_eleve":"ce qui est bien et ce qui manque ou est inexact.","pistes":"2-3 conseils concrets et actionnables."}';
+
+    var texteContext = (q.type === 'comprehension' && s.texte_sujet)
+    ? 'TEXTE SOUMIS A L EXAMEN (avec numeros de lignes) :\n' + s.texte_sujet + '\n\n'
+    : '';
+  var prompt = texteContext
+    + 'Question (' + q.type + ') : ' + qTexte
+    + '\nCorrection attendue : ' + q.rep.substring(0,300)
+    + '\nReponse de l eleve : ' + ans;
+
+  try {
+    var txt = await callIA(prompt, system);
+    var json = safeJSON(txt);
+    sauvegarder(s.id, {
+      type: q.type, qi: qi+1,
+      question: q.texte.substring(0,80),
+      reponseEleve: ans,
+      cours_su: json ? json.cours_su : '',
+      methode: json ? json.methode : '',
+      pistes: json ? json.pistes : '',
+      correctionIA: json ? json.commentaire : txt,
+      correctionOff: q.rep,
+      pts: pts,
+      note: json ? json.note : null
+    });
+    
+    // TRACKER
+    if (typeof trackAction === 'function') {
+      trackAction('correction_ia', 'francais', q.type, json?.note || null);
+    }
+
+    panel.innerHTML = '<div class="corr-ia">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">'
+      +   '<div class="corr-note">Note : ' + (json ? json.note : '?') + ' / ' + pts + '</div>'
+      +   '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">'
+      +     '<span style="font-size:10px;color:#9090a8;">Cours</span>' + badge(json ? json.cours_su : '?')
+      +     '<span style="font-size:10px;color:#9090a8;margin-left:6px;">Transfert</span>' + badge(json ? json.transfert : '?')
+      +     '<span style="font-size:10px;color:#9090a8;margin-left:6px;">Methode</span>' + badge(json ? json.methode : '?')
+      +   '</div>'
+      + '</div>'
+      + '<div style="margin-bottom:10px;"><div style="font-size:10px;color:#c97de8;font-weight:700;text-transform:uppercase;margin-bottom:5px;">Correction modele</div><div style="background:rgba(201,125,232,.06);border-left:3px solid #c97de8;border-radius:0 6px 6px 0;padding:10px 13px;font-size:13px;line-height:1.6;">' + esc(json ? (json.correction_experte||'') : '') + '</div></div>'
+      + '<div style="margin-bottom:10px;"><div style="font-size:10px;color:#5ecfb1;font-weight:700;text-transform:uppercase;margin-bottom:5px;">Analyse de ta reponse</div><div class="corr-txt" style="font-size:13px;">' + esc(json ? (json.analyse_eleve||json.commentaire||txt) : txt) + '</div></div>'
+      + (json && json.pistes ? '<div><div style="font-size:10px;color:#9090a8;font-weight:700;text-transform:uppercase;margin-bottom:5px;">Pour progresser</div><div class="corr-conseil" style="font-size:13px;">' + esc(json.pistes) + '</div></div>' : '')
+      + '</div>'
+      + '<div class="corr-off"><strong>CORRECTION OFFICIELLE</strong><br>' + esc(q.rep) + '</div>'
+      + '<button class="btn-copy" onclick="copier(this)">Copier</button>';
+  } catch(err) {
+    panel.innerHTML = '<div style="color:#e87a7a">❌ ' + err.message + '</div>';
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function corrigerRedac(sIdx) {
+  var s = SUJETS[sIdx];
+  var ans = document.getElementById('redac_' + sIdx).value.trim();
+  if (!ans) { alert('Ecris ta redaction dabord !'); return; }
+
+  var panel = document.getElementById('panel_redac_' + sIdx);
+  var btn = panel.previousElementSibling;
+  panel.classList.add('show');
+  panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction en cours...</div>';
+  if (btn) btn.disabled = true;
+
+  var system = 'Tu es correcteur expert DNB FRANCAIS REDACTION, exigeant et bienveillant.'
+    + ' BAREME sur 40 pts : Adequation/coherence (10) - Style/figures (10) - Orthographe (10) - Structure (10).'
+    + ' COURS SU : regles ecriture maitrisees ? METHODE : structure narrative respectee ?'
+    + ' CORRECTION EXPERTE : reecrire un passage de l eleve en l ameliorant (style, figures, structure).'
+    + ' Reponds UNIQUEMENT en JSON valide sans markdown :'
+    + ' {"note":X,"sur":40,"cours_su":"Oui/Partiel/Non","methode":"Oui/Partiel/Non","criteres":{"adequation":X,"style":X,"orthographe":X,"structure":X},"correction_experte":"reecriture amelioree passage cle","points_forts":"ce qui est reussi","analyse_eleve":"lacunes precises","pistes":"2-3 conseils concrets","commentaire":"bilan general"}';
+
+  var sujets_proposes = 'Sujet 1 : ' + s.redaction_s1 + ' | Sujet 2 : ' + s.redaction_s2;
+  var prompt = 'Sujets proposes : ' + sujets_proposes
+    + '\nRedaction de l eleve : ' + ans;
+
+  try {
+    var txt = await callIA(prompt, system);
+    var json = safeJSON(txt);
+    sauvegarder(s.id, {
+      type:'redaction', reponseEleve: ans,
+      correctionIA: json ? json.commentaire : txt,
+      correctionOff: 'Sujet 1 : ' + s.redaction_s1 + ' | Sujet 2 : ' + s.redaction_s2,
+      note: json ? json.note : null, pts: 40
+    });
+    
+    // TRACKER
+    if (typeof trackAction === 'function') {
+      trackAction('correction_ia', 'francais', 'redaction', json?.note || null);
+    }
+
+    panel.innerHTML = '<div class="corr-ia">'
+      + '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">'
+      +   '<div class="corr-note">Note : ' + (json ? json.note : '?') + ' / 40</div>'
+      +   '<div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">'
+      +     '<span style="font-size:10px;color:#9090a8;">Cours</span>' + badge(json ? json.cours_su : '?')
+      +     '<span style="font-size:10px;color:#9090a8;margin-left:6px;">Methode</span>' + badge(json ? json.methode : '?')
+      +   '</div>'
+      + '</div>'
+      + (json && json.criteres ? '<div style="margin-bottom:10px;"><div style="font-size:10px;color:#9090a8;font-weight:700;text-transform:uppercase;margin-bottom:5px;">Bareme detail</div><div style="display:flex;gap:8px;flex-wrap:wrap;">'
+      +   '<span style="background:rgba(201,125,232,.1);color:#c97de8;border:1px solid rgba(201,125,232,.3);border-radius:4px;padding:3px 9px;font-size:11px;">Sujet '+String(json.criteres.adequation||'?')+'/10</span>'
+      +   '<span style="background:rgba(94,207,177,.1);color:#5ecfb1;border:1px solid rgba(94,207,177,.3);border-radius:4px;padding:3px 9px;font-size:11px;">Style '+String(json.criteres.style||'?')+'/10</span>'
+      +   '<span style="background:rgba(232,122,122,.1);color:#e87a7a;border:1px solid rgba(232,122,122,.3);border-radius:4px;padding:3px 9px;font-size:11px;">Ortho '+String(json.criteres.orthographe||'?')+'/10</span>'
+      +   '<span style="background:rgba(245,166,35,.1);color:#f5a623;border:1px solid rgba(245,166,35,.3);border-radius:4px;padding:3px 9px;font-size:11px;">Structure '+String(json.criteres.structure||'?')+'/10</span>'
+      + '</div></div>' : '')
+      + (json && json.correction_experte ? '<div style="margin-bottom:10px;"><div style="font-size:10px;color:#c97de8;font-weight:700;text-transform:uppercase;margin-bottom:5px;">Reecriture amelioree</div><div style="background:rgba(201,125,232,.06);border-left:3px solid #c97de8;border-radius:0 6px 6px 0;padding:10px 13px;font-size:13px;line-height:1.7;">' + esc(json.correction_experte) + '</div></div>' : '')
+      + (json && json.points_forts ? '<div style="margin-bottom:10px;"><div style="font-size:10px;color:#5ecfb1;font-weight:700;text-transform:uppercase;margin-bottom:5px;">Points forts</div><div style="background:rgba(94,207,177,.06);border-left:3px solid #5ecfb1;border-radius:0 6px 6px 0;padding:8px 13px;font-size:13px;">' + esc(json.points_forts) + '</div></div>' : '')
+      + '<div style="margin-bottom:10px;"><div style="font-size:10px;color:#e8c87a;font-weight:700;text-transform:uppercase;margin-bottom:5px;">Analyse</div><div class="corr-txt" style="font-size:13px;">' + esc(json ? (json.analyse_eleve||json.commentaire||txt) : txt) + '</div></div>'
+      + (json && json.pistes ? '<div><div style="font-size:10px;color:#9090a8;font-weight:700;text-transform:uppercase;margin-bottom:5px;">Pour progresser</div><div class="corr-conseil" style="font-size:13px;">' + esc(json.pistes) + '</div></div>' : '')
+      + '</div>'
+      + '<button class="btn-copy" onclick="copier(this)">Copier</button>';
+  } catch(err) {
+    panel.innerHTML = '<div style="color:#e87a7a">❌ ' + err.message + '</div>';
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
+
+async function copier(btn) {
+  try {
+    await navigator.clipboard.writeText(btn.parentElement.innerText);
+    btn.textContent = '✓ Copie';
+    setTimeout(function() { btn.textContent = '📋 Copier'; }, 2000);
+  } catch(e) {}
+}
+
+function telecharger(sIdx) {
+  var s = SUJETS[sIdx];
+  var data = STORE[s.id];
+  if (!data || !data.length) { alert('Fais au moins une correction dabord !'); return; }
+
+  var totalObt = 0, totalMax = 0;
+  data.forEach(function(c) {
+    if (c.note != null) totalObt += parseFloat(c.note);
+    totalMax += (c.pts || 0);
+  });
+
+  var html = '<html><head><meta charset="UTF-8"><style>'
+    + 'body{font-family:Arial,sans-serif;font-size:13px;color:#111;padding:2rem;max-width:800px;margin:0 auto;}'
+    + 'h1{font-size:18px;border-bottom:3px solid #c97de8;color:#7a2ea0;padding-bottom:8px;margin-bottom:20px;}'
+    + 'h2{font-size:13px;margin-top:1.5rem;border-left:4px solid #c97de8;padding-left:10px;color:#444;}'
+    + '.score{font-size:20px;font-weight:bold;color:#7a2ea0;margin:16px 0;padding:12px;background:#f9f0ff;border-radius:8px;}'
+    + '.rep-eleve{background:#f0f0ff;border:1px solid #9090c8;border-radius:6px;padding:10px;margin:8px 0;}'
+    + '.rep-detail{background:#f9f9f0;border:1px solid #c8c890;border-radius:6px;padding:8px 12px;margin:4px 0;font-size:12px;}'
+    + '.rep-ia{background:#fdf0ff;border:1px solid #c97de8;border-radius:6px;padding:10px;margin:8px 0;}'
+    + '.rep-pistes{background:#fff8f0;border:1px solid #f5a623;border-radius:6px;padding:8px;margin:6px 0;}'
+    + '.rep-off{background:#e6f9ee;border:1px solid #34c76b;border-radius:6px;padding:10px;margin:8px 0;font-size:12px;}'
+    + '.label{font-weight:bold;margin-bottom:4px;display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#666;}'
+    + '</style></head><body>'
+    + '<h1>📖 Corrections Français — ' + esc(s.annee) + ' ' + esc(s.session) + '</h1>'
+    + '<div class="score">Score total : ' + totalObt.toFixed(1) + ' / ' + totalMax + '</div>';
+
+  data.forEach(function(c, i) {
+    var typeLabel = c.type === 'dictee' ? '📝 Dictée' : c.type === 'redaction' ? '✍️ Rédaction' : (c.type === 'comprehension' ? '🔍 Compréhension' : '📐 Grammaire');
+    var title = typeLabel + (c.qi ? ' — Q' + c.qi : '') + (c.note != null ? ' (' + c.note + '/' + (c.pts||'?') + ')' : '');
+    html += '<h2>' + title + '</h2>';
+    if (c.question) html += '<div class="rep-detail"><span class="label">Question</span>' + esc(c.question) + '</div>';
+    html += '<div class="rep-eleve"><span class="label">✏️ Reponse de l eleve</span>' + esc(c.reponseEleve || '—') + '</div>';
+    if (c.cours_su) html += '<div class="rep-detail"><span class="label">📚 Cours</span>' + esc(c.cours_su) + '</div>';
+    if (c.methode)  html += '<div class="rep-detail"><span class="label">✏️ Méthode</span>' + esc(c.methode) + '</div>';
+    html += '<div class="rep-ia"><span class="label">🤖 Analyse IA</span>' + esc(c.correctionIA || '') + '</div>';
+    if (c.pistes)   html += '<div class="rep-pistes"><span class="label">🎯 Pistes</span>' + esc(c.pistes) + '</div>';
+    html += '<div class="rep-off"><span class="label">📖 Correction officielle</span>' + esc(c.correctionOff || '') + '</div>';
+  });
+  html += '</body></html>';
+
+  var blob = new Blob([html], {type:'text/html'});
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement('a');
+  a.href = url;
+  a.download = 'corrections_fr_' + s.annee + '_' + s.session.replace(/[^a-z0-9]/gi,'_') + '.html';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+window.onload = buildGrid;
+</script>
+
+</body>
+</html>

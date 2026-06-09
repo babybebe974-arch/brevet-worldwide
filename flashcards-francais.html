@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🇫🇷 Flashcards Français – Brevet 2026</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:#000;font-family:'DM Sans',sans-serif;padding:1rem;color:#fff;}
+    .container{max-width:1000px;margin:0 auto;background:#1a1a1a;border-radius:2rem;padding:1.5rem;border:1px solid #ffcc00;}
+    h1{font-size:2rem;color:#ffcc00;margin-bottom:.25rem;}
+    .sub{color:#aaa;margin-bottom:1rem;border-left:3px solid #ffcc00;padding-left:1rem;font-size:.8rem;}
+    .stats{background:#2a2a2a;border-radius:1rem;padding:.8rem;margin-bottom:1rem;font-size:.75rem;}
+    .selector{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;align-items:center;}
+    select{background:#2a2a2a;border:1px solid #333;border-radius:40px;padding:.5rem 1rem;color:white;font-size:.8rem;flex:1;min-width:200px;}
+    button{background:#1e2a3e;border:1px solid #5ecfb1;border-radius:40px;padding:.5rem 1.2rem;font-size:.8rem;color:#5ecfb1;cursor:pointer;}
+    button:hover{background:#2a3652;}
+    .flashcard{background:#2a2a2a;border:1px solid #333;border-radius:1.5rem;padding:2rem;text-align:center;cursor:pointer;min-height:280px;display:flex;align-items:center;justify-content:center;flex-direction:column;}
+    .flashcard:hover{border-color:#ffcc00;}
+    .question{font-size:1.1rem;margin-bottom:1rem;font-weight:500;}
+    .answer{font-size:1rem;color:#ffcc00;margin-top:1rem;display:none;line-height:1.5;}
+    .show-answer{color:#5ecfb1;font-size:.8rem;margin-top:1rem;}
+    .btn-group{display:flex;gap:1rem;justify-content:center;margin-top:1rem;flex-wrap:wrap;}
+    .progress{background:#2a2a2a;border-radius:1rem;padding:.6rem;margin-top:1rem;font-size:.7rem;color:#aaa;text-align:center;}
+    .back-link{display:inline-block;margin-top:1rem;text-decoration:none;color:#5ecfb1;font-size:.8rem;}
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>🇫🇷 Flashcards Français</h1>
+  <div class="sub">Brevet 2026 • 26 chapitres • 260 cartes</div>
+  <div class="selector">
+    <select id="chapitreSelect"></select>
+    <button id="changerBtn">📚 Charger</button>
+    <button id="resetChapitreBtn" style="border-color:#e8c87a;color:#e8c87a;">🔄 Reset chapitre</button>
+    <button id="resetAllBtn" style="border-color:#e74c3c;color:#e74c3c;">⚠️ Reset tout</button>
+  </div>
+  <div class="stats" id="stats">📊 Chargement...</div>
+  <div id="card-area"></div>
+  <div id="session-stats" class="progress"></div>
+  <a href="index.html" class="back-link">← Retour au hub</a>
+</div>
+<script>
+// ============================================================
+// FLASHCARDS FRANÇAIS — SOURCE UNIQUE
+// Chargé par flashcards-francais.html ET automatismes-francais.html
+// 26 chapitres × 10 cartes = 260 cartes
+// ============================================================
+const CHAPITRES_FR = {
+  1: { titre: "Classes grammaticales", cartes: [
+    { q: "Quelles sont les 9 classes grammaticales ?", r: "Nom, déterminant, adjectif, pronom, verbe, adverbe, préposition, conjonction, interjection." },
+    { q: "Donnez 3 déterminants.", r: "le, la, les / un, une, des / mon, ton, son" },
+    { q: "Citez les 7 conjonctions de coordination.", r: "Mais, ou, et, donc, or, ni, car." },
+    { q: "Différence entre adverbe et préposition ?", r: "Adverbe modifie un verbe/adjectif. Préposition introduit un complément." },
+    { q: "Qu'est-ce qu'un déterminant possessif ?", r: "mon, ton, son, notre, votre, leur" },
+    { q: "Qu'est-ce qu'un déterminant démonstratif ?", r: "ce, cet, cette, ces" },
+    { q: "Qu'est-ce qu'un pronom personnel ?", r: "je, tu, il, elle, on, nous, vous, ils, elles, me, te, se, le, la, lui, y, en" },
+    { q: "Qu'est-ce qu'un pronom relatif ?", r: "qui, que, quoi, dont, où, lequel" },
+    { q: "Qu'est-ce qu'un pronom démonstratif ?", r: "celui, celle, ceux, celles, ce, ceci, cela" },
+    { q: "Qu'est-ce qu'une interjection ?", r: "Mot-phrase exprimant une émotion (Ah ! Oh ! Hélas !)" }
+  ]},
+  2: { titre: "Fonctions grammaticales", cartes: [
+    { q: "Qu'est-ce que le COD ?", r: "Complément d'objet direct. Répond à 'quoi ?' ou 'qui ?'" },
+    { q: "Qu'est-ce que le COI ?", r: "Complément d'objet indirect. Répond à 'à qui ?' ou 'de quoi ?'" },
+    { q: "Qu'est-ce que l'attribut du sujet ?", r: "Donne une qualité au sujet, relié par verbe d'état (être, paraître, sembler)" },
+    { q: "Qu'est-ce qu'un complément d'agent ?", r: "Dans une phrase passive, indique qui fait l'action" },
+    { q: "Qu'est-ce qu'un complément circonstanciel de temps ?", r: "Indique quand l'action se passe (Ex: 'Il court LE MATIN')" },
+    { q: "Qu'est-ce qu'un complément circonstanciel de lieu ?", r: "Indique où l'action se passe (Ex: 'Il habite À PARIS')" },
+    { q: "Qu'est-ce qu'un complément circonstanciel de manière ?", r: "Indique comment l'action se passe (Ex: 'Il court RAPIDEMENT')" },
+    { q: "Qu'est-ce qu'un complément circonstanciel de cause ?", r: "Indique pourquoi l'action se passe (Ex: 'Il est fatigué À CAUSE DU TRAVAIL')" },
+    { q: "Qu'est-ce qu'un complément circonstanciel de but ?", r: "Indique dans quel but (Ex: 'Il court POUR GAGNER')" },
+    { q: "Qu'est-ce qu'un complément circonstanciel de concession ?", r: "Indique une opposition (Ex: 'Il est sorti MALGRÉ LA PLUIE')" }
+  ]},
+  3: { titre: "La phrase", cartes: [
+    { q: "Qu'est-ce qu'une phrase simple ?", r: "Une seule proposition (un verbe)" },
+    { q: "Qu'est-ce qu'une phrase complexe ?", r: "Plusieurs propositions" },
+    { q: "Qu'est-ce qu'une proposition indépendante ?", r: "Ne dépend d'aucune autre proposition" },
+    { q: "Qu'est-ce qu'une proposition principale ?", r: "Dont dépend une subordonnée" },
+    { q: "Qu'est-ce qu'une subordonnée relative ?", r: "Introduite par qui, que, dont, où" },
+    { q: "Qu'est-ce qu'une subordonnée complétive ?", r: "Introduite par 'que', complète le verbe" },
+    { q: "Qu'est-ce qu'une subordonnée circonstancielle de cause ?", r: "Introduite par parce que, puisque, comme" },
+    { q: "Qu'est-ce qu'une subordonnée circonstancielle de conséquence ?", r: "Introduite par si bien que, de sorte que" },
+    { q: "Qu'est-ce qu'une subordonnée circonstancielle de but ?", r: "Introduite par pour que, afin que" },
+    { q: "Qu'est-ce qu'une subordonnée circonstancielle de temps ?", r: "Introduite par quand, lorsque, pendant que" }
+  ]},
+  4: { titre: "Temps et modes verbaux", cartes: [
+    { q: "À quoi sert l'imparfait ?", r: "Description ou habitude dans le passé" },
+    { q: "À quoi sert le passé composé ?", r: "Action ponctuelle ou bilan (oral)" },
+    { q: "À quoi sert le passé simple ?", r: "Action ponctuelle (récit littéraire)" },
+    { q: "À quoi sert le plus-que-parfait ?", r: "Antériorité par rapport à une action passée" },
+    { q: "À quoi sert le futur simple ?", r: "Action à venir" },
+    { q: "À quoi sert le futur antérieur ?", r: "Action achevée avant une autre future" },
+    { q: "À quoi sert le présent ?", r: "Actualité, vérité générale, habitude" },
+    { q: "À quoi sert le subjonctif ?", r: "Doute, souhait, émotion, obligation" },
+    { q: "À quoi sert le conditionnel ?", r: "Hypothèse, condition, souhait" },
+    { q: "À quoi sert l'impératif ?", r: "Ordre ou conseil" }
+  ]},
+  5: { titre: "Les accords", cartes: [
+    { q: "Règle d'accord sujet-verbe", r: "Le verbe s'accorde en personne et nombre avec le sujet" },
+    { q: "Participe passé avec avoir", r: "S'accorde avec le COD si placé avant" },
+    { q: "Participe passé avec être", r: "S'accorde avec le sujet" },
+    { q: "Accord des adjectifs de couleur", r: "Invariables s'ils viennent d'un nom (marron, orange)" },
+    { q: "Accord des adjectifs composés", r: "Seul le dernier adjectif s'accorde" },
+    { q: "Accord dans le groupe nominal", r: "Déterminant, nom et adjectif s'accordent en genre et nombre" },
+    { q: "Accord du verbe avec plusieurs sujets", r: "Le verbe se met au pluriel" },
+    { q: "Accord du participe passé des verbes pronominaux", r: "S'accorde avec le sujet si le pronom réfléchi est COD" },
+    { q: "Règle de l'accord de 'tout'", r: "Tout = déterminant (tout le monde), adverbe (tout heureuse), pronom (tout va bien), nom (le tout)" },
+    { q: "Accord des noms composés", r: "Dépend de la nature des mots (ex: des après-midi, des chefs-d'œuvre)" }
+  ]},
+  6: { titre: "Les homophones", cartes: [
+    { q: "Différence a/à", r: "a = avoir ; à = préposition" },
+    { q: "Différence ou/où", r: "ou = conjonction ; où = pronom/adverbe" },
+    { q: "Différence on/ont", r: "on = pronom ; ont = avoir" },
+    { q: "Différence son/sont", r: "son = possessif ; sont = être" },
+    { q: "Différence ce/se", r: "ce = démonstratif ; se = pronom personnel" },
+    { q: "Différence ces/ses", r: "ces = démonstratif pluriel ; ses = possessif" },
+    { q: "Différence quand/quant", r: "quand = temps ; quant = en ce qui concerne" },
+    { q: "Différence peu/peut/peuvent", r: "peu = quantité ; peut = pouvoir (singulier) ; peuvent = pouvoir (pluriel)" },
+    { q: "Différence leur/leurs", r: "leur = pronom invariable ; leurs = déterminant pluriel" },
+    { q: "Différence quel/qu'elle", r: "quel = déterminant interrogatif ; qu'elle = que + elle" }
+  ]},
+  7: { titre: "Conjugaison", cartes: [
+    { q: "Terminaisons du présent (1er groupe)", r: "e, es, e, ons, ez, ent" },
+    { q: "Terminaisons du présent (2e groupe)", r: "is, is, it, issons, issez, issent" },
+    { q: "Terminaisons de l'imparfait", r: "ais, ais, ait, ions, iez, aient" },
+    { q: "Terminaisons du futur simple", r: "ai, as, a, ons, ez, ont" },
+    { q: "Terminaisons du passé simple (1er groupe)", r: "ai, as, a, âmes, âtes, èrent" },
+    { q: "Conjuguez 'être' au présent", r: "suis, es, est, sommes, êtes, sont" },
+    { q: "Conjuguez 'avoir' au présent", r: "ai, as, a, avons, avez, ont" },
+    { q: "Conjuguez 'aller' au présent", r: "vais, vas, va, allons, allez, vont" },
+    { q: "Conjuguez 'faire' au présent", r: "fais, fais, fait, faisons, faites, font" },
+    { q: "Conjuguez 'prendre' au présent", r: "prends, prends, prend, prenons, prenez, prennent" }
+  ]},
+  8: { titre: "Valeurs des temps", cartes: [
+    { q: "Valeur du présent", r: "Actualité, vérité générale, habitude" },
+    { q: "Valeur de l'imparfait", r: "Description, habitude, action qui dure" },
+    { q: "Valeur du passé simple", r: "Action ponctuelle (récit écrit)" },
+    { q: "Valeur du passé composé", r: "Action ponctuelle (oral)" },
+    { q: "Valeur du plus-que-parfait", r: "Antériorité par rapport à une action passée" },
+    { q: "Valeur du futur simple", r: "Action à venir" },
+    { q: "Valeur du futur antérieur", r: "Action achevée avant une autre future" },
+    { q: "Valeur du conditionnel", r: "Hypothèse, condition, souhait" },
+    { q: "Valeur du subjonctif", r: "Doute, souhait, émotion, obligation" },
+    { q: "Valeur de l'impératif", r: "Ordre, conseil, interdiction" }
+  ]},
+  9: { titre: "Formation des mots", cartes: [
+    { q: "Qu'est-ce qu'un radical ?", r: "Partie qui porte le sens principal" },
+    { q: "Qu'est-ce qu'un préfixe ?", r: "Élément avant le radical (re-, in-, dé-)" },
+    { q: "Qu'est-ce qu'un suffixe ?", r: "Élément après le radical (-able, -age, -tion)" },
+    { q: "Qu'est-ce qu'une famille de mots ?", r: "Mots formés à partir du même radical" },
+    { q: "Exemple de mot avec préfixe et suffixe", r: "'in-juste-ment'" },
+    { q: "Donnez 3 préfixes de négation", r: "in-, im-, il-, ir-, dé-, dés-" },
+    { q: "Donnez 3 suffixes de nom", r: "-tion, -age, -ment, -eur, -ance" },
+    { q: "Donnez 3 suffixes d'adjectif", r: "-able, -ible, -eux, -al, -ique" },
+    { q: "Qu'est-ce qu'un mot composé ?", r: "Mot formé de plusieurs mots (ex: porte-monnaie)" },
+    { q: "Qu'est-ce qu'un néologisme ?", r: "Mot nouveau créé dans une langue" }
+  ]},
+  10: { titre: "Figures de style", cartes: [
+    { q: "Qu'est-ce qu'une comparaison ?", r: "Rapprochement avec outil (comme, tel)" },
+    { q: "Qu'est-ce qu'une métaphore ?", r: "Analogie sans outil" },
+    { q: "Qu'est-ce qu'une personnification ?", r: "Qualités humaines à un objet" },
+    { q: "Qu'est-ce qu'une antithèse ?", r: "Deux termes opposés rapprochés" },
+    { q: "Qu'est-ce qu'un oxymore ?", r: "Mots contradictoires" },
+    { q: "Qu'est-ce qu'une hyperbole ?", r: "Exagération" },
+    { q: "Qu'est-ce qu'une litote ?", r: "Dire moins pour suggérer plus" },
+    { q: "Qu'est-ce que l'euphémisme ?", r: "Atténuer une réalité désagréable" },
+    { q: "Qu'est-ce qu'une énumération ?", r: "Succession de mots" },
+    { q: "Qu'est-ce qu'une gradation ?", r: "Suite de mots d'intensité croissante" }
+  ]},
+  11: { titre: "Champs lexicaux", cartes: [
+    { q: "Qu'est-ce qu'un champ lexical ?", r: "Ensemble des mots liés à un même thème" },
+    { q: "Citez 3 registres de langue", r: "Soutenu, courant, familier" },
+    { q: "Qu'est-ce que l'argot ?", r: "Langage propre à un groupe" },
+    { q: "Donnez 3 mots du champ lexical de la mer", r: "vague, bateau, pêche, marée, port, plage" },
+    { q: "Donnez 3 mots du champ lexical de la guerre", r: "combat, arme, soldat, bataille, victoire, mort" },
+    { q: "Donnez 3 mots du champ lexical de l'amour", r: "cœur, passion, désir, tendresse, amoureux" },
+    { q: "Donnez 3 mots du champ lexical de la peur", r: "crainte, terreur, angoisse, panique, effroi" },
+    { q: "Donnez 3 mots du champ lexical de la joie", r: "bonheur, gaieté, sourire, plaisir, rire" },
+    { q: "Qu'est-ce qu'un champ sémantique ?", r: "Ensemble des sens d'un même mot" },
+    { q: "Différence entre champ lexical et champ sémantique", r: "Lexical = thème ; Sémantique = sens d'un mot" }
+  ]},
+  12: { titre: "Synonymes, antonymes, homonymes", cartes: [
+    { q: "Qu'est-ce qu'un synonyme ?", r: "Mot de sens proche" },
+    { q: "Qu'est-ce qu'un antonyme ?", r: "Mot de sens contraire" },
+    { q: "Qu'est-ce qu'un homonyme ?", r: "Même prononciation, sens différent" },
+    { q: "Qu'est-ce qu'un paronyme ?", r: "Sons proches, sens différent (collision/collusion)" },
+    { q: "Donnez un synonyme de 'rapidement'", r: "vite, promptement, prestement" },
+    { q: "Donnez un antonyme de 'grand'", r: "petit, minuscule, court" },
+    { q: "Donnez un homonyme de 'ver'", r: "vert, verre, vers" },
+    { q: "Donnez un homonyme de 'sang'", r: "cent, sans, sent" },
+    { q: "Donnez un homonyme de 'peau'", r: "pot, peau, paume" },
+    { q: "Donnez un paronyme de 'collision'", r: "collusion" }
+  ]},
+  13: { titre: "Genres littéraires", cartes: [
+    { q: "Citez 4 grands genres littéraires", r: "Roman, théâtre, poésie, argumentation" },
+    { q: "Qu'est-ce qu'un roman épistolaire ?", r: "Roman composé de lettres" },
+    { q: "Qu'est-ce qu'un roman d'aventures ?", r: "Récit d'actions palpitantes (Ex: L'Île au trésor)" },
+    { q: "Qu'est-ce qu'un roman policier ?", r: "Enquête autour d'un crime" },
+    { q: "Qu'est-ce qu'un roman fantastique ?", r: "Hésitation entre réel et irréel" },
+    { q: "Qu'est-ce qu'une tragédie ?", r: "Pièce où les personnages subissent un destin fatal" },
+    { q: "Qu'est-ce qu'une comédie ?", r: "Pièce qui fait rire, fin heureuse" },
+    { q: "Qu'est-ce qu'un poème lyrique ?", r: "Exprime des sentiments personnels" },
+    { q: "Qu'est-ce qu'une fable ?", r: "Courte histoire avec une morale" },
+    { q: "Qu'est-ce qu'un essai ?", r: "Texte argumentatif en prose" }
+  ]},
+  14: { titre: "Mouvements littéraires", cartes: [
+    { q: "Mouvement du XVIe siècle ?", r: "Humanisme (Rabelais, Montaigne)" },
+    { q: "Mouvement du XVIIe siècle ?", r: "Classicisme (Molière, Racine, La Fontaine)" },
+    { q: "Mouvement du XVIIIe siècle ?", r: "Les Lumières (Voltaire, Rousseau, Diderot)" },
+    { q: "Mouvement du XIXe siècle", r: "Romantisme, Réalisme, Naturalisme, Symbolisme" },
+    { q: "Mouvement du XXe siècle", r: "Surréalisme, Existentialisme, Nouveau Roman" },
+    { q: "Idées de l'Humanisme", r: "Exaltation de l'homme, confiance dans la raison" },
+    { q: "Idées des Lumières", r: "Raison, liberté, tolérance, progrès" },
+    { q: "Idées du Romantisme", r: "Exaltation des sentiments, de la nature, de la mélancolie" },
+    { q: "Idées du Réalisme", r: "Représenter la réalité, sans idéalisation" },
+    { q: "Idées du Surréalisme", r: "Rêve, inconscient, automatisme (Breton)" }
+  ]},
+  15: { titre: "Registres littéraires", cartes: [
+    { q: "Registre comique", r: "Provoque le rire" },
+    { q: "Registre tragique", r: "Inspire terreur et pitié" },
+    { q: "Registre épique", r: "Célèbre des héros, des exploits" },
+    { q: "Registre lyrique", r: "Exprime des sentiments personnels (amour, nostalgie)" },
+    { q: "Registre satirique", r: "Critique de manière moqueuse" },
+    { q: "Registre pathétique", r: "Suscite l'émotion, la tristesse" },
+    { q: "Registre fantastique", r: "Hésitation entre réel et irréel" },
+    { q: "Registre polémique", r: "Attaque vigoureusement un adversaire" },
+    { q: "Registre didactique", r: "Instruit, transmet un savoir" },
+    { q: "Registre élégiaque", r: "Exprime la plainte, la tristesse (souvent liée à la mort)" }
+  ]},
+  16: { titre: "Le récit", cartes: [
+    { q: "Étapes du schéma narratif", r: "SI → perturbateur → péripéties → résolution → SF" },
+    { q: "Qu'est-ce que l'élément perturbateur ?", r: "Événement qui déclenche l'histoire" },
+    { q: "Qu'est-ce que les péripéties ?", r: "Aventures, rebondissements" },
+    { q: "Qu'est-ce que la résolution ?", r: "Moment où le problème se résout" },
+    { q: "Qu'est-ce que la situation finale ?", r: "Situation après l'histoire" },
+    { q: "Narrateur omniscient", r: "Sait tout des personnages" },
+    { q: "Narrateur externe", r: "Ne décrit que les actions (caméra)" },
+    { q: "Narrateur interne", r: "Raconte à la 1ère personne" },
+    { q: "Qu'est-ce qu'une analepse ?", r: "Retour en arrière (flashback)" },
+    { q: "Qu'est-ce qu'une prolepse ?", r: "Anticipation (flashforward)" }
+  ]},
+  17: { titre: "La rédaction", cartes: [
+    { q: "Structure d'une introduction", r: "Amorce, présentation, problématique, annonce du plan" },
+    { q: "Qu'est-ce qu'une amorce ?", r: "Phrase d'accroche pour capter l'attention" },
+    { q: "Qu'est-ce que la problématique ?", r: "Question centrale du devoir" },
+    { q: "Connecteurs de cause", r: "car, parce que, puisque" },
+    { q: "Connecteurs de conséquence", r: "donc, ainsi, par conséquent" },
+    { q: "Connecteurs d'opposition", r: "mais, cependant, pourtant" },
+    { q: "Connecteurs d'addition", r: "et, de plus, en outre, également" },
+    { q: "Connecteurs d'illustration", r: "par exemple, comme, notamment" },
+    { q: "Structure de la conclusion", r: "Bilan, réponse à la problématique, ouverture" },
+    { q: "Qu'est-ce qu'une ouverture ?", r: "Élargir le sujet vers une question plus large" }
+  ]},
+  18: { titre: "Contraction de texte", cartes: [
+    { q: "Règle d'or de la contraction", r: "Ne pas commenter, ne pas juger" },
+    { q: "À combien réduire un texte ?", r: "Au 1/3 environ" },
+    { q: "Comment compter les mots ?", r: "Chaque mot compte, 'c'est' = 2 mots" },
+    { q: "Que conserver dans une contraction ?", r: "Les idées essentielles, la thèse, l'ordre logique" },
+    { q: "Que supprimer dans une contraction ?", r: "Les exemples trop détaillés, les répétitions" },
+    { q: "Peut-on ajouter des mots ?", r: "Non, seulement reformuler" },
+    { q: "Peut-on changer l'ordre des idées ?", r: "Non, respecter l'ordre de l'auteur" },
+    { q: "Doit-on citer l'auteur ?", r: "Oui, en introduction" },
+    { q: "Le titre compte-t-il dans le mot ?", r: "Non" },
+    { q: "Comment noter une contraction ?", r: "Sur 10 points (fond 6, forme 4)" }
+  ]},
+  19: { titre: "Commentaire composé", cartes: [
+    { q: "Structure du commentaire", r: "Introduction, développement (2-3 axes), conclusion" },
+    { q: "Que ne faut-il pas faire ?", r: "Ne pas résumer le texte" },
+    { q: "Comment justifier son analyse ?", r: "Citer, nommer le procédé, expliquer l'effet" },
+    { q: "Que contient la conclusion ?", r: "Bilan, réponse à la problématique, ouverture" },
+    { q: "Comment nommer les procédés ?", r: "Comparaison, métaphore, champ lexical, etc." },
+    { q: "Qu'est-ce qu'un axe de lecture ?", r: "Grande partie du commentaire (ex: 'Les figures de style')" },
+    { q: "Combien d'axes dans un commentaire ?", r: "2 ou 3 axes" },
+    { q: "Comment rédiger une transition ?", r: "Entre deux axes, phrase de liaison" },
+    { q: "Faut-il une accroche ?", r: "Oui, en introduction" },
+    { q: "Quelle est la différence avec la contraction ?", r: "Commentaire = analyse ; Contraction = résumé" }
+  ]},
+  20: { titre: "Oral : présentation", cartes: [
+    { q: "Durée de l'oral du brevet", r: "5 min exposé + 10 min échange" },
+    { q: "Peut-on lire son texte ?", r: "Non, utiliser des notes (mots-clés)" },
+    { q: "Peut-on utiliser un PowerPoint ?", r: "Oui, mais sobre (pas de texte lu)" },
+    { q: "Que faut-il préparer pour l'oral ?", r: "Un plan détaillé, des notes, des exemples précis" },
+    { q: "Comment gérer son stress ?", r: "Respirer, bien dormir, bien préparer" },
+    { q: "Structure de l'exposé", r: "Introduction, développement, conclusion" },
+    { q: "Que doit contenir l'introduction ?", r: "Présentation du sujet, annonce du plan" },
+    { q: "Que doit contenir le développement ?", r: "2 ou 3 parties argumentées" },
+    { q: "Que doit contenir la conclusion ?", r: "Bilan, ouverture" },
+    { q: "Peut-on avoir des notes ?", r: "Oui, mais discrètes (pas de feuille A4)" }
+  ]},
+  21: { titre: "Oral : expression", cartes: [
+    { q: "Posture à l'oral", r: "Debout, gestes naturels, regarder le jury" },
+    { q: "Comment bien utiliser sa voix ?", r: "Articuler, parler fort, débit calme" },
+    { q: "Comment bien articuler ?", r: "Ouvrir la bouche, parler lentement, détacher les syllabes" },
+    { q: "Que faire si on a un trou de mémoire ?", r: "Prendre une inspiration, regarder ses notes, reformuler" },
+    { q: "Comment regarder le jury ?", r: "Regarder toutes les personnes, pas seulement une" },
+    { q: "Faut-il sourire ?", r: "Oui, cela montre sa bonne volonté" },
+    { q: "Comment gérer sa respiration ?", r: "Respirer calmement avant de parler" },
+    { q: "Comment s'habiller ?", r: "Sobre et confortable" },
+    { q: "Faut-il faire des gestes ?", r: "Oui, mais naturels et mesurés" },
+    { q: "Comment réagir face au stress ?", r: "Le considérer comme une énergie positive" }
+  ]},
+  22: { titre: "Oral : échange", cartes: [
+    { q: "Que faire si on ne sait pas ?", r: "L'admettre honnêtement" },
+    { q: "Question incomprise ?", r: "Demander une reformulation poliment" },
+    { q: "Ne pas couper la parole", r: "Attendre que le jury ait fini de parler" },
+    { q: "Question difficile ?", r: "Prendre le temps de réfléchir, reformuler la question" },
+    { q: "Peut-on dire 'je ne sais pas' ?", r: "Oui, en montrant qu'on a réfléchi" },
+    { q: "Comment reformuler une question ?", r: "'Si je comprends bien, vous me demandez...'" },
+    { q: "Peut-on prendre des notes pendant l'échange ?", r: "Oui, rapidement" },
+    { q: "Comment argumenter ?", r: "Donner des exemples précis" },
+    { q: "Faut-il regarder le jury ?", r: "Oui, pour montrer qu'on s'adresse à eux" },
+    { q: "Comment terminer l'oral ?", r: "'Merci de votre attention'" }
+  ]},
+  23: { titre: "Dictée", cartes: [
+    { q: "Que vérifier en priorité ?", r: "Accords, homophones, terminaisons" },
+    { q: "Vérifier a/à", r: "Remplacer par 'avait'" },
+    { q: "Vérifier on/ont", r: "Remplacer par 'avaient'" },
+    { q: "Accords du participe passé avec être", r: "S'accorde avec le sujet" },
+    { q: "Accords du participe passé avec avoir", r: "S'accorde avec le COD si placé avant" },
+    { q: "Vérifier les homophones", r: "Remplacer par un autre mot équivalent" },
+    { q: "Comment vérifier les terminaisons en 'é'", r: "Remplacer par un verbe du 1er groupe (manger)" },
+    { q: "Comment vérifier les terminaisons en 'er'", r: "Remplacer par un verbe (vendre)" },
+    { q: "Comment vérifier le pluriel des noms", r: "Ajouter un 's' ou 'x'" },
+    { q: "Comment vérifier l'accord des adjectifs", r: "Regarder le nom qu'ils qualifient" }
+  ]},
+  24: { titre: "Grammaire (analyse)", cartes: [
+    { q: "Différence nature/fonction", r: "Nature = classe grammaticale, fonction = rôle dans la phrase" },
+    { q: "Trouver le COD", r: "Poser 'quoi ?' après le verbe" },
+    { q: "Trouver le COI", r: "Poser 'à qui ?' ou 'de quoi ?'" },
+    { q: "Trouver le sujet", r: "Poser 'qui est-ce qui ?' avant le verbe" },
+    { q: "Trouver le complément circonstanciel", r: "Poser 'quand ?', 'où ?', 'comment ?', 'pourquoi ?'" },
+    { q: "Nature de 'que'", r: "Conjonction de subordination ou pronom relatif" },
+    { q: "Nature de 'dont'", r: "Pronom relatif" },
+    { q: "Fonction d'un adjectif", r: "Épithète ou attribut" },
+    { q: "Fonction d'un nom", r: "Sujet, COD, COI, attribut, complément du nom" },
+    { q: "Comment justifier une fonction", r: "Poser la question adaptée" }
+  ]},
+  25: { titre: "Réécriture", cartes: [
+    { q: "Changer 'je' en 'nous'", r: "Verbe à la 1ère personne du pluriel" },
+    { q: "Changer féminin en masculin", r: "Modifier déterminants, adjectifs et participes" },
+    { q: "Changer singulier en pluriel", r: "Ajouter 's' ou 'x', adapter le verbe" },
+    { q: "Présent en imparfait", r: "Terminaisons -ais, -ais, -ait, -ions, -iez, -aient" },
+    { q: "Présent en futur", r: "Terminaisons -ai, -as, -a, -ons, -ez, -ont" },
+    { q: "Présent en passé composé", r: "Auxiliaire avoir/être au présent + participe passé" },
+    { q: "Phrase active en passive", r: "COD devient sujet, complément d'agent" },
+    { q: "Phrase passive en active", r: "Sujet devient COD, suppression du complément d'agent" },
+    { q: "Changer le discours direct en indirect", r: "Changer les pronoms et les temps" },
+    { q: "Vérifier les accords après réécriture", r: "Relire attentivement" }
+  ]},
+  26: { titre: "Essai", cartes: [
+    { q: "Structure de l'essai", r: "Introduction, développement (thèse/antithèse ou plan logique), conclusion" },
+    { q: "Comment trouver des idées ?", r: "Brainstorming" },
+    { q: "Comment illustrer ses arguments ?", r: "Exemples précis (œuvres, films, expériences)" },
+    { q: "Structure d'un paragraphe argumentatif", r: "1. Idée. 2. Exemple. 3. Explication du lien" },
+    { q: "Comment conclure un essai ?", r: "Rappeler la réponse, ouvrir sur une question plus large" },
+    { q: "Que faire si on n'a pas d'idée ?", r: "Chercher des exemples concrets, penser à des œuvres étudiées" },
+    { q: "Faut-il donner son avis ?", r: "Oui, mais justifié" },
+    { q: "Faut-il des connecteurs logiques ?", r: "Oui, pour structurer" },
+    { q: "Combien de paragraphes dans le développement ?", r: "2 ou 3 paragraphes" },
+    { q: "Peut-on utiliser le 'je' ?", r: "Oui, mais avec modération" }
+  ]}
+};
+
+</script>
+<script>
+let currentChapitre = 1;
+let currentCartes = [];
+let currentIndex = 0;
+let currentCard = null;
+let progression = {};
+
+function getKey() { return `fc_fr_ch${currentChapitre}`; }
+function save() { localStorage.setItem(getKey(), JSON.stringify(progression)); }
+function load() { const s = localStorage.getItem(getKey()); progression = s ? JSON.parse(s) : {}; }
+function cardKey(q) { return q.substring(0,60); }
+function getScore(q) { return progression[cardKey(q)]?.score || 0; }
+function setScore(q, v) { progression[cardKey(q)] = { score: Math.min(3,v), date: new Date().toISOString() }; save(); }
+
+function init() {
+  const cartes = CHAPITRES_FR[currentChapitre]?.cartes || [];
+  let modif = false;
+  cartes.forEach(c => { if (!progression[cardKey(c.q)]) { progression[cardKey(c.q)] = { score:0, date:'' }; modif=true; } });
+  if (modif) save();
+}
+
+function melanger(a) {
+  for (let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  return a;
+}
+
+function selectionCartes() {
+  const cartes = CHAPITRES_FR[currentChapitre]?.cartes || [];
+  const nouvelles = cartes.filter(c=>getScore(c.q)===0).slice(0,20);
+  const erreurs = cartes.filter(c=>getScore(c.q)>0&&getScore(c.q)<3).slice(0,10);
+  const revoir = cartes.filter(c=>getScore(c.q)>=3).slice(0,5);
+  const sel = [...nouvelles,...erreurs,...revoir];
+  const ids = new Set();
+  return melanger(sel.filter(c=>{ if(ids.has(c.q))return false; ids.add(c.q); return true; }));
+}
+
+function stats() {
+  const cartes = CHAPITRES_FR[currentChapitre]?.cartes || [];
+  const mait = cartes.filter(c=>getScore(c.q)>=3).length;
+  document.getElementById('stats').innerHTML = `📚 Ch.${currentChapitre} : ${CHAPITRES_FR[currentChapitre]?.titre || ''} &nbsp;|&nbsp; ✅ ${mait}/${cartes.length} maîtrisées (${cartes.length?Math.round(mait/cartes.length*100):0}%)`;
+}
+
+function afficher() {
+  if (currentIndex >= currentCartes.length) {
+    document.getElementById('card-area').innerHTML = '<div class="progress">🎉 Chapitre terminé !</div>';
+    document.getElementById('session-stats').innerHTML = `✅ ${currentCartes.length} cartes revues.`;
+    stats(); return;
+  }
+  currentCard = currentCartes[currentIndex];
+  document.getElementById('card-area').innerHTML = `
+    <div class="flashcard" onclick="reveler()">
+      <div class="question">📖 ${currentCard.q}</div>
+      <div class="answer" id="ans">📌 ${currentCard.r}</div>
+      <div class="show-answer">👆 Cliquez pour voir la réponse</div>
+    </div>
+    <div class="btn-group" id="btns" style="display:none">
+      <button onclick="repondre(true)">✅ Je sais (${getScore(currentCard.q)}/3)</button>
+      <button onclick="repondre(false)">❌ Je ne sais pas</button>
+    </div>`;
+  document.getElementById('session-stats').innerHTML = `📌 ${currentIndex+1}/${currentCartes.length}`;
+}
+
+window.reveler = () => {
+  document.getElementById('ans').style.display = 'block';
+  document.getElementById('btns').style.display = 'flex';
+};
+
+window.repondre = (ok) => {
+  let s = getScore(currentCard.q);
+  s = ok ? Math.min(s+1,3) : 0;
+  setScore(currentCard.q, s);
+  currentIndex++;
+  afficher();
+  stats();
+};
+
+function demarrer() {
+  load(); init();
+  currentCartes = selectionCartes();
+  currentIndex = 0;
+  stats();
+  if (!currentCartes.length) { document.getElementById('card-area').innerHTML = '<div class="progress">🎉 Toutes les cartes maîtrisées !</div>'; return; }
+  afficher();
+}
+
+function remplirSelect() {
+  const s = document.getElementById('chapitreSelect');
+  s.innerHTML = '';
+  Object.entries(CHAPITRES_FR).forEach(([n,ch]) => {
+    const o = document.createElement('option'); o.value=n; o.textContent=`${n}. ${ch.titre}`; s.appendChild(o);
+  });
+  s.value = currentChapitre;
+}
+
+document.getElementById('changerBtn').onclick = () => { currentChapitre = parseInt(document.getElementById('chapitreSelect').value); demarrer(); };
+document.getElementById('resetChapitreBtn').onclick = () => { if(confirm('Reset ce chapitre ?')){ localStorage.removeItem(getKey()); demarrer(); } };
+document.getElementById('resetAllBtn').onclick = () => { if(confirm('⚠️ Reset tout ?')){ Object.keys(CHAPITRES_FR).forEach(n=>localStorage.removeItem(`fc_fr_ch${n}`)); demarrer(); } };
+
+remplirSelect();
+demarrer();
+</script>
+</body>
+</html>

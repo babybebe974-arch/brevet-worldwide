@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <title>📐 Flashcards Mathématiques – Brevet 2026</title>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:#000000;font-family:'DM Sans',sans-serif;padding:1rem;color:#ffffff;}
+    .container{max-width:1000px;margin:0 auto;background:#1a1a1a;border-radius:2rem;padding:1.5rem;border:1px solid #2ecc71;}
+    h1{font-family:'Playfair Display',serif;font-size:2rem;color:#2ecc71;margin-bottom:0.25rem;}
+    .sub{color:#aaa;margin-bottom:1rem;border-left:3px solid #2ecc71;padding-left:1rem;font-size:0.8rem;}
+    .stats{background:#2a2a2a;border-radius:1rem;padding:0.8rem;margin-bottom:1rem;font-size:0.75rem;}
+    .selector-group{display:flex;flex-wrap:wrap;gap:1rem;margin-bottom:1rem;align-items:center;}
+    select{background:#2a2a2a;border:1px solid #333;border-radius:40px;padding:0.5rem 1rem;color:white;font-size:0.8rem;flex:1;min-width:200px;}
+    button{background:#1e2a3e;border:1px solid #5ecfb1;border-radius:40px;padding:0.5rem 1.2rem;font-size:0.8rem;color:#5ecfb1;cursor:pointer;}
+    button:hover{background:#2a3652;}
+    .flashcard{background:#2a2a2a;border:1px solid #333;border-radius:1.5rem;padding:2rem;text-align:center;cursor:pointer;min-height:280px;display:flex;align-items:center;justify-content:center;flex-direction:column;}
+    .flashcard:hover{border-color:#2ecc71;}
+    .question{font-size:1.1rem;margin-bottom:1rem;font-weight:500;}
+    .answer{font-size:1rem;color:#2ecc71;margin-top:1rem;display:none;line-height:1.5;}
+    .show-answer{color:#5ecfb1;font-size:0.8rem;margin-top:1rem;}
+    .btn-group{display:flex;gap:1rem;justify-content:center;margin-top:1rem;flex-wrap:wrap;}
+    .progress{background:#2a2a2a;border-radius:1rem;padding:0.6rem;margin-top:1rem;font-size:0.7rem;color:#aaa;text-align:center;}
+    .back-link{display:inline-block;margin-top:1rem;text-decoration:none;color:#5ecfb1;font-size:0.8rem;}
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>📐 Flashcards Mathématiques</h1>
+  <div class="sub">Brevet 2026 • 18 chapitres • 144 cartes</div>
+
+  <div class="selector-group">
+    <select id="chapitreSelect"></select>
+    <button id="changerBtn">📚 Charger chapitre</button>
+    <button id="resetChapitreBtn" style="border-color:#e8c87a;color:#e8c87a;">🔄 Reset chapitre</button>
+    <button id="resetAllBtn" style="border-color:#e74c3c;color:#e74c3c;">⚠️ Reset tout</button>
+  </div>
+
+  <div class="stats" id="stats">📊 Chargement...</div>
+  <div id="card-area"></div>
+  <div id="session-stats" class="progress"></div>
+
+  <a href="index.html" class="back-link">← Retour au hub</a>
+</div>
+
+<script>
+// ==================== 18 CHAPITRES – MATHÉMATIQUES (144 cartes) ====================
+const chapitres = {
+  1: { titre: "Nombres premiers et PGCD", cartes: [
+    { q: "Qu'est-ce qu'un nombre premier ?", r: "Nombre qui a exactement deux diviseurs : 1 et lui-même. Ex: 2,3,5,7,11,13,17,19,23..." },
+    { q: "Critère de divisibilité par 2.", r: "Un nombre est divisible par 2 s'il se termine par 0, 2, 4, 6 ou 8." },
+    { q: "Critère de divisibilité par 3.", r: "Un nombre est divisible par 3 si la somme de ses chiffres est divisible par 3." },
+    { q: "Critère de divisibilité par 5.", r: "Un nombre est divisible par 5 s'il se termine par 0 ou 5." },
+    { q: "Critère de divisibilité par 9.", r: "Un nombre est divisible par 9 si la somme de ses chiffres est divisible par 9." },
+    { q: "Décomposer 72 en facteurs premiers.", r: "72 = 2³ × 3²" },
+    { q: "Qu'est-ce que le PGCD ?", r: "Plus Grand Diviseur Commun. PGCD(12,18)=6" },
+    { q: "Algorithme d'Euclide pour PGCD(72,30).", r: "72 ÷ 30 = 2 reste 12, 30 ÷ 12 = 2 reste 6, 12 ÷ 6 = 2 reste 0 → PGCD = 6" }
+  ]},
+  2: { titre: "Nombres relatifs", cartes: [
+    { q: "Addition de deux nombres négatifs.", r: "On additionne les distances à zéro, on garde le signe négatif. Ex: (-3)+(-5)=-8" },
+    { q: "Calculer (-7) + (+3).", r: "-4" },
+    { q: "Règle des signes : (-) × (-) = ?", r: "(+). Ex: (-2)×(-3)=+6" },
+    { q: "Règle des signes : (-) × (+) = ?", r: "(-). Ex: (-2)×(+3)=-6" },
+    { q: "Calculer (-15) ÷ (-3).", r: "+5" },
+    { q: "Opposé de -8.", r: "+8" },
+    { q: "Ranger dans l'ordre croissant : -5, 3, -1, 0, -2.", r: "-5 < -2 < -1 < 0 < 3" },
+    { q: "Distance entre -3 et +4 sur une droite graduée.", r: "7" }
+  ]},
+  3: { titre: "Fractions et quotients", cartes: [
+    { q: "Additionner 2/5 + 1/3.", r: "11/15" },
+    { q: "Soustraire 3/4 - 1/2.", r: "1/4" },
+    { q: "Multiplier 2/3 × 4/5.", r: "8/15" },
+    { q: "Diviser 2/3 ÷ 4/5.", r: "(2/3)×(5/4)=10/12=5/6" },
+    { q: "Comparer 3/4 et 5/6.", r: "3/4 < 5/6 (9/12 < 10/12)" },
+    { q: "Rendre irréductible 18/24.", r: "3/4" },
+    { q: "Calculer 2/3 × 6/5.", r: "4/5" },
+    { q: "Calculer 5/8 ÷ 3/4.", r: "5/6" }
+  ]},
+  4: { titre: "Puissances", cartes: [
+    { q: "Que signifie 2³ ?", r: "2 × 2 × 2 = 8" },
+    { q: "Que vaut 10⁻² ?", r: "0,01" },
+    { q: "Notation scientifique de 15000.", r: "1,5 × 10⁴" },
+    { q: "Notation scientifique de 0,00025.", r: "2,5 × 10⁻⁴" },
+    { q: "Règle : aⁿ × aᵖ = ?", r: "aⁿ⁺ᵖ" },
+    { q: "Règle : (aⁿ)ᵖ = ?", r: "aⁿˣᵖ" },
+    { q: "Règle : aⁿ / aᵖ = ?", r: "aⁿ⁻ᵖ" },
+    { q: "Calculer 2⁴ × 2⁻².", r: "2² = 4" }
+  ]},
+  5: { titre: "Calcul littéral", cartes: [
+    { q: "Réduire 3x + 5 - 2x + 2.", r: "x + 7" },
+    { q: "Développer k(a+b).", r: "k×a + k×b" },
+    { q: "Développer (a+b)(c+d).", r: "ac + ad + bc + bd" },
+    { q: "Factoriser 6x + 12.", r: "6(x+2)" },
+    { q: "Factoriser x² - 4.", r: "(x-2)(x+2)" },
+    { q: "Développer (2x+3)².", r: "4x² + 12x + 9" },
+    { q: "Développer (3x-2)².", r: "9x² - 12x + 4" },
+    { q: "Développer (x-3)(x+5).", r: "x² + 2x - 15" }
+  ]},
+  6: { titre: "Équations et inéquations", cartes: [
+    { q: "Résoudre 2x - 3 = 7.", r: "x = 5" },
+    { q: "Résoudre -3x + 5 = 2x - 10.", r: "x = 3" },
+    { q: "Résoudre (x-3)(x+4)=0.", r: "x = 3 ou x = -4" },
+    { q: "Résoudre x - 3 ≤ 5.", r: "x ≤ 8" },
+    { q: "Résoudre -2x + 1 < 5.", r: "x > -2" },
+    { q: "Traduire en équation : un nombre augmenté de 8 vaut 15.", r: "x + 8 = 15 → x = 7" },
+    { q: "Traduire en équation : le double diminué de 3 égale 5.", r: "2x - 3 = 5 → x = 4" },
+    { q: "Représenter x ≥ -2 sur une droite graduée.", r: "Crochet en -2 (inclus), trait vers la droite" }
+  ]},
+  7: { titre: "Proportionnalité", cartes: [
+    { q: "Produit en croix.", r: "Si a/b = c/d, alors a×d = b×c" },
+    { q: "Calculer 30% de 80.", r: "24" },
+    { q: "Augmentation de 15% de 200.", r: "200 × 1,15 = 230" },
+    { q: "Diminution de 20% de 50.", r: "50 × 0,8 = 40" },
+    { q: "Échelle 1/500. 8 cm sur le plan → réel ?", r: "8 × 500 = 4000 cm = 40 m" },
+    { q: "Formule de la vitesse moyenne.", r: "v = d/t" },
+    { q: "Convertir 10 m/s en km/h.", r: "36 km/h" },
+    { q: "Convertir 72 km/h en m/s.", r: "20 m/s" }
+  ]},
+  8: { titre: "Statistiques", cartes: [
+    { q: "Définition de la moyenne.", r: "Somme des valeurs / effectif total" },
+    { q: "Moyenne de 12, 15, 18.", r: "15" },
+    { q: "Définition de la médiane.", r: "Valeur qui partage la série en deux parts égales" },
+    { q: "Médiane de 3, 7, 9, 12, 15.", r: "9" },
+    { q: "Médiane de 2, 5, 8, 11.", r: "(5+8)/2 = 6,5" },
+    { q: "Définition de l'étendue.", r: "Max - Min" },
+    { q: "Étendue de 5, 12, 8, 20, 3.", r: "20 - 3 = 17" },
+    { q: "Définition d'une fréquence.", r: "Effectif / effectif total" }
+  ]},
+  9: { titre: "Probabilités", cartes: [
+    { q: "Définition de P(A).", r: "Nombre d'issues favorables / nombre total d'issues" },
+    { q: "P(4) avec un dé à 6 faces.", r: "1/6" },
+    { q: "P(nombre pair) avec un dé.", r: "3/6 = 1/2" },
+    { q: "Événement certain.", r: "P = 1" },
+    { q: "Événement impossible.", r: "P = 0" },
+    { q: "Événement contraire P(Ā).", r: "1 - P(A)" },
+    { q: "P(rouge) avec 3 rouges et 5 bleues.", r: "3/8" },
+    { q: "Arbre de probabilités.", r: "Permet de visualiser toutes les issues possibles" }
+  ]},
+  10: { titre: "Fonctions", cartes: [
+    { q: "Qu'est-ce qu'une fonction f ?", r: "Associe à un nombre x un unique nombre f(x)" },
+    { q: "f(x)=2x+3. Calculer f(4).", r: "11" },
+    { q: "Différence entre image et antécédent.", r: "f(x) est l'image de x. x est l'antécédent de f(x)" },
+    { q: "Antécédent de 7 par f(x)=2x+3.", r: "x=2" },
+    { q: "Représentation graphique d'une fonction.", r: "Ensemble des points M(x ; f(x))" },
+    { q: "Lire f(3) sur un graphique.", r: "Tracer la verticale en x=3, lire l'ordonnée" },
+    { q: "Fonction linéaire.", r: "f(x)=ax (droite passant par l'origine)" },
+    { q: "Fonction affine.", r: "f(x)=ax+b (droite)" }
+  ]},
+  11: { titre: "Fonctions linéaires et affines", cartes: [
+    { q: "Forme générale d'une fonction affine.", r: "f(x)=ax+b (a = coefficient directeur, b = ordonnée à l'origine)" },
+    { q: "Calcul du coefficient directeur a.", r: "a = (y₂ - y₁)/(x₂ - x₁)" },
+    { q: "Calculer a pour A(1,3) et B(3,7).", r: "a = (7-3)/(3-1) = 4/2 = 2" },
+    { q: "Ordonnée à l'origine b.", r: "b = f(0), intersection avec l'axe des ordonnées" },
+    { q: "Déterminer f(x) passant par A(2,5) avec a=3.", r: "f(x)=3x+b → 5=6+b → b=-1 → f(x)=3x-1" },
+    { q: "Résoudre f(x)=g(x) graphiquement.", r: "Abscisse du point d'intersection des deux droites" },
+    { q: "f(x) > g(x) graphiquement.", r: "Partie où la courbe de f est au-dessus de celle de g" },
+    { q: "Résoudre f(x)=g(x) pour f(x)=2x-1, g(x)=-x+5.", r: "2x-1 = -x+5 → 3x=6 → x=2" }
+  ]},
+  12: { titre: "Théorème de Pythagore", cartes: [
+    { q: "Théorème de Pythagore.", r: "Si triangle rectangle, alors hyp² = a² + b²" },
+    { q: "Calculer BC si AB=3, AC=4.", r: "BC = 5" },
+    { q: "Réciproque de Pythagore.", r: "Si hyp² = a²+b², alors triangle rectangle" },
+    { q: "Triangle 5,12,13.", r: "13²=169, 5²+12²=169 → rectangle" },
+    { q: "Contraposée de Pythagore.", r: "Si hyp² ≠ a²+b², alors triangle non rectangle" },
+    { q: "Hauteur d'un triangle équilatéral de côté 6.", r: "h = √(6²-3²) = √27 = 3√3 ≈ 5,2" },
+    { q: "Diagonale d'un carré de côté 5.", r: "d = √(5²+5²) = √50 = 5√2 ≈ 7,07" },
+    { q: "Pythagore dans un repère.", r: "AB² = (xB-xA)² + (yB-yA)²" }
+  ]},
+  13: { titre: "Théorème de Thalès", cartes: [
+    { q: "Théorème de Thalès.", r: "AM/AB = AN/AC = MN/BC (configuration)" },
+    { q: "Configuration de Thalès.", r: "Deux triangles emboîtés ou en papillon" },
+    { q: "Réciproque de Thalès.", r: "Si AM/AB = AN/AC (même ordre), alors (MN)//(BC)" },
+    { q: "Calculer MN si AM=3, AB=5, BC=10.", r: "MN/10 = 3/5 → MN = 6" },
+    { q: "Calculer AN si AM=4, AB=12, AC=9.", r: "AN/9 = 4/12 → AN = 3" },
+    { q: "Coefficient k dans Thalès.", r: "Coefficient d'agrandissement ou de réduction" },
+    { q: "Si k=2, que deviennent les longueurs ?", r: "Multipliées par 2" },
+    { q: "Si k=1/2, que deviennent les aires ?", r: "Multipliées par (1/2)² = 1/4" }
+  ]},
+  14: { titre: "Trigonométrie", cartes: [
+    { q: "Cosinus.", r: "adjacent / hypoténuse" },
+    { q: "Sinus.", r: "opposé / hypoténuse" },
+    { q: "Tangente.", r: "opposé / adjacent" },
+    { q: "SOH CAH TOA.", r: "Sinus=Opposé/Hypoténuse, Cosinus=Adjacent/Hypoténuse, Tangente=Opposé/Adjacent" },
+    { q: "cos(30°).", r: "√3/2" },
+    { q: "sin(30°).", r: "1/2" },
+    { q: "tan(45°).", r: "1" },
+    { q: "Angle α si cos(α)=0,5.", r: "60°" }
+  ]},
+  15: { titre: "Géométrie (angles)", cartes: [
+    { q: "Somme des angles d'un triangle.", r: "180°" },
+    { q: "Angles complémentaires.", r: "Somme = 90°" },
+    { q: "Angles supplémentaires.", r: "Somme = 180°" },
+    { q: "Angles alternes-internes avec deux parallèles.", r: "Ils sont égaux" },
+    { q: "Angles correspondants avec deux parallèles.", r: "Ils sont égaux" },
+    { q: "Angles opposés par le sommet.", r: "Ils sont égaux" },
+    { q: "Deux droites perpendiculaires à une même droite.", r: "Elles sont parallèles entre elles" },
+    { q: "Médiatrice d'un segment.", r: "Droite perpendiculaire au segment en son milieu" }
+  ]},
+  16: { titre: "Transformations", cartes: [
+    { q: "Translation.", r: "Glisse une figure. Image identique, même orientation" },
+    { q: "Rotation.", r: "Tourne autour d'un point. Image identique, orientation changée" },
+    { q: "Symétrie axiale (réflexion).", r: "Reflet par rapport à une droite. Orientation inversée" },
+    { q: "Symétrie centrale.", r: "Reflet par rapport à un point (rotation 180°). Orientation inversée" },
+    { q: "La translation conserve...", r: "Longueurs, angles, aires. L'orientation est conservée" },
+    { q: "Symétrie axiale : propriété de l'axe.", r: "Un point et son image sont à la même distance de l'axe" },
+    { q: "Symétrie centrale : le centre est...", r: "Le milieu du segment joignant un point et son image" },
+    { q: "Rotation de 90°.", r: "Le quadrilatère a la même forme, tourné" }
+  ]},
+  17: { titre: "Solides (volumes)", cartes: [
+    { q: "Volume d'un pavé droit.", r: "V = L × l × h" },
+    { q: "Volume d'un prisme droit.", r: "V = Aire de la base × hauteur" },
+    { q: "Volume d'un cylindre.", r: "V = π × r² × h" },
+    { q: "Volume d'une pyramide.", r: "V = (Aire de la base × hauteur) / 3" },
+    { q: "Volume d'un cône.", r: "V = (π × r² × h) / 3" },
+    { q: "1 dm³ = ?", r: "1 L" },
+    { q: "Cylindre r=2, h=5.", r: "V = 20π ≈ 62,8" },
+    { q: "Pavé droit L=5, l=3, h=2.", r: "V = 30" }
+  ]},
+  18: { titre: "Scratch (algorithmique)", cartes: [
+    { q: "Qu'est-ce qu'une variable en Scratch ?", r: "Un espace mémoire qui stocke une valeur" },
+    { q: "Scratch : répéter 10 fois.", r: "Boucle 'répéter 10 fois'" },
+    { q: "Scratch : structure conditionnelle.", r: "'si ... alors ... sinon ...'" },
+    { q: "Scratch : orientation 90°.", r: "Le lutin se dirige vers la droite" },
+    { q: "Carré de côté 50 en Scratch.", r: "Répéter 4 fois : avancer 50, tourner 90°" },
+    { q: "Différence entre 'stylo écriture' et 'relever'.", r: "Écriture : trace. Relevé : ne trace pas" },
+    { q: "Hexagone régulier : angle de rotation.", r: "60° (360°/6)" },
+    { q: "Effacer tout ce qui a été tracé.", r: "'effacer tout'" }
+  ]}
+};
+
+let currentChapitre = 1;
+let currentCartes = [];
+let currentIndex = 0;
+let currentCard = null;
+let progression = {};
+
+function getStorageKey() { return `flashcards_maths_ch${currentChapitre}`; }
+function sauvegarderProgression() { localStorage.setItem(getStorageKey(), JSON.stringify(progression)); }
+function chargerProgression() {
+  const saved = localStorage.getItem(getStorageKey());
+  if (saved) progression = JSON.parse(saved);
+  else progression = {};
+}
+
+function getCardKey(question) { return question.substring(0, 60); }
+function getCartesChapitre() { return chapitres[currentChapitre]?.cartes || []; }
+
+function initProgression() {
+  const cartes = getCartesChapitre();
+  let modif = false;
+  for (const c of cartes) {
+    const key = getCardKey(c.q);
+    if (!progression[key]) {
+      progression[key] = { score: 0, etat: "nouvelle" };
+      modif = true;
+    }
+  }
+  if (modif) sauvegarderProgression();
+}
+
+function melanger(tab) {
+  for (let i = tab.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [tab[i], tab[j]] = [tab[j], tab[i]];
+  }
+  return tab;
+}
+
+function selectionnerCartesDuJour() {
+  const cartes = getCartesChapitre();
+  const nouvelles = cartes.filter(c => progression[getCardKey(c.q)]?.score === 0).slice(0, 20);
+  const erreurs = cartes.filter(c => progression[getCardKey(c.q)]?.score > 0 && progression[getCardKey(c.q)]?.score < 3).slice(0, 10);
+  const revoir = cartes.filter(c => progression[getCardKey(c.q)]?.score >= 3).slice(0, 5);
+  let selected = [...nouvelles, ...erreurs, ...revoir];
+  const ids = new Set();
+  selected = selected.filter(c => { const k = getCardKey(c.q); if (ids.has(k)) return false; ids.add(k); return true; });
+  return melanger(selected);
+}
+
+function mettreAJourStats() {
+  const cartes = getCartesChapitre();
+  let total = cartes.length;
+  let maitrisees = 0;
+  for (const c of cartes) {
+    if (progression[getCardKey(c.q)]?.score >= 3) maitrisees++;
+  }
+  document.getElementById("stats").innerHTML = `📚 Chapitre ${currentChapitre} : ${chapitres[currentChapitre]?.titre || ""}<br>✅ ${maitrisees}/${total} cartes maîtrisées (${Math.round(maitrisees/total*100)}%)`;
+}
+
+function afficherCarte() {
+  if (currentIndex >= currentCartes.length) {
+    document.getElementById("card-area").innerHTML = '<div class="progress">🎉 Bravo ! Chapitre terminé. Change de chapitre.</div>';
+    document.getElementById("session-stats").innerHTML = `✅ Session terminée ! ${currentCartes.length} cartes revues.`;
+    mettreAJourStats();
+    return;
+  }
+  currentCard = currentCartes[currentIndex];
+  const key = getCardKey(currentCard.q);
+  const score = progression[key]?.score || 0;
+  document.getElementById("card-area").innerHTML = `
+    <div class="flashcard" onclick="revelerReponse()">
+      <div class="question">📖 ${currentCard.q}</div>
+      <div class="answer" id="answer">📌 ${currentCard.r}</div>
+      <div class="show-answer">👆 Cliquez pour voir la réponse</div>
+    </div>
+    <div class="btn-group" id="btns" style="display:none;">
+      <button onclick="repondre(true)">✅ Je sais (${score}/3)</button>
+      <button onclick="repondre(false)">❌ Je ne sais pas</button>
+    </div>
+  `;
+  document.getElementById("session-stats").innerHTML = `📌 Carte ${currentIndex+1}/${currentCartes.length} · Score: ${score}/3`;
+}
+
+window.revelerReponse = function() {
+  document.getElementById("answer").style.display = "block";
+  document.getElementById("btns").style.display = "flex";
+};
+
+window.repondre = function(reussi) {
+  const key = getCardKey(currentCard.q);
+  let score = progression[key]?.score || 0;
+  if (reussi) score = Math.min(score + 1, 3);
+  else score = 0;
+  progression[key] = { score: score, etat: score >= 3 ? "maitrisee" : (score > 0 ? "en_cours" : "nouvelle") };
+  sauvegarderProgression();
+  currentIndex++;
+  afficherCarte();
+  mettreAJourStats();
+};
+
+function demarrerSession() {
+  chargerProgression();
+  initProgression();
+  currentCartes = selectionnerCartesDuJour();
+  currentIndex = 0;
+  mettreAJourStats();
+  if (currentCartes.length === 0) {
+    document.getElementById("card-area").innerHTML = '<div class="progress">🎉 Félicitations ! Toutes les cartes de ce chapitre sont maîtrisées.</div>';
+    return;
+  }
+  afficherCarte();
+}
+
+function remplirChapitreSelect() {
+  const select = document.getElementById("chapitreSelect");
+  select.innerHTML = "";
+  for (const [num, data] of Object.entries(chapitres)) {
+    const option = document.createElement("option");
+    option.value = num;
+    option.textContent = `${num}. ${data.titre}`;
+    select.appendChild(option);
+  }
+  select.value = currentChapitre;
+}
+
+document.getElementById("changerBtn").addEventListener("click", () => {
+  currentChapitre = parseInt(document.getElementById("chapitreSelect").value);
+  demarrerSession();
+});
+
+document.getElementById("resetChapitreBtn").addEventListener("click", () => {
+  if (confirm(`Réinitialiser le chapitre ${currentChapitre} (${chapitres[currentChapitre]?.titre}) ?`)) {
+    localStorage.removeItem(getStorageKey());
+    demarrerSession();
+  }
+});
+
+document.getElementById("resetAllBtn").addEventListener("click", () => {
+  if (confirm("⚠️ Supprimer TOUTE progression dans TOUS les chapitres de mathématiques ?")) {
+    for (const chap of Object.keys(chapitres)) {
+      localStorage.removeItem(`flashcards_maths_ch${chap}`);
+    }
+    demarrerSession();
+  }
+});
+
+remplirChapitreSelect();
+demarrerSession();
+</script>
+</body>
+</html>

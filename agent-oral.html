@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎤 Oral Blanc Brevet · IA + Fiche de révision</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="monetization.js"></script>
+<script src="proxy-client.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#09090f;--bg2:#111118;--bg3:#181820;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.12);--text:#f0ede8;--muted:rgba(240,237,232,0.45);--gold:#e8c87a;--teal:#5ecfb1;--red:#f55a5a;--green:#7ecf8a;--blue:#6ab4f5;--purple:#a98af5;--r:14px;--r-sm:8px;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;}
+#home{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;background:radial-gradient(ellipse at 50% 0%,rgba(106,180,245,0.08) 0%,transparent 55%);}
+.badge{font-family:'DM Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--blue);border:1px solid rgba(106,180,245,0.3);background:rgba(106,180,245,0.06);padding:5px 14px;border-radius:999px;margin-bottom:20px;}
+h1{font-family:'Playfair Display',serif;font-size:clamp(32px,6vw,54px);font-weight:800;text-align:center;line-height:1.05;margin-bottom:8px;}
+h1 em{color:var(--blue);font-style:italic;}
+.sub{color:var(--muted);font-size:14px;text-align:center;max-width:480px;line-height:1.7;margin-bottom:32px;}
+.cards-container{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;max-width:800px;width:100%;margin:20px 0;}
+.candidate-card{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:28px;cursor:pointer;text-align:center;transition:all 0.2s;}
+.candidate-card:hover{transform:translateY(-4px);border-color:rgba(106,180,245,0.5);}
+.candidate-card.eleve1{border-top:3px solid #7eb8f5;}
+.candidate-card.eleve2{border-top:3px solid #f59eb8;}
+.candidate-name{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;}
+.candidate-theme{font-size:13px;color:var(--muted);margin:8px 0;font-style:italic;}
+#oral-page{display:none;max-width:1000px;margin:0 auto;}
+.oral-header{position:sticky;top:0;background:rgba(9,9,15,0.96);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;}
+.back-btn{background:none;border:1px solid var(--border2);border-radius:var(--r-sm);padding:7px 14px;color:var(--muted);cursor:pointer;}
+.chrono-bar{background:rgba(106,180,245,0.06);padding:8px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;}
+.chrono-time{font-family:'DM Mono',monospace;font-size:20px;font-weight:700;color:var(--blue);}
+.chrono-btn{font-size:11px;padding:4px 12px;border-radius:999px;border:1px solid rgba(106,180,245,0.3);background:rgba(106,180,245,0.07);color:var(--blue);cursor:pointer;}
+.s-body{padding:24px;}
+.expose-section{background:var(--bg2);border:1px solid var(--border2);border-radius:var(--r);padding:20px;margin-bottom:24px;}
+.section-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--blue);margin-bottom:12px;}
+.answer-ta{width:100%;min-height:200px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--r-sm);padding:12px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;resize:vertical;}
+.ai-btn{background:rgba(94,207,177,0.1);border:1px solid var(--teal);color:var(--teal);padding:8px 18px;border-radius:999px;cursor:pointer;font-family:'DM Mono',monospace;font-size:11px;margin-top:12px;}
+.ai-feedback{background:linear-gradient(135deg,rgba(94,207,177,0.08),transparent);border-left:3px solid var(--teal);padding:16px;margin-top:16px;border-radius:var(--r-sm);font-size:13px;line-height:1.6;display:none;}
+.questions-block{margin:24px 0;}
+.q-section{background:var(--bg3);border-radius:var(--r);padding:16px;margin-bottom:20px;}
+.q-section h3{font-size:14px;color:var(--gold);margin-bottom:12px;font-family:'DM Mono',monospace;}
+.q-item{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-sm);padding:14px;margin-bottom:12px;}
+.q-text{font-weight:500;margin-bottom:10px;font-size:14px;}
+.q-answer textarea{width:100%;min-height:70px;background:var(--bg);border:1px solid var(--border2);border-radius:var(--r-sm);padding:8px;color:var(--text);font-size:12px;resize:vertical;}
+.q-feedback{font-size:12px;color:var(--teal);margin-top:8px;padding:8px;background:rgba(94,207,177,0.05);border-radius:var(--r-sm);display:none;}
+.q-score{font-family:'DM Mono',monospace;font-size:11px;color:var(--gold);margin-left:12px;}
+.generate-pdf{background:var(--bg2);border:2px solid var(--gold);border-radius:var(--r);padding:14px;color:var(--gold);cursor:pointer;font-family:'DM Mono',monospace;font-weight:600;width:100%;margin:20px 0;}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r-sm);padding:12px 20px;font-size:12px;z-index:200;opacity:0;transition:0.3s;}
+.toast.show{opacity:1;}
+textarea{font-family:'DM Sans',sans-serif;}
+</style>
+</head>
+<body>
+<div id="home">
+  <div class="badge">🎤 Brevet Blanc 2026 · Correcteur IA</div>
+  <h1>Oral Blanc <em>· 3 + 7 questions</em></h1>
+  <p class="sub">3 questions sur VOTRE exposé · 7 questions sur le thème (hors exposé)<br>L'IA corrige, note et conseille · PDF avec corrections modèles</p>
+  <div class="cards-container">
+    <div class="candidate-card eleve1" onclick="selectCandidate('eleve1')">
+      <div class="candidate-name">👤 Élève 1</div>
+      <div class="candidate-theme">Choisissez votre thème et rédigez votre exposé</div>
+    </div>
+    <div class="candidate-card eleve2" onclick="selectCandidate('eleve2')">
+      <div class="candidate-name">👤 Élève 2</div>
+      <div class="candidate-theme">Choisissez votre thème et rédigez votre exposé</div>
+    </div>
+  </div>
+</div>
+
+<div id="oral-page">
+  <div class="oral-header">
+    <div><strong id="oral-candidate"></strong><br><span id="oral-theme" style="font-size:11px;color:var(--muted);">Préparez votre exposé</span></div>
+    <button class="back-btn" onclick="goHome()">← Retour accueil</button>
+  </div>
+  <div class="chrono-bar">
+    <span>⏱ Chrono exposé (5 min)</span>
+    <div class="chrono-time" id="chrono">5:00</div>
+    <div><button class="chrono-btn" onclick="startChrono()">▶ Démarrer</button>
+    <button class="chrono-btn" onclick="resetChrono()">↺ Reset</button></div>
+  </div>
+  <div class="s-body" id="oral-body"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DEEPSEEK_KEY = 'sk-REMPLACEZ_PAR_VOTRE_CLE_API_DEEPSEEK';
+const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
+
+async function callIA(prompt, system) {
+  const timeout = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('⏱ Timeout (45s) — réessaie dans quelques secondes.')), 45000)
+  );
+  const req = fetch(DEEPSEEK_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + DEEPSEEK_KEY
+    },
+    body: JSON.stringify({
+      model: 'deepseek-chat',
+      messages: [
+        { role: 'system', content: system },
+        { role: 'user', content: prompt }
+      ]
+    })
+  }).then(r => {
+    if (!r.ok) throw new Error('DeepSeek HTTP ' + r.status);
+    return r.json();
+  }).then(d => {
+    if (d.choices && d.choices[0] && d.choices[0].message) return d.choices[0].message.content;
+    throw new Error(d.error?.message || 'Réponse inattendue');
+  });
+  return Promise.race([req, timeout]);
+}
+
+function safeJSON(t) {
+  try { return JSON.parse(t.replace(/```json|```/g, '').trim()); }
+  catch(e) { return null; }
+}
+
+let currentCandidate = null;
+let currentExpose = "";
+let chronoSecs = 300, running = false, chronoInterval = null;
+let generatedContentQuestions = [];
+let selectedCultureQuestions = [];
+let contentReponsesModeles = [];
+let cultureReponsesModeles = [];
+
+function selectCandidate(name) {
+  currentCandidate = name;
+  document.getElementById('home').style.display = 'none';
+  document.getElementById('oral-page').style.display = 'block';
+  document.getElementById('oral-candidate').innerHTML = name === 'eleve1' ? '👤 Élève 1' : '👤 Élève 2';
+  renderOralInterface();
+  resetChrono();
+}
+
+function renderOralInterface() {
+  const html = `
+    <div class="expose-section">
+      <div class="section-title">🎤 1. ÉCRIVEZ OU COLLEZ VOTRE EXPOSÉ (5 min)</div>
+      <div class="texte-box" style="background:var(--bg3);padding:14px;border-radius:var(--r-sm);margin-bottom:16px;font-size:13px;">
+        <strong>📌 Consigne :</strong> Rédigez votre exposé (environ 200-400 mots). Introduisez votre thème, développez 2-3 idées principales, concluez.
+      </div>
+      <textarea id="expose-text" class="answer-ta" placeholder="Collez ou rédigez ici votre exposé..."></textarea>
+      <button class="ai-btn" onclick="analyserExposeEtGenererQuestions()">🤖 IA : Analyser mon exposé + générer les 10 questions</button>
+      <div id="expose-feedback" class="ai-feedback"></div>
+    </div>
+    <div id="questions-container" style="display:none;">
+      <div class="questions-block">
+        <div class="q-section">
+          <h3>📖 PARTIE 1 · Questions SUR votre exposé (3 questions)</h3>
+          <div id="content-questions"></div>
+        </div>
+        <div class="q-section">
+          <h3>🌍 PARTIE 2 · Questions de culture générale sur le thème (hors exposé — 7 questions)</h3>
+          <div id="culture-questions"></div>
+        </div>
+        <button class="generate-pdf" onclick="genererPDFComplet()">📄 Générer PDF (exposé + corrections IA + réponses modèles)</button>
+        <div style="margin-top:16px;text-align:center;"><button class="chrono-btn" onclick="sauvegarderReponses()">💾 Sauvegarder mes réponses</button></div>
+      </div>
+    </div>
+  `;
+  document.getElementById('oral-body').innerHTML = html;
+}
+
+// ===== API DEEPSEEK (centralisé pour l'agent oral) =====
+const DEEPSEEK_KEY = 'sk-REMPLACEZ_PAR_VOTRE_CLE_API_DEEPSEEK';
+const DEEPSEEK_URL = 'https://api.deepseek.com/chat/completions';
+
+async function callIA(prompt, system) {
+  const timeout = new Promise((_, reject) =>
+    setTimeout(() => reject(new Error('⏱ Timeout (45s) — réessaie dans quelques secondes.')), 45000)
+  );
+  const req = fetch(DEEPSEEK_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + DEEPSEEK_KEY
+    },
+    body: JSON.stringify({
+      model: 'deepseek-chat',
+      messages: [
+        { role: 'system', content: system },
+        { role: 'user', content: prompt }
+      ]
+    })
+  }).then(r => {
+    if (!r.ok) throw new Error('DeepSeek HTTP ' + r.status);
+    return r.json();
+  }).then(d => {
+    if (d.choices && d.choices[0] && d.choices[0].message) return d.choices[0].message.content;
+    throw new Error(d.error?.message || 'Réponse inattendue');
+  });
+  return Promise.race([req, timeout]);
+}
+
+function safeJSON(t) {
+  try { return JSON.parse(t.replace(/```json|```/g, '').trim()); }
+  catch(e) { return null; }
+}
+
+async function analyserExposeEtGenererQuestions() {
+  const exposeText = document.getElementById('expose-text')?.value;
+  if (!exposeText || exposeText.trim().length < 100) {
+    showToast("❌ Votre exposé est trop court (min 100 caractères).", "err");
+    return;
+  }
+  currentExpose = exposeText;
+  showToast("🤖 IA analyse l'exposé et génère les questions...", "ok");
+  await new Promise(r => setTimeout(r, 800));
+  
+  // Générer 3 questions sur l'exposé via IA
+  generatedContentQuestions = await genererQuestionsSurExposeParIA(exposeText);
+  contentReponsesModeles = await Promise.all(generatedContentQuestions.map((q, i) => genererReponseModeleExposeParIA(q, exposeText)));
+  
+  // Générer 7 questions de culture générale sur le thème via IA
+  const theme = extraireTheme(exposeText);
+  selectedCultureQuestions = await genererQuestionsCultureParIA(theme);
+  cultureReponsesModeles = await Promise.all(selectedCultureQuestions.map((q) => genererReponseModeleCultureParIA(q)));
+  
+  const evaluationExpose = evaluerExpose(exposeText);
+  const fbDiv = document.getElementById('expose-feedback');
+  fbDiv.style.display = 'block';
+  fbDiv.innerHTML = `<strong>✨ Analyse IA de votre exposé</strong><br><br>${evaluationExpose.feedback}<br><br><strong>📊 Note estimée : ${evaluationExpose.note}/20</strong>`;
+  
+  // TRACKER : début de session oral
+  if (typeof trackAction === 'function') {
+    trackAction('oral_session', 'oral', 'expose', null);
+  }
+  
+  afficherQuestions();
+  showToast("✓ Questions générées ! Répondez, l'IA corrigera chaque réponse.", "ok");
+}
+
+function extraireTheme(expose) {
+  // Extrait les 100 premiers caractères comme thème approximatif
+  return expose.substring(0, 150);
+}
+
+async function genererQuestionsSurExposeParIA(expose) {
+  const system = "Tu es examinateur pour l'oral du brevet. Génère 3 questions précises sur l'exposé que tu vas lire. Les questions doivent porter sur le contenu, les arguments et les exemples de l'exposé. Réponds UNIQUEMENT en JSON : {\"questions\": [\"Q1\", \"Q2\", \"Q3\"]}";
+  const prompt = "Voici l'exposé de l'élève :\n" + expose + "\n\nGénère 3 questions sur cet exposé.";
+  try {
+    const rep = await callIA(prompt, system);
+    const json = safeJSON(rep);
+    if (json && json.questions && json.questions.length === 3) return json.questions;
+    throw new Error("Format incorrect");
+  } catch(e) {
+    console.error(e);
+    return [
+      "Quel est le sujet principal de votre exposé ?",
+      "Quels arguments principaux avez-vous développés ?",
+      "Quels exemples avez-vous cités pour illustrer votre propos ?"
+    ];
+  }
+}
+
+async function genererReponseModeleExposeParIA(question, expose) {
+  const system = "Tu es professeur. Donne une réponse modèle (2-3 lignes) à cette question sur l'exposé de l'élève. Sois précis et pédagogique. Réponds en texte brut.";
+  const prompt = "Exposé : " + expose + "\nQuestion : " + question + "\nRéponse modèle :";
+  try {
+    return await callIA(prompt, system);
+  } catch(e) {
+    return "Réponse modèle non disponible. Relisez votre exposé pour répondre précisément.";
+  }
+}
+
+async function genererQuestionsCultureParIA(theme) {
+  const system = "Tu es examinateur pour l'oral du brevet. Génère 7 questions de culture générale sur le thème suivant. Les questions doivent être variées (définitions, exemples, comparaisons, actualité, histoire, enjeux). Réponds UNIQUEMENT en JSON : {\"questions\": [\"Q1\", \"Q2\", \"Q3\", \"Q4\", \"Q5\", \"Q6\", \"Q7\"]}";
+  const prompt = "Thème approximatif de l'exposé (premiers mots) : " + theme + "\n\nGénère 7 questions de culture générale sur ce thème.";
+  try {
+    const rep = await callIA(prompt, system);
+    const json = safeJSON(rep);
+    if (json && json.questions && json.questions.length === 7) return json.questions;
+    throw new Error("Format incorrect");
+  } catch(e) {
+    console.error(e);
+    return [
+      "Pouvez-vous définir le thème central de votre exposé ?",
+      "Quels sont les enjeux actuels liés à ce sujet ?",
+      "Citez un exemple concret illustrant ce thème.",
+      "Quelles sont les idées reçues sur ce sujet ?",
+      "Comment ce thème a-t-il évolué dans l'histoire ?",
+      "Quelles solutions ou alternatives existent ?",
+      "Pourquoi ce sujet est-il important aujourd'hui ?"
+    ];
+  }
+}
+
+async function genererReponseModeleCultureParIA(question) {
+  const system = "Tu es professeur. Donne une réponse modèle (2-3 lignes) à cette question de culture générale. Sois précis et pédagogique. Réponds en texte brut.";
+  const prompt = "Question : " + question + "\nRéponse modèle :";
+  try {
+    return await callIA(prompt, system);
+  } catch(e) {
+    return "Consultez vos cours ou faites des recherches sur cette question.";
+  }
+}
+
+function evaluerExpose(expose) {
+  let score = 10;
+  const mots = expose.split(/\s+/).length;
+  if (mots > 150) score += 2;
+  if (mots > 300) score += 2;
+  if (expose.includes("introduction") || expose.includes("d'abord") || expose.includes("tout d'abord")) score += 2;
+  if (expose.includes("conclusion") || expose.includes("pour conclure") || expose.includes("en résumé")) score += 2;
+  if (expose.includes("exemple") || expose.includes("par exemple")) score += 2;
+  score = Math.min(20, Math.max(0, score));
+  let feedback = score >= 15 ? "Exposé solide ! Structure claire et contenu riche." : (score >= 11 ? "Exposé correct, mais ajoutez plus d'exemples précis." : "Travaillez la structure (intro/développement/conclusion).");
+  return { feedback, note: score };
+}
+
+function afficherQuestions() {
+  const container = document.getElementById('questions-container');
+  if (container) container.style.display = 'block';
+  
+  const contentDiv = document.getElementById('content-questions');
+  contentDiv.innerHTML = '';
+  generatedContentQuestions.forEach((q, idx) => {
+    contentDiv.innerHTML += `
+      <div class="q-item" id="cq-${idx}">
+        <div class="q-text"><strong>Q${idx+1}</strong> ${q}</div>
+        <div class="q-answer">
+          <textarea id="ans-c-${idx}" placeholder="Votre réponse..."></textarea>
+          <div><button class="chrono-btn" style="background:rgba(94,207,177,0.1);color:var(--teal);margin-top:8px;" onclick="corrigerReponse('c', ${idx})">✅ IA : Corriger cette réponse</button> <span id="score-c-${idx}" class="q-score"></span></div>
+          <div id="fb-c-${idx}" class="q-feedback"></div>
+        </div>
+      </div>
+    `;
+  });
+  
+  const cultureDiv = document.getElementById('culture-questions');
+  cultureDiv.innerHTML = '';
+  selectedCultureQuestions.forEach((q, idx) => {
+    cultureDiv.innerHTML += `
+      <div class="q-item" id="cuq-${idx}">
+        <div class="q-text"><strong>Q${idx+4}</strong> ${q}</div>
+        <div class="q-answer">
+          <textarea id="ans-u-${idx}" placeholder="Votre réponse..."></textarea>
+          <div><button class="chrono-btn" style="background:rgba(94,207,177,0.1);color:var(--teal);margin-top:8px;" onclick="corrigerReponse('u', ${idx})">✅ IA : Corriger cette réponse</button> <span id="score-u-${idx}" class="q-score"></span></div>
+          <div id="fb-u-${idx}" class="q-feedback"></div>
+        </div>
+      </div>
+    `;
+  });
+  
+  for (let i = 0; i < generatedContentQuestions.length; i++) {
+    const saved = localStorage.getItem(`oral_${currentCandidate}_content_${i}`);
+    if (saved && document.getElementById(`ans-c-${i}`)) document.getElementById(`ans-c-${i}`).value = saved;
+  }
+  for (let i = 0; i < selectedCultureQuestions.length; i++) {
+    const saved = localStorage.getItem(`oral_${currentCandidate}_culture_${i}`);
+    if (saved && document.getElementById(`ans-u-${i}`)) document.getElementById(`ans-u-${i}`).value = saved;
+  }
+}
+
+async function corrigerReponse(type, idx) {
+  let reponse, modele;
+  if (type === 'c') {
+    reponse = document.getElementById(`ans-c-${idx}`)?.value;
+    modele = contentReponsesModeles[idx];
+  } else {
+    reponse = document.getElementById(`ans-u-${idx}`)?.value;
+    modele = cultureReponsesModeles[idx];
+  }
+  if (!reponse || reponse.trim().length < 10) { showToast("Écrivez une réponse plus développée (min 10 caractères)", "err"); return; }
+  showToast("🤖 IA corrige...", "ok");
+  
+  // Appel IA pour correction avancée
+  const system = "Tu es correcteur pour l'oral du brevet. Évalue la réponse de l'élève (note sur 10), donne un feedback et une réponse modèle courte. Réponds UNIQUEMENT en JSON : {\"note\":X,\"feedback\":\"...\",\"reponse_modele\":\"...\"}";
+  const prompt = "Question : " + (type === 'c' ? generatedContentQuestions[idx] : selectedCultureQuestions[idx]) + "\nRéponse élève : " + reponse + "\nRéponse modèle attendue : " + modele;
+  let note = 5, feedback = "", reponse_modele = modele;
+  
+  try {
+    const rep = await callIA(prompt, system);
+    const json = safeJSON(rep);
+    if (json) {
+      note = json.note || note;
+      feedback = json.feedback || "";
+      reponse_modele = json.reponse_modele || modele;
+    }
+  } catch(e) {
+    console.error(e);
+    // Fallback simple
+    if (reponse.length > 50) note = 7;
+    else if (reponse.length > 20) note = 5;
+    else note = 3;
+    feedback = note >= 7 ? "Bonne réponse !" : (note >= 5 ? "Réponse correcte mais à approfondir." : "Revoir la réponse modèle ci-dessous.");
+  }
+  
+  // TRACKER : correction IA dans l'oral
+  if (typeof trackAction === 'function') {
+    trackAction('correction_ia', 'oral', type === 'c' ? 'expose_question' : 'culture_question', note);
+  }
+  
+  const fbDiv = document.getElementById(`fb-${type}-${idx}`);
+  const scoreSpan = document.getElementById(`score-${type}-${idx}`);
+  fbDiv.style.display = 'block';
+  fbDiv.innerHTML = `<strong>🤖 IA :</strong> ${feedback}<br><strong>Note : ${note}/10</strong><br><br><strong>✅ Réponse modèle :</strong> ${reponse_modele}`;
+  scoreSpan.textContent = `🎯 ${note}/10`;
+  
+  if (type === 'c') localStorage.setItem(`oral_${currentCandidate}_content_${idx}`, reponse);
+  else localStorage.setItem(`oral_${currentCandidate}_culture_${idx}`, reponse);
+  localStorage.setItem(`oral_${currentCandidate}_${type}_${idx}_note`, note);
+}
+
+function sauvegarderReponses() {
+  for (let i = 0; i < generatedContentQuestions.length; i++) {
+    const val = document.getElementById(`ans-c-${i}`)?.value;
+    if (val) localStorage.setItem(`oral_${currentCandidate}_content_${i}`, val);
+  }
+  for (let i = 0; i < selectedCultureQuestions.length; i++) {
+    const val = document.getElementById(`ans-u-${i}`)?.value;
+    if (val) localStorage.setItem(`oral_${currentCandidate}_culture_${i}`, val);
+  }
+  showToast("✅ Réponses sauvegardées", "ok");
+}
+
+function genererPDFComplet() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  let y = 20;
+  
+  doc.setFont("helvetica");
+  doc.setFontSize(16);
+  doc.text(`Oral Blanc · ${currentCandidate === 'eleve1' ? 'Élève 1' : 'Élève 2'}`, 15, y);
+  y += 8;
+  doc.setFontSize(9);
+  doc.text(`Date : ${new Date().toLocaleString()}`, 15, y);
+  y += 6;
+  doc.text(`Exposé soumis :`, 15, y);
+  y += 5;
+  const exposeLines = doc.splitTextToSize(currentExpose, 170);
+  doc.text(exposeLines, 15, y);
+  y += exposeLines.length * 5 + 8;
+  
+  doc.setFontSize(11);
+  doc.setTextColor(106, 180, 245);
+  doc.text("📝 CORRECTION IA DE L'EXPOSÉ", 15, y);
+  y += 5;
+  doc.setFontSize(9);
+  doc.setTextColor(200, 200, 200);
+  const evalExpose = evaluerExpose(currentExpose);
+  const correctionTexte = `Note estimée : ${evalExpose.note}/20\n${evalExpose.feedback}`;
+  const correctionLines = doc.splitTextToSize(correctionTexte, 170);
+  doc.text(correctionLines, 15, y);
+  y += correctionLines.length * 5 + 10;
+  
+  doc.setFontSize(11);
+  doc.setTextColor(106, 180, 245);
+  doc.text("❓ CORRECTIONS DES 10 QUESTIONS", 15, y);
+  y += 6;
+  
+  for (let i = 0; i < generatedContentQuestions.length; i++) {
+    if (y > 270) { doc.addPage(); y = 20; }
+    const reponse = document.getElementById(`ans-c-${i}`)?.value || "(non répondue)";
+    const note = localStorage.getItem(`oral_${currentCandidate}_c_${i}_note`) || "?";
+    doc.setFontSize(9);
+    doc.setTextColor(232, 200, 122);
+    doc.text(`Q${i+1} (sur l'exposé) : ${generatedContentQuestions[i]}`, 15, y);
+    y += 5;
+    doc.setTextColor(200, 200, 200);
+    const repLines = doc.splitTextToSize(`Votre réponse : ${reponse.substring(0, 350)}`, 170);
+    doc.text(repLines, 15, y);
+    y += repLines.length * 5 + 2;
+    doc.setTextColor(126, 207, 138);
+    const modeleLines = doc.splitTextToSize(`✅ Réponse modèle : ${contentReponsesModeles[i]}`, 170);
+    doc.text(modeleLines, 15, y);
+    y += modeleLines.length * 5 + 2;
+    doc.text(`Note IA : ${note}/10`, 15, y);
+    y += 6;
+  }
+  
+  for (let i = 0; i < selectedCultureQuestions.length; i++) {
+    if (y > 270) { doc.addPage(); y = 20; }
+    const reponse = document.getElementById(`ans-u-${i}`)?.value || "(non répondue)";
+    const note = localStorage.getItem(`oral_${currentCandidate}_u_${i}_note`) || "?";
+    doc.setFontSize(9);
+    doc.setTextColor(232, 200, 122);
+    doc.text(`Q${i+4} (culture) : ${selectedCultureQuestions[i]}`, 15, y);
+    y += 5;
+    doc.setTextColor(200, 200, 200);
+    const repLines = doc.splitTextToSize(`Votre réponse : ${reponse.substring(0, 350)}`, 170);
+    doc.text(repLines, 15, y);
+    y += repLines.length * 5 + 2;
+    doc.setTextColor(126, 207, 138);
+    const modeleLines = doc.splitTextToSize(`✅ Réponse modèle : ${cultureReponsesModeles[i]}`, 170);
+    doc.text(modeleLines, 15, y);
+    y += modeleLines.length * 5 + 2;
+    doc.text(`Note IA : ${note}/10`, 15, y);
+    y += 6;
+  }
+  
+  doc.save(`oral_${currentCandidate}_corrections_completes.pdf`);
+  showToast("📄 PDF généré avec toutes les corrections et réponses modèles", "ok");
+}
+
+function startChrono() { if (running) return; running = true; chronoInterval = setInterval(() => { if (chronoSecs <= 0) { clearInterval(chronoInterval); running = false; showToast("⏱ Temps écoulé !", "err"); return; } chronoSecs--; updateChrono(); }, 1000); }
+function resetChrono() { clearInterval(chronoInterval); running = false; chronoSecs = 300; updateChrono(); }
+function updateChrono() { const m = Math.floor(chronoSecs / 60); const s = chronoSecs % 60; document.getElementById('chrono').textContent = `${m}:${String(s).padStart(2, '0')}`; }
+function goHome() { document.getElementById('oral-page').style.display = 'none'; document.getElementById('home').style.display = 'flex'; if (chronoInterval) clearInterval(chronoInterval); running = false; }
+function showToast(msg, type) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 3000); }
+</script>
+
+<!-- ========== TRACKER ========== -->
+<script>
+const TRACKER_URL = 'https://script.google.com/macros/s/AKfycbxDHkyI8wlinBQ1BRIsg7dcz4AYWbY87SY5UDr6KVu4uHylWQs4fLfdd3a98PEwdL-A/exec';
+
+function getUserId() {
+  let id = localStorage.getItem('app_user_id');
+  if (!id) {
+    id = crypto.randomUUID ? crypto.randomUUID() : 'user_' + Date.now() + '_' + Math.random();
+    localStorage.setItem('app_user_id', id);
+  }
+  return id;
+}
+
+function isPaid() {
+  return localStorage.getItem('code_valide') === 'true';
+}
+
+function trackAction(action, matiere, type, note) {
+  fetch(TRACKER_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    body: JSON.stringify({
+      userId: getUserId(),
+      action: action,
+      matiere: matiere,
+      type: type,
+      estPayant: isPaid(),
+      note: note || ''
+    })
+  }).catch(e => console.warn('tracker failed', e));
+}
+
+// Première visite : tracer le début de l'essai
+if (!localStorage.getItem('trial_started')) {
+  trackAction('trial_start', '', '', '');
+  localStorage.setItem('trial_started', 'true');
+}
+</script>
+
+</body>
+</html>

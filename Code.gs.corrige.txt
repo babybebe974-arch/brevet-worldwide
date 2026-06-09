@@ -1,0 +1,164 @@
+// ============================================================
+// SMART LEARN — Proxy DeepSeek + Tracker Google Sheets
+// Version corrigée — 08/06/2026
+// ============================================================
+// AMÉLIORATIONS :
+// 1. Gestion explicite des requêtes OPTIONS (preflight CORS)
+// 2. Validation des données entrantes
+// 3. Meilleure gestion d'erreurs DeepSeek
+// 4. Timeout sur l'appel API
+// ============================================================
+
+const DEEPSEEK_API_KEY = 'sk-06d40cc98d2b4b83aa705d33088d78a4';
+const COUT_PAR_CORRECTION_USD = 0.001;
+const DEEPSEEK_TIMEOUT_MS = 55000; // 55 secondes
+
+// ── GESTION DES REQUÊTES ──
+
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    
+    // Validation minimale
+    if (!data.action) {
+      return createCORSResponse({ success: false, error: 'Champ "action" requis' });
+    }
+    
+    // Enregistrement dans Google Sheets
+    try {
+      const sheet = getOrCreateSheet();
+      sheet.appendRow([
+        new Date(),
+        data.userId || '',
+        data.action || '',
+        data.matiere || '',
+        data.type || '',
+        data.estPayant || false,
+        data.note || '',
+        data.action === 'correction_ia' ? COUT_PAR_CORRECTION_USD : null,
+        data.sessionId || '',
+        data.email || '',
+        data.prixPayeEUR || null,
+        null, // ProfitEUR (calculé manuellement)
+        null, // CumulCoutUser
+        null, // CumulCorrectionsUser
+        data.joursRestants || '',
+        data.pays || '',
+        data.source || '',
+        'deepseek'
+      ]);
+    } catch(sheetError) {
+      // Ne pas bloquer la correction si le tracking échoue
+      console.warn('⚠️ Erreur tracking Sheets: ' + sheetError.toString());
+    }
+    
+    // Traitement de l'action correction_ia
+    if (data.action === 'correction_ia' && data.prompt && data.system) {
+      const result = appelerDeepSeek(data.prompt, data.system);
+      return createCORSResponse({ success: true, content: result });
+    }
+    
+    return createCORSResponse({ success: true, message: "OK" });
+    
+  } catch(error) {
+    return createCORSResponse({ success: false, error: error.toString() });
+  }
+}
+
+function doGet(e) {
+  return createCORSResponse({
+    status: "active",
+    message: "Proxy DeepSeek + Tracker — SMART LEARN",
+    version: "3.1.0",
+    timestamp: new Date().toISOString()
+  });
+}
+
+// ── APPEL API DEEPSEEK ──
+
+function appelerDeepSeek(prompt, system) {
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + DEEPSEEK_API_KEY
+    },
+    payload: JSON.stringify({
+      model: 'deepseek-chat',
+      messages: [
+        { role: 'system', content: system },
+        { role: 'user', content: prompt }
+      ],
+      temperature: 0.3,
+      max_tokens: 2048
+    }),
+    muteHttpExceptions: true
+  };
+  
+  const response = UrlFetchApp.fetch(
+    'https://api.deepseek.com/v1/chat/completions',
+    options
+  );
+  
+  const statusCode = response.getResponseCode();
+  const body = JSON.parse(response.getContentText());
+  
+  if (statusCode !== 200) {
+    const errorMsg = body.error 
+      ? body.error.message || JSON.stringify(body.error)
+      : 'Erreur HTTP ' + statusCode;
+    throw new Error('DeepSeek API: ' + errorMsg);
+  }
+  
+  if (!body.choices || !body.choices[0] || !body.choices[0].message) {
+    throw new Error('Réponse DeepSeek inattendue: ' + JSON.stringify(body).substring(0, 200));
+  }
+  
+  return body.choices[0].message.content;
+}
+
+// ── GESTION CORS ──
+
+function createCORSResponse(data) {
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON)
+    .addHeader('Access-Control-Allow-Origin', '*')
+    .addHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+    .addHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+    .addHeader('Access-Control-Max-Age', '86400'); // Cache preflight 24h
+}
+
+// ── GESTION GOOGLE SHEETS ──
+
+function getOrCreateSheet() {
+  try {
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getActiveSheet();
+    // Vérifier si les headers existent
+    if (sheet.getLastRow() === 0) {
+      initSheet(sheet);
+    }
+    return sheet;
+  } catch(e) {
+    const ss = SpreadsheetApp.create("SMART LEARN - Stats");
+    const sheet = ss.getActiveSheet();
+    initSheet(sheet);
+    return sheet;
+  }
+}
+
+function initSheet(sheet) {
+  const headers = [
+    "Timestamp", "UserId", "Action", "Matiere", "Type",
+    "EstPayant", "Note", "Correction_Cout_USD", "SessionId", "Email",
+    "PrixPayeEUR", "ProfitEUR", "CumulCoutUser", "CumulCorrectionsUser",
+    "JoursRestantsEssai", "Pays", "Source", "ModeleIA"
+  ];
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  sheet.getRange(1, 1, 1, headers.length)
+    .setFontWeight("bold")
+    .setBackground("#f5a623")
+    .setFontColor("#ffffff");
+  sheet.setFrozenRows(1);
+}

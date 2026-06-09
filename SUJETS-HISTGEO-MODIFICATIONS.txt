@@ -1,0 +1,100 @@
+=== MODIFICATIONS DÉTAILLÉES DANS sujets-histgeo.html ===
+
+🔴 MODIF 1 (ligne ~"const ORIGINAL_PROXY") : URL DU PROXY CORRIGÉE
+
+AVANT (FAUX) :
+  const ORIGINAL_PROXY = 'https://script.google.com/macros/s/AKfycbwKd-Q63zWvDhWfltzYxhhICqlAf2q4KrnSKI2440WUsvqjMI8a2JnCQx_434L--vJt/exec';
+  const PROXY = 'https://corsproxy.io/?' + encodeURIComponent(ORIGINAL_PROXY);
+
+APRÈS (CORRIGÉ) :
+  const PROXY = 'https://script.google.com/macros/s/AKfycbxZ6uBZDsqtEW3un26GiwS0NKySlY9NFJcA-LjIRulb2X-IDg1C8wl7n67Zlp7rT6nV/exec';
+
+🔴 Raison : L'URL ORIGINAL_PROXY pointait vers un ancien déploiement (AKfycbwKd-Q...).
+  La bonne URL est celle de ton déploiement actuel : AKfycbxZ6uBZDsq...
+  De plus, corsproxy.io est retiré — appel direct au script Google (qui a déjà les headers CORS).
+
+────────────────────────────────────────────────────────────
+
+🟠 MODIF 2 : FONCTION callIA ENRICHIE (ajout des champs de tracking)
+
+AVANT :
+  async function callIA(prompt, system) {
+    ...
+    body: JSON.stringify({ prompt, system, action: 'correction_ia' })
+    ...
+  }
+
+APRÈS :
+  async function callIA(prompt, system) {
+    ...
+    body: JSON.stringify({
+      userId: getUserId(),
+      action: 'correction_ia',
+      prompt: prompt,
+      system: system,
+      estPayant: isPaid(),
+      sessionId: getSessionId(),
+      joursRestants: getJoursRestantsEssai(),
+      source: document.title,
+      matiere: 'histoire'
+    })
+    ...
+  }
+
+🟠 Raison : Ton Code.gs enregistre 18 colonnes dans Google Sheets.
+  Sans ces champs, les colonnes userId, estPayant, sessionId, etc.
+  restent vides et tes stats sont incomplètes.
+
+────────────────────────────────────────────────────────────
+
+🟡 MODIF 3 : AJOUT DES FONCTIONS HELPER (juste avant callIA)
+
+Ajouter ces 4 fonctions :
+
+  function getUserId() {
+    let id = localStorage.getItem('hg_user_id');
+    if (!id) {
+      id = crypto.randomUUID ? crypto.randomUUID() : 'user_' + Date.now() + '_' + Math.random().toString(36).slice(2,10);
+      localStorage.setItem('hg_user_id', id);
+    }
+    return id;
+  }
+
+  function getSessionId() {
+    let sid = sessionStorage.getItem('hg_session_id');
+    if (!sid) {
+      sid = 'sess_' + Date.now() + '_' + Math.random().toString(36).slice(2,8);
+      sessionStorage.setItem('hg_session_id', sid);
+    }
+    return sid;
+  }
+
+  function isPaid() {
+    return localStorage.getItem('code_valide') === 'true' || localStorage.getItem('monet_code_valid') === 'true';
+  }
+
+  function getJoursRestantsEssai() {
+    const start = localStorage.getItem('monet_trial_start');
+    if (!start) return '';
+    const debut = parseInt(start);
+    const maintenant = Date.now();
+    const joursEcoules = (maintenant - debut) / (1000 * 60 * 60 * 24);
+    return Math.ceil(Math.max(0, 2 - joursEcoules));
+  }
+
+🟡 Raison : Ces fonctions sont utilisées par callIA pour envoyer les données
+  de tracking. Elles sont déjà présentes dans proxy-client.js pour les autres pages.
+
+────────────────────────────────────────────────────────────
+
+🟡 MODIF 4 : VÉRIFICATION buildLanding() — AJOUT D'UN LOG DE DÉBOGAGE
+
+Si les sujets ne s'affichent toujours pas après ces corrections, ajoute cette
+ligne juste avant buildLanding() à la fin du script :
+
+  console.log('✅ SUJETS chargés :', SUJETS.length, 'sujets');
+  console.log('✅ Élément grid trouvé :', !!document.getElementById('grid'));
+
+Puis ouvre la console (F12) et dis-moi ce qui s'affiche.
+
+────────────────────────────────────────────────────────────

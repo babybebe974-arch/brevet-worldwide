@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brevet 2026 — Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #09090f;
+  --s1: #111118;
+  --s2: #1a1a24;
+  --br: #2a2a38;
+  --teal: #5ecfb1;
+  --gold: #e8c87a;
+  --red: #e87a7a;
+  --violet: #a07af5;
+  --blue: #5eaacf;
+  --text: #e8e8f0;
+  --dim: #9090a8;
+  --muted: #5a5a72;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── HEADER ── */
+.header {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+.brand { display: flex; flex-direction: column; gap: 6px; }
+.brand-eye {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--teal);
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
+}
+.brand-eye::before { content:''; width:20px; height:1px; background:var(--teal); }
+.brand-h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(28px, 5vw, 44px);
+  font-weight: 800;
+  line-height: 1.1;
+}
+.brand-h1 em { font-style: normal; color: var(--gold); }
+.brand-sub { color: var(--dim); font-size: 13px; max-width: 420px; margin-top: 4px; }
+
+/* COUNTDOWN */
+.countdown {
+  background: var(--s1);
+  border: 1px solid var(--br);
+  border-radius: 12px;
+  padding: 16px 20px;
+  text-align: center;
+  min-width: 160px;
+}
+.countdown-num {
+  font-family: 'Syne', sans-serif;
+  font-size: 2.4rem;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1;
+}
+.countdown-label { font-size: 11px; color: var(--dim); margin-top: 4px; font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .08em; }
+.countdown-date { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+/* ── MAIN ── */
+.main { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+/* ELEVE TABS */
+.eleve-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 36px;
+  background: var(--s2);
+  border-radius: 50px;
+  padding: 5px;
+  width: fit-content;
+}
+.etab {
+  padding: 8px 28px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  transition: .2s;
+  background: transparent;
+  color: var(--dim);
+}
+.etab.e1 { background: #7eb8f5; color: #09090f; }
+.etab.e2 { background: #f59eb8; color: #09090f; }
+
+/* SECTION */
+.section { margin-bottom: 48px; }
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--br);
+}
+.section-icon { font-size: 20px; }
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 16px;
+}
+.section-desc { font-size: 12px; color: var(--dim); margin-left: auto; }
+
+/* CARDS GRID */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.cards.wide { grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+
+/* CARD */
+.card {
+  background: var(--s1);
+  border: 1px solid var(--br);
+  border-radius: 12px;
+  padding: 18px 20px;
+  text-decoration: none;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  transition: border-color .2s, transform .2s, background .2s;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--accent, var(--teal));
+  opacity: 0;
+  transition: opacity .2s;
+}
+.card:hover { border-color: var(--accent, var(--teal)); transform: translateY(-2px); background: var(--s2); }
+.card:hover::before { opacity: 1; }
+
+.card-icon { font-size: 22px; line-height: 1; }
+.card-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; }
+.card-desc { font-size: 12px; color: var(--dim); line-height: 1.4; }
+.card-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--s2);
+  border: 1px solid var(--br);
+  color: var(--dim);
+  width: fit-content;
+  margin-top: auto;
+}
+.card-badge.new { border-color: rgba(94,207,177,.3); color: var(--teal); background: rgba(94,207,177,.06); }
+.card-badge.ia { border-color: rgba(232,200,122,.3); color: var(--gold); background: rgba(232,200,122,.06); }
+.card-badge.pdf { border-color: rgba(232,122,122,.3); color: var(--red); background: rgba(232,122,122,.06); }
+
+/* MATIERE COLORS */
+.fr { --accent: #5ecfb1; }
+.ma { --accent: #e8c87a; }
+.hi { --accent: #f5a623; }
+.sc { --accent: #5eaacf; }
+.sp { --accent: #a07af5; }
+
+/* STREAK / STATS ROW */
+.stats-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 36px;
+}
+.stat-pill {
+  background: var(--s1);
+  border: 1px solid var(--br);
+  border-radius: 10px;
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 110px;
+}
+.stat-val { font-family: 'Syne', sans-serif; font-size: 1.6rem; font-weight: 800; line-height: 1; }
+.stat-label { font-size: 11px; color: var(--dim); font-family: 'DM Mono', monospace; text-transform: uppercase; letter-spacing: .06em; }
+
+/* PROGRESS BAR */
+.prog-row { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--dim); margin-bottom: 8px; }
+.prog-bar { flex: 1; height: 5px; background: var(--br); border-radius: 3px; overflow: hidden; max-width: 200px; }
+.prog-fill { height: 100%; border-radius: 3px; transition: width .5s ease; }
+
+/* ALERTE */
+.alerte {
+  background: rgba(232,122,122,.08);
+  border: 1px solid rgba(232,122,122,.25);
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--red);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+.alerte.hidden { display: none; }
+
+/* DIVIDER */
+.divider { height: 1px; background: var(--br); margin: 40px 0; }
+
+/* FOOTER */
+.footer { max-width: 1100px; margin: 0 auto; padding: 20px 24px 40px; font-size: 12px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <div class="brand-eye">Brevet 2026</div>
+    <h1 class="brand-h1">Hub de révision<br><em>DNB 2026</em></h1>
+    <p class="brand-sub">Flashcards · Automatismes · Sujets officiels · Correction IA · Suivi parental</p>
+  </div>
+  <div class="countdown">
+    <div class="countdown-num" id="joursRestants">—</div>
+    <div class="countdown-label">jours restants</div>
+    <div class="countdown-date">DNB : 26 juin 2026</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ELEVE TABS -->
+  <div class="eleve-tabs" style="margin-top:28px">
+    <button class="etab e1" id="btn1" onclick="setEleve('eleve1')">👤 Élève 1</button>
+    <button class="etab e2" id="btn2" onclick="setEleve('eleve2')">👤 Élève 2</button>
+  </div>
+
+  <!-- ALERTE INACTIVITE -->
+  <div class="alerte hidden" id="alerteInactivite">⚠️ <span id="alerteMsg"></span></div>
+
+  <!-- STATS RAPIDES -->
+  <div class="stats-row" id="statsRow">
+    <div class="stat-pill"><div class="stat-val" id="statStreak" style="color:var(--gold)">—</div><div class="stat-label">🔥 Streak</div></div>
+    <div class="stat-pill"><div class="stat-val" id="statSessions" style="color:var(--teal)">—</div><div class="stat-label">Sessions</div></div>
+    <div class="stat-pill"><div class="stat-val" id="statMoyenne" style="color:var(--violet)">—</div><div class="stat-label">Moyenne</div></div>
+    <div class="stat-pill"><div class="stat-val" id="statSujets" style="color:var(--blue)">—</div><div class="stat-label">Sujets faits</div></div>
+  </div>
+
+  <!-- PROGRESSION PAR MATIERE -->
+  <div style="margin-bottom:36px" id="progSection">
+    <div class="prog-row">
+      <span style="min-width:80px;color:var(--teal)">🇫🇷 Français</span>
+      <div class="prog-bar"><div class="prog-fill" id="progFr" style="width:0%;background:var(--teal)"></div></div>
+      <span id="progFrPct">—</span>
+    </div>
+    <div class="prog-row">
+      <span style="min-width:80px;color:var(--gold)">📐 Maths</span>
+      <div class="prog-bar"><div class="prog-fill" id="progMa" style="width:0%;background:var(--gold)"></div></div>
+      <span id="progMaPct">—</span>
+    </div>
+    <div class="prog-row">
+      <span style="min-width:80px;color:#f5a623">🌍 Hist-Géo</span>
+      <div class="prog-bar"><div class="prog-fill" id="progHi" style="width:0%;background:#f5a623"></div></div>
+      <span id="progHiPct">—</span>
+    </div>
+    <div class="prog-row">
+      <span style="min-width:80px;color:var(--blue)">🔬 Sciences</span>
+      <div class="prog-bar"><div class="prog-fill" id="progSc" style="width:0%;background:var(--blue)"></div></div>
+      <span id="progScPct">—</span>
+    </div>
+  </div>
+
+  <!-- ── RÉVISIONS ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📖</span>
+      <span class="section-title">Fiches de révision</span>
+      <span class="section-desc">Notions en rouge · Flashcards interactives · Pièges classiques</span>
+    </div>
+    <div class="cards wide">
+      <a href="revisions-francais.html" class="card fr">
+        <div class="card-icon">🇫🇷</div>
+        <div class="card-title">Français</div>
+        <div class="card-desc">26 chapitres · Notions clés en rouge · Flashcards cliquables</div>
+        <div class="card-badge new">260 notions</div>
+      </a>
+      <a href="revisions-maths.html" class="card ma">
+        <div class="card-icon">📐</div>
+        <div class="card-title">Mathématiques</div>
+        <div class="card-desc">26 chapitres · Formules · Erreurs classiques</div>
+        <div class="card-badge new">260 notions</div>
+      </a>
+      <a href="revisions-histgeo.html" class="card hi">
+        <div class="card-icon">🌍</div>
+        <div class="card-title">Histoire-Géo-EMC</div>
+        <div class="card-desc">32 chapitres · Dates · Repères · Notions clés</div>
+        <div class="card-badge new">276 notions</div>
+      </a>
+      <a href="revisions-sciences.html" class="card sc">
+        <div class="card-icon">🔬</div>
+        <div class="card-title">Sciences</div>
+        <div class="card-desc">26 chapitres · Formules · Définitions · Lois</div>
+        <div class="card-badge new">260 notions</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── FLASHCARDS ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🃏</span>
+      <span class="section-title">Flashcards</span>
+      <span class="section-desc">Mémorisation active · Score sauvegardé</span>
+    </div>
+    <div class="cards wide">
+      <a href="flashcards-francais.html" class="card fr">
+        <div class="card-icon">🇫🇷</div>
+        <div class="card-title">Français</div>
+        <div class="card-desc">26 chapitres · 260 cartes · Score par chapitre</div>
+        <div class="card-badge new">260 cartes</div>
+      </a>
+      <a href="flashcards-maths.html" class="card ma">
+        <div class="card-icon">📐</div>
+        <div class="card-title">Mathématiques</div>
+        <div class="card-desc">26 chapitres · 260 cartes · Formules et définitions</div>
+        <div class="card-badge new">260 cartes</div>
+      </a>
+      <a href="flashcards-histgeo.html" class="card hi">
+        <div class="card-icon">🌍</div>
+        <div class="card-title">Histoire-Géo-EMC</div>
+        <div class="card-desc">32 chapitres · 276 cartes · Histoire, Géo, EMC</div>
+        <div class="card-badge new">276 cartes</div>
+      </a>
+      <a href="flashcards-sciences.html" class="card sc">
+        <div class="card-icon">🔬</div>
+        <div class="card-title">Sciences</div>
+        <div class="card-desc">26 chapitres · 260 cartes · SVT + Physique-Chimie</div>
+        <div class="card-badge new">260 cartes</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── AUTOMATISMES ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">⚡</span>
+      <span class="section-title">Automatismes</span>
+      <span class="section-desc">Règle 20-10-10 · Spaced repetition · → Suivi parental</span>
+    </div>
+    <div class="cards wide">
+      <a href="automatismes-francais.html" class="card fr">
+        <div class="card-icon">🇫🇷</div>
+        <div class="card-title">Français</div>
+        <div class="card-desc">40 questions · Chapitres faibles en priorité</div>
+        <div class="card-badge ia">→ Suivi parental</div>
+      </a>
+      <a href="automatismes-maths.html" class="card ma">
+        <div class="card-icon">📐</div>
+        <div class="card-title">Mathématiques</div>
+        <div class="card-desc">40 questions · Calcul + notions clés</div>
+        <div class="card-badge ia">→ Suivi parental</div>
+      </a>
+      <a href="automatismes-histgeo.html" class="card hi">
+        <div class="card-icon">🌍</div>
+        <div class="card-title">Histoire-Géo-EMC</div>
+        <div class="card-desc">40 questions · Histoire, Géo, EMC au choix</div>
+        <div class="card-badge ia">→ Suivi parental</div>
+      </a>
+      <a href="automatismes-sciences.html" class="card sc">
+        <div class="card-icon">🔬</div>
+        <div class="card-title">Sciences</div>
+        <div class="card-desc">40 questions · SVT + Physique-Chimie</div>
+        <div class="card-badge ia">→ Suivi parental</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── SUJETS BREVET ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">📄</span>
+      <span class="section-title">Sujets officiels DNB</span>
+      <span class="section-desc">Liens PDF vérifiés · Correction IA · Export PDF</span>
+    </div>
+    <div class="cards">
+      <a href="sujets-maths.html" class="card ma">
+        <div class="card-icon">📐</div>
+        <div class="card-title">Maths — 10 sujets</div>
+        <div class="card-desc">2022–2024 · Correction IA question par question</div>
+        <div class="card-badge pdf">PDF officiel ⬇</div>
+      </a>
+      <a href="sujets-francais.html" class="card fr">
+        <div class="card-icon">🇫🇷</div>
+        <div class="card-title">Français — 10 sujets</div>
+        <div class="card-desc">Compréhension · Dictée · Rédaction · Correction IA</div>
+        <div class="card-badge pdf">PDF officiel ⬇</div>
+      </a>
+      <a href="sujets-histgeo.html" class="card hi">
+        <div class="card-icon">🌍</div>
+        <div class="card-title">Histoire-Géo — 10 sujets</div>
+        <div class="card-desc">Documents authentiques · Correction IA</div>
+        <div class="card-badge pdf">PDF officiel ⬇</div>
+      </a>
+      <a href="sujets-sciences.html" class="card sc">
+        <div class="card-icon">🔬</div>
+        <div class="card-title">Sciences — 10 sujets</div>
+        <div class="card-desc">PC + SVT · Correction IA + officielle en rouge</div>
+        <div class="card-badge pdf">PDF officiel ⬇</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- ── OUTILS ── -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-icon">🛠</span>
+      <span class="section-title">Outils</span>
+      <span class="section-desc">Agent oral · Suivi parental</span>
+    </div>
+    <div class="cards">
+      <a href="agent-oral.html" class="card sp">
+        <div class="card-icon">🎤</div>
+        <div class="card-title">Agent oral IA</div>
+        <div class="card-desc">Sujet libre · 3+7 questions · Correction IA · PDF export</div>
+        <div class="card-badge ia">Correcteur IA</div>
+      </a>
+      <a href="suivi-parent.html" class="card" style="--accent:#a07af5">
+        <div class="card-icon">📊</div>
+        <div class="card-title">Suivi parental</div>
+        <div class="card-desc">Streak · Chapitres faibles · Progression par matière · Alertes</div>
+        <div class="card-badge" style="border-color:rgba(160,122,245,.3);color:#a07af5;background:rgba(160,122,245,.06)">Temps réel</div>
+      </a>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <span>Brevet 2026 — Élève 1 &amp; Élève 2</span>
+  <span id="footerDate"></span>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+// ── COUNTDOWN ──
+function updateCountdown() {
+  const dnb = new Date('2026-06-26');
+  const now = new Date();
+  const diff = Math.ceil((dnb - now) / (1000*60*60*24));
+  document.getElementById('joursRestants').textContent = diff > 0 ? diff : '0';
+}
+updateCountdown();
+
+// ── DATE FOOTER ──
+document.getElementById('footerDate').textContent = new Date().toLocaleDateString('fr-FR', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+
+// ── ELEVE ──
+let eleve = localStorage.getItem('brevet_eleve') || 'eleve1';
+
+function setEleve(e) {
+  eleve = e;
+  localStorage.setItem('brevet_eleve', e);
+  document.getElementById('btn1').className = 'etab' + (e==='eleve1' ? ' e1' : '');
+  document.getElementById('btn2').className = 'etab' + (e==='eleve2' ? ' e2' : '');
+  updateStats();
+}
+
+// ── STATS DEPUIS LOCALSTORAGE ──
+const MATIERES = ['francais','maths','histoire','sciences'];
+const COULEURS = { francais:'var(--teal)', maths:'var(--gold)', histoire:'#f5a623', sciences:'var(--blue)' };
+const IDS = { francais:'Fr', maths:'Ma', histoire:'Hi', sciences:'Sc' };
+
+function getSessions(matiere) {
+  return JSON.parse(localStorage.getItem('suivi_sessions_' + matiere + '_' + eleve) || '[]');
+}
+
+function getAllSessions() {
+  return MATIERES.flatMap(m => getSessions(m).map(s => ({...s, matiere:m})))
+    .sort((a,b) => new Date(b.date) - new Date(a.date));
+}
+
+function calcStreak(sessions) {
+  if (!sessions.length) return 0;
+  const jours = new Set(sessions.map(s => new Date(s.date).toDateString()));
+  let streak = 0, d = new Date();
+  while (jours.has(d.toDateString())) { streak++; d.setDate(d.getDate()-1); }
+  return streak;
+}
+
+function updateStats() {
+  const all = getAllSessions();
+  const streak = calcStreak(all);
+  const moyenne = all.length ? Math.round(all.slice(0,10).reduce((a,s)=>a+s.pourcentage,0)/Math.min(all.length,10)) : 0;
+
+  document.getElementById('statStreak').textContent = streak || '—';
+  document.getElementById('statSessions').textContent = all.length || '—';
+  document.getElementById('statMoyenne').textContent = all.length ? moyenne + '%' : '—';
+
+  // Compter sujets faits (sessions avec matière 'sujet')
+  const sujets = JSON.parse(localStorage.getItem('sujets_faits_' + eleve) || '[]');
+  document.getElementById('statSujets').textContent = sujets.length || '0';
+
+  // Progression par matière
+  MATIERES.forEach(m => {
+    const s = getSessions(m);
+    const moy = s.length ? Math.round(s.slice(0,5).reduce((a,x)=>a+x.pourcentage,0)/Math.min(s.length,5)) : 0;
+    const id = IDS[m];
+    const fill = document.getElementById('prog' + id);
+    const pct = document.getElementById('prog' + id + 'Pct');
+    if (fill) fill.style.width = moy + '%';
+    if (pct) pct.textContent = s.length ? moy + '%' : '—';
+  });
+
+  // Alerte inactivité
+  if (all.length) {
+    const diff = Math.floor((Date.now() - new Date(all[0].date)) / (1000*60*60*24));
+    const el = document.getElementById('alerteInactivite');
+    if (diff >= 2) {
+      el.classList.remove('hidden');
+      document.getElementById('alerteMsg').textContent =
+        'Dernière session il y a ' + diff + ' jour' + (diff>1?'s':'') + '. ' +
+        (eleve==='eleve1'?'Élève 1':'Élève 2') + ' doit travailler aujourd\'hui !';
+    } else {
+      el.classList.add('hidden');
+    }
+  }
+}
+
+setEleve(eleve);
+
+}); // DOMContentLoaded
+</script>
+</body>
+</html>

@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Histoire-Géo — 10 sujets DNB</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#09090f; --s1:#111118; --s2:#1a1a24; --br:#2a2a38;
+  --teal:#5ecfb1; --gold:#e8c87a; --red:#e87a7a;
+  --amber:#f5a623; --amber-dim:#c4841a;
+  --text:#e8e8f0; --dim:#9090a8; --muted:#5a5a72;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.6;}
+
+.landing{max-width:960px;margin:0 auto;padding:48px 24px 80px;}
+.eyebrow{font-family:'DM Mono',monospace;font-size:11px;color:var(--amber);letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.eyebrow::before{content:'';width:24px;height:1px;background:var(--amber);}
+.h1{font-family:'Syne',sans-serif;font-size:clamp(32px,6vw,54px);font-weight:800;line-height:1.08;margin-bottom:14px;}
+.h1 em{font-style:normal;color:var(--amber);}
+.sub{color:var(--dim);font-size:15px;max-width:520px;margin-bottom:24px;}
+.pills{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:40px;}
+.pill{display:flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--br);border-radius:20px;padding:5px 14px;font-size:12px;color:var(--dim);}
+.pill span{color:var(--text);font-weight:500;}
+
+.sujets-list{display:flex;flex-direction:column;gap:8px;max-width:720px;}
+.sitem{display:flex;align-items:center;gap:12px;background:var(--s1);border:1px solid var(--br);border-radius:10px;padding:12px 16px;transition:border-color .2s;}
+.sitem:hover{border-color:var(--teal);}
+.sitem-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);min-width:60px;white-space:nowrap;}
+.sitem-info{flex:1;}
+.sitem-titre{font-family:'Syne',sans-serif;font-weight:700;font-size:13px;margin-bottom:2px;}
+.sitem-sub{font-size:11px;color:var(--dim);}
+.sitem-tags{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap;}
+.ctag{font-size:10px;padding:2px 7px;border-radius:4px;background:var(--s2);border:1px solid var(--br);color:var(--dim);}
+.ctag.y25{border-color:#f5a62344;color:var(--amber);}
+.ctag.y24{border-color:#e8c87a44;color:var(--gold);}
+.ctag.y23{border-color:#5ecfb144;color:var(--teal);}
+.ctag.y22{border-color:#a07af544;color:#a07af5;}
+.sitem-btns{display:flex;gap:6px;align-items:center;flex-shrink:0;}
+.card-dl{display:flex;align-items:center;gap:5px;color:var(--amber);font-size:11px;font-family:'Syne',sans-serif;font-weight:700;text-decoration:none;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);border-radius:5px;padding:4px 10px;transition:background .2s;}
+.card-dl:hover{background:rgba(245,166,35,.16);}
+.card-open{background:var(--amber);color:#09090f;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;border:none;border-radius:5px;padding:5px 12px;cursor:pointer;transition:background .2s;}
+.card-open:hover{background:var(--amber-dim);}
+
+.sujet-view{display:none;max-width:900px;margin:0 auto;padding:24px;}
+.sujet-view.active{display:block;}
+.sv-header{display:flex;align-items:center;gap:14px;margin-bottom:28px;flex-wrap:wrap;}
+.back-btn{display:flex;align-items:center;gap:6px;background:var(--s2);border:1px solid var(--br);color:var(--dim);font-size:13px;padding:7px 14px;border-radius:7px;cursor:pointer;transition:.2s;text-decoration:none;}
+.back-btn:hover{border-color:var(--amber);color:var(--amber);}
+.sv-titre{font-family:'Syne',sans-serif;font-weight:800;font-size:18px;flex:1;}
+.sv-dl{display:flex;align-items:center;gap:6px;background:var(--amber);color:#09090f;font-family:'Syne',sans-serif;font-weight:700;font-size:12px;padding:8px 16px;border-radius:7px;text-decoration:none;white-space:nowrap;}
+.sv-dl:hover{background:var(--amber-dim);}
+.sv-warn{font-size:11px;color:var(--red);margin-top:4px;text-align:right;}
+
+.exo-header{display:flex;align-items:center;gap:8px;padding:14px 0 6px;border-top:1px solid var(--br);margin-top:8px;}
+.exo-badge{font-size:11px;font-weight:700;font-family:'Syne',sans-serif;padding:3px 10px;border-radius:4px;}
+.exo-badge.hist{background:rgba(245,166,35,.1);color:var(--amber);border:1px solid rgba(245,166,35,.3);}
+.exo-badge.geo{background:rgba(94,207,177,.1);color:var(--teal);border:1px solid rgba(94,207,177,.3);}
+.exo-badge.emc{background:rgba(160,122,245,.1);color:#a07af5;border:1px solid rgba(160,122,245,.3);}
+.exo-pts{font-size:12px;color:var(--muted);}
+
+.qblock{background:var(--s1);border:1px solid var(--br);border-radius:10px;padding:16px 18px 18px;margin-bottom:12px;}
+.qnum{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;color:var(--amber);background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);border-radius:4px;padding:2px 7px;margin-bottom:8px;}
+.qtexte{font-size:14px;color:var(--text);margin-bottom:10px;line-height:1.55;}
+textarea{width:100%;background:var(--s2);border:1px solid var(--br);border-radius:7px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;padding:9px 12px;resize:vertical;min-height:52px;outline:none;transition:border-color .2s;}
+textarea:focus{border-color:var(--amber);}
+textarea::placeholder{color:var(--muted);}
+.qbtns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+.btn-corriger{background:var(--amber);color:#09090f;border:none;border-radius:6px;font-family:'Syne',sans-serif;font-weight:700;font-size:11px;padding:6px 14px;cursor:pointer;transition:.15s;}
+.btn-corriger:hover{background:var(--amber-dim);}
+.btn-corriger:disabled{opacity:.4;cursor:not-allowed;}
+.btn-off{background:var(--s2);color:var(--dim);border:1px solid var(--br);border-radius:6px;font-size:11px;padding:5px 10px;cursor:pointer;}
+.btn-off:hover{border-color:var(--gold);color:var(--gold);}
+
+.corr-panel{display:none;margin-top:10px;}
+.corr-panel.show{display:block;}
+.corr-ia{background:var(--s2);border-left:3px solid var(--amber);border-radius:0 7px 7px 0;padding:12px 14px;font-size:13px;}
+.corr-note{color:var(--amber);font-weight:700;font-size:15px;margin-bottom:6px;}
+.corr-txt{color:var(--text);white-space:pre-wrap;}
+.corr-conseil{color:var(--dim);font-size:12px;margin-top:8px;}
+.corr-off{margin-top:8px;background:rgba(232,122,122,.06);border-left:3px solid var(--red);border-radius:0 7px 7px 0;padding:10px 14px;font-size:13px;}
+.corr-off strong{color:var(--red);display:block;margin-bottom:4px;font-size:11px;}
+.corr-off-toggle{display:none;margin-top:8px;background:rgba(232,200,122,.06);border-left:3px solid var(--gold);border-radius:0 7px 7px 0;padding:10px 14px;font-size:13px;}
+.corr-off-toggle.show{display:block;}
+.corr-off-toggle strong{color:var(--gold);display:block;margin-bottom:4px;font-size:11px;}
+.btn-copy{background:var(--s2);border:1px solid var(--br);color:var(--dim);font-size:11px;padding:4px 10px;border-radius:5px;cursor:pointer;margin-top:6px;}
+.btn-copy:hover{border-color:var(--amber);color:var(--amber);}
+.loading{color:var(--amber);font-style:italic;font-size:13px;padding:8px 0;}
+.dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--amber);animation:p 1.2s ease-in-out infinite;margin-right:6px;}
+@keyframes p{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
+.erreur{color:var(--red);font-size:13px;padding:8px 0;}
+
+.export-zone{margin-top:20px;padding:12px 16px;background:var(--s2);border:1px dashed var(--br);border-radius:8px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+.export-zone p{font-size:12px;color:var(--dim);}
+.btn-pdf{background:var(--s2);border:1px solid var(--gold);color:var(--gold);font-family:'Syne',sans-serif;font-weight:700;font-size:11px;padding:7px 14px;border-radius:6px;cursor:pointer;}
+.btn-pdf:hover{background:rgba(232,200,122,.1);}
+</style>
+</head>
+<body>
+
+<div class="landing" id="landing">
+  <div class="eyebrow">Brevet 2026 · DNB</div>
+  <h1 class="h1">10 vrais sujets <em>Histoire-Géo-EMC</em></h1>
+  <p class="sub">Documents authentiques indispensables. Télécharge le PDF officiel, réponds, l'IA corrige.</p>
+  <div class="pills">
+    <div class="pill">⏱ <span>2h</span> par sujet</div>
+    <div class="pill">📊 <span>50 points</span></div>
+    <div class="pill">📅 Sujets <span>2022 → 2025</span></div>
+    <div class="pill">🤖 Correction <span>IA</span> + officielle</div>
+  </div>
+  <div class="sujets-list" id="grid"></div>
+</div>
+
+<div class="sujet-view" id="sujetView">
+  <div class="sv-header">
+    <a class="back-btn" href="#" onclick="retour();return false;">← Retour</a>
+    <div class="sv-titre" id="svTitre"></div>
+    <div style="display:flex;flex-direction:column;align-items:flex-end">
+      <a class="sv-dl" id="svDl" href="#" target="_blank">⬇ Télécharger le sujet</a>
+      <div class="sv-warn">⚠ Ne regarde pas le corrigé !</div>
+    </div>
+  </div>
+  <div id="svContent"></div>
+</div>
+
+<script>
+// ============================================================
+// PROXY - VOTRE URL GOOGLE APPS SCRIPT (avec clé API configurée)
+// ============================================================
+const PROXY = 'https://script.google.com/macros/s/AKfycbxxQCRDZvKAb9fuXkDslK7LYMXjcIrIi-_EpA8DWT1-tTelSpYcMxPkiSPG5bKheLTY/exec';
+
+const STORE = {};
+const _STORE_KEY = 'hg_corrections_ia';
+try {
+  const _saved = JSON.parse(localStorage.getItem(_STORE_KEY) || '{}');
+  Object.assign(STORE, _saved);
+} catch(e) {}
+
+function getUserId() {
+  let id = localStorage.getItem('hg_user_id');
+  if (!id) {
+    id = crypto.randomUUID ? crypto.randomUUID() : 'user_' + Date.now();
+    localStorage.setItem('hg_user_id', id);
+  }
+  return id;
+}
+
+function getSessionId() {
+  let sid = sessionStorage.getItem('hg_session_id');
+  if (!sid) {
+    sid = 'sess_' + Date.now();
+    sessionStorage.setItem('hg_session_id', sid);
+  }
+  return sid;
+}
+
+function isPaid() { return false; }
+function getJoursRestantsEssai() { return 3; }
+
+async function callIA(prompt, system) {
+  const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout (45s)')), 45000));
+  // URLSearchParams évite le preflight CORS (pas de Content-Type: application/json)
+  const payload = JSON.stringify({
+    userId: getUserId(),
+    action: 'correction_ia',
+    prompt: prompt,
+    system: system,
+    estPayant: isPaid(),
+    sessionId: getSessionId(),
+    joursRestantsEssai: getJoursRestantsEssai(),
+    source: document.title,
+    matiere: 'histoire'
+  });
+  const req = fetch(PROXY, {
+    method: 'POST',
+    body: new URLSearchParams({ data: payload })
+    // Pas de Content-Type JSON → pas de preflight → pas de blocage CORS
+  }).then(r => r.json()).then(d => {
+    if (d.success && d.content) return d.content;
+    throw new Error(d.error || 'Erreur API');
+  });
+  return Promise.race([req, timeout]);
+}
+
+function safeJSON(t) {
+  try { return JSON.parse(t.replace(/```json|```/g, '').trim()); }
+  catch(e) { return null; }
+}
+
+const SUJETS = [
+  {id:1, annee:'2025', session:'Métropole (juin)', titre:'25GENHGEMCME1 — Géo: Vallée batterie · Hist: Décolonisation · EMC: Égalité F/H', pdf:'https://hg.ac-besancon.fr/wp-content/uploads/sites/63/2025/07/dipl-me-national-du-brevet-2025-histoire-g-ographie-enseignement-moral-et-civique-228363.pdf', tags:[{t:'2025',c:'y25'}], exos:[{type:'geo',label:'EXERCICE 1 — Géographie (20 pts)',pts:20,questions:[{texte:'Q1 — Relevez un extrait qui définit la gigafactory. (2 pts)',rep:'« usines de fabrication de batteries »'},{texte:'Q2 — Identifiez deux types d\'acteurs. (4 pts)',rep:'État/Région (publics) + entreprises privées'},{texte:'Q3 — Situez « la vallée de la batterie ». (2 pts)',rep:'Hauts-de-France, entre Dunkerque, Douvrin et Douai'},{texte:'Q4 — Caractérisez l\'espace productif. (4 pts)',rep:'Espace industriel en reconversion'},{texte:'Q5 — Montrez les atouts de la vallée. (8 pts)',rep:'Proximité usines auto, port Dunkerque, main-d\'œuvre, subventions'}]},{type:'hist',label:'EXERCICE 2 — Histoire (20 pts)',pts:20,questions:[{texte:'Développement construit : indépendance d\'une colonie. (14 pts)',rep:'Algérie : FLN, de Gaulle, 1954-1962, accords Évian'},{texte:'a) Année chute mur Berlin / ONU / traité Rome. (3 pts)',rep:'1989 / 1945 / 1957'},{texte:'b) Autre événement sur frise. (1 pt)',rep:'Accords Évian 1962'},{texte:'c) Situez Guerre froide. (2 pts)',rep:'1947-1991, accolade'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Inégalité mise en avant. (2 pts)',rep:'Sous-représentation des femmes en informatique (11%)'},{texte:'Q2 — Extrait Constitution sur égalité. (2 pts)',rep:'« La loi favorise l\'égal accès des femmes et des hommes »'},{texte:'Q3 — Intérêt de la figure Ada Lovelace. (2 pts)',rep:'Montrer un modèle féminin inspirant'},{texte:'Q4 — Rédigez un discours 8 mars. (4 pts)',rep:'Écart salarial, ateliers débat, invitation femmes pionnières'}]}]},
+  {id:2, annee:'2025', session:'Asie-Pacifique', titre:'25GENHGEMCAA1 — Hist: 1GM Viviani · Géo: Aménager inégalités · EMC: JO 2024', pdf:'https://www.education.gouv.fr/sites/default/files/2025-06/dipl-me-national-du-brevet-2025-histoire-g-ographie---enseignement-moral-et-civique-441168.pdf', tags:[{t:'2025',c:'y25'}], exos:[{type:'hist',label:'EXERCICE 1 — Histoire (20 pts)',pts:20,questions:[{texte:'Q1 — Contexte appel Viviani 7 août 1914. (4 pts)',rep:'Début WW1, mobilisation hommes'},{texte:'Q2 — Pourquoi s\'adresser aux femmes ? (2 pts)',rep:'Remplacer hommes dans champs et usines'},{texte:'Q3 — Deux éléments mobilisation campagne. (4 pts)',rep:'Moisson inachevée, vendanges proches'},{texte:'Q4 — Pourquoi femmes usines obus 1917 ? (4 pts)',rep:'Hommes au front + production armement'},{texte:'Q5 — Participation femmes effort guerre. (6 pts)',rep:'Agriculture, usines (munitionnettes), soins'}]},{type:'geo',label:'EXERCICE 2 — Géographie (20 pts)',pts:20,questions:[{texte:'Développement construit : aménagement vs inégalités. (14 pts)',rep:'Inégalités territoires, politiques QPV/ZRR, exemples'},{texte:'Q1a — Nommez deux métropoles. (2 pts)',rep:'Paris, Lyon'},{texte:'Q1b — Nommez un fleuve. (1 pt)',rep:'La Loire'},{texte:'Q1c — Deux massifs montagneux. (1 pt)',rep:'Alpes, Pyrénées'},{texte:'Q2 — Complétez légende. (1 pt)',rep:'Gris = massifs montagneux'},{texte:'Q3 — Représentez axe de communication. (1 pt)',rep:'Autoroute A6/A7'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Deux symboles République JO 2024. (2 pts)',rep:'Drapeau tricolore, Marseillaise'},{texte:'Q2 — Que rappellent les 10 statues ? (2 pts)',rep:'Combat des femmes pour leurs droits'},{texte:'Q3 — Valeur associée. (2 pts)',rep:'Égalité : femmes ont combattu pour droits'},{texte:'Q4 — Pourquoi important JO ? (4 pts)',rep:'Vitrine internationale des valeurs françaises'}]}]},
+  {id:3, annee:'2024', session:'Métropole (juin)', titre:'24GENHGEMCME1 — Hist: Auschwitz · Géo: France/Europe · EMC: Service Civique', pdf:'https://hg.ac-besancon.fr/wp-content/uploads/sites/63/2024/11/dipl-me-national-du-brevet-2024-histoire-g-ographie-enseignement-moral-et-civique-195917.pdf', tags:[{t:'2024',c:'y24'}], exos:[{type:'hist',label:'EXERCICE 1 — Histoire (20 pts)',pts:20,questions:[{texte:'Q1 — Nature document Ginette Kolinka. (2 pts)',rep:'Témoignage autobiographique rescapée Auschwitz'},{texte:'Q2 — Trois formes de violence. (6 pts)',rep:'Violence physique, épuisement, faim'},{texte:'Q3 — Qui surveille les déportées ? (2 pts)',rep:'Les kapos'},{texte:'Q4 — Décrivez sélection photo. (4 pts)',rep:'SS séparent travailleurs de ceux envoyés chambres à gaz'},{texte:'Q5 — Expliquez génocide Juifs. (6 pts)',rep:'Destruction systématique, 1,1M morts dont 90% Juifs'}]},{type:'geo',label:'EXERCICE 2 — Géographie (20 pts)',pts:20,questions:[{texte:'Développement construit : France et Europe dans le monde. (14 pts)',rep:'Culturelle (tourisme), géopolitique (ONU), économique (PIB)'},{texte:'Q1a — Trois pays UE. (1.5 pt)',rep:'Allemagne, Italie, Espagne'},{texte:'Q1b — Trois métropoles européennes. (1.5 pt)',rep:'Berlin, Rome, Madrid'},{texte:'Q2 — Métropole siège institution UE. (1 pt)',rep:'Bruxelles'},{texte:'Q3-4 — Mégalopole européenne. (2 pts)',rep:'Londres à Milan, hachures'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Deux avantages Service Civique. (2 pts)',rep:'Sans diplôme, indemnisé 601€/mois'},{texte:'Q2 — Deux expériences Bastien. (2 pts)',rep:'Restos du Cœur, mission environnement Avignon'},{texte:'Q3 — Valeur associée. (2 pts)',rep:'Fraternité'},{texte:'Q4 — Discours CMJ. (4 pts)',rep:'Domaine éducation, aide aux devoirs, égalité'}]}]},
+  {id:4, annee:'2024', session:'Amérique du Nord', titre:'24GENHGEMCAN1 — Hist: Mur Berlin · Géo: DROM · EMC: SNU', pdf:'https://www.education.gouv.fr/media/195323/download', tags:[{t:'2024',c:'y24'}], exos:[{type:'hist',label:'EXERCICE 1 — Histoire (20 pts)',pts:20,questions:[{texte:'Q1 — Événement 9 nov 1989. (2 pts)',rep:'Chute du mur de Berlin'},{texte:'Q2 — Trois expressions caractère exceptionnel. (3 pts)',rep:'« Reste pour toujours », « folie », « on rit, on pleure »'},{texte:'Q3 — Régime autoritaire RDA. (4 pts)',rep:'Ordre de tirer, autorisation spéciale'},{texte:'Q4 — Liberté retrouvée. (3 pts)',rep:'Liberté de circulation'},{texte:'Q5 — Deux éléments guerre froide dessin Plantu. (4 pts)',rep:'Drapeaux RFA et RDA, réunification'},{texte:'Q6 — Deux conséquences. (4 pts)',rep:'Liberté circulation, réunification 3 oct 1990'}]},{type:'geo',label:'EXERCICE 2 — Géographie (20 pts)',pts:20,questions:[{texte:'Développement construit : spécificités ultramarins. (14 pts)',rep:'Éloignement, chômage, cyclones, aménagements spécifiques'},{texte:'Q — Signification DROM. (2 pts)',rep:'Départements et Régions d\'Outre-Mer'},{texte:'Q — Trois océans. (1.5 pt)',rep:'Atlantique, Indien, Pacifique'},{texte:'Q — 5 DROM. (2.5 pts)',rep:'Guadeloupe, Martinique, Guyane, Réunion, Mayotte'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Quatre activités SNU. (4 pts)',rep:'Sport, secours, environnement, valeurs patriotiques'},{texte:'Q2 — Deux acteurs encadrement. (2 pts)',rep:'Chef SDJES, maire'},{texte:'Q3 — Deux symboles République. (2 pts)',rep:'Drapeau, devise Liberté-Égalité-Fraternité'},{texte:'Q4 — Pourquoi engagement citoyen. (2 pts)',rep:'Sport = respect, secours = solidarité'}]}]},
+  {id:5, annee:'2024', session:'Session 4', titre:'24GENHGEMCME4 — Géo: Téléo Toulouse · Hist: Décolonisation · EMC: Restos du Cœur', pdf:'https://www.education.gouv.fr/sites/default/files/document/Dipl%C3%B4me%20national%20du%20brevet%202024%20-%20Histoire-G%C3%A9ographie%20-%20Enseignement%20moral%20et%20civique-401868.pdf', tags:[{t:'2024',c:'y24'}], exos:[{type:'geo',label:'EXERCICE 1 — Géographie (20 pts)',pts:20,questions:[{texte:'Q1 — Trois modes de transport Toulouse. (3 pts)',rep:'Métro, bus, téléphérique'},{texte:'Q2 — Trois acteurs construction Téléo. (3 pts)',rep:'Mairie, Région, État'},{texte:'Q3 — Expliquez « transports transversaux ». (3 pts)',rep:'Relie périphérie sans passer par centre'},{texte:'Q4 — Connexion modes transport. (5 pts)',rep:'Correspondances métro, bus, vélos'},{texte:'Q5 — Accès activités et services. (6 pts)',rep:'Université, hôpital, Oncopole'}]},{type:'hist',label:'EXERCICE 2 — Histoire (20 pts)',pts:20,questions:[{texte:'Développement construit : indépendance colonie. (14 pts)',rep:'Algérie 1954-1962'},{texte:'Annexe — ONU année. (1 pt)',rep:'1945'},{texte:'Événement 1962. (1 pt)',rep:'Indépendance Algérie'},{texte:'Traité Rome année. (1 pt)',rep:'1957'},{texte:'Événement 1989. (1 pt)',rep:'Chute mur Berlin'},{texte:'Situez Guerre froide. (2 pts)',rep:'1947-1991'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Association affiche. (1 pt)',rep:'Restos du Cœur'},{texte:'Q2 — Objectif affiche. (2 pts)',rep:'Recruter bénévoles collecte alimentaire'},{texte:'Q3 — Deux domaines bénévolat. (2 pts)',rep:'Éducation, social'},{texte:'Q4 — Qu\'est-ce que le bénévolat ? (2 pts)',rep:'Engagement non rémunéré, 22M de Français'},{texte:'Q5 — Action concrète CVC. (3 pts)',rep:'Collecte alimentaire avec Croix-Rouge'}]}]},
+  {id:6, annee:'2023', session:'Métropole (juin)', titre:'23GENHGEMCME1 — Hist: Civils WW1 · Géo: Espaces faible densité · EMC: CMJ', pdf:'https://hg.ac-besancon.fr/wp-content/uploads/sites/63/2023/10/sujet_DNB_juin_23GENHGEMCME.pdf', tags:[{t:'2023',c:'y23'}], exos:[{type:'hist',label:'EXERCICE 1 — Histoire (20 pts)',pts:20,questions:[{texte:'Q1 — Nature document Juliette. (2 pts)',rep:'Témoignage oral 1983'},{texte:'Q2 — Trois souffrances civils. (6 pts)',rep:'Manque, misère, queues'},{texte:'Q3 — Apport vs soldat. (4 pts)',rep:'Montre vie à l\'arrière : pénuries, femmes usines'},{texte:'Q4 — Décrivez affiche emprunt. (4 pts)',rep:'Soldat front + femme/enfant arrière'},{texte:'Q5 — Objectif affiche. (2 pts)',rep:'Souscrire à l\'emprunt de guerre'},{texte:'Q6 — Participation civils. (2 pts)',rep:'Femmes usines, enfants courses, emprunts'}]},{type:'geo',label:'EXERCICE 2 — Géographie (20 pts)',pts:20,questions:[{texte:'Développement construit : espaces faible densité. (14 pts)',rep:'Atouts cadre vie, tourisme. Défis désertification médicale'},{texte:'Q1a — Trois espaces aire urbaine. (3 pts)',rep:'Centre, banlieue, couronne périurbaine'},{texte:'Q1b — Mobilités. (2 pts)',rep:'Flèches trajets domicile-travail'},{texte:'Q2 — Six aires urbaines. (5 pts)',rep:'Paris, Lyon, Marseille, Bordeaux, Toulouse, Nantes'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Deux conditions CMJ. (2 pts)',rep:'Collégien, habiter/scolarisé à Reims'},{texte:'Q2 — Deux thématiques. (2 pts)',rep:'Environnement, culture'},{texte:'Q3 — Slogan démocratique. (2 pts)',rep:'« Présente-toi ou vote » = représentation + élection'},{texte:'Q4 — Discours candidature CMJ. (4 pts)',rep:'Motivations, projet jardin partagé, valeurs'}]}]},
+  {id:7, annee:'2023', session:'Amérique du Nord', titre:'23GENHGEMCAN1 — Hist: Lettres poilu · Géo: Espaces productifs · EMC: Vote', pdf:'https://www.education.gouv.fr/media/155783/download', tags:[{t:'2023',c:'y23'}], exos:[{type:'hist',label:'EXERCICE 1 — Histoire (20 pts)',pts:20,questions:[{texte:'Q1 — Auteur et contexte lettres. (4 pts)',rep:'Félix Delaurat, cultivateur mobilisé 1916'},{texte:'Q2 — Expressions intensité combats. (4 pts)',rep:'« vrai enfer », « perdu quart effectif »'},{texte:'Q3 — Importance lettres poilus. (4 pts)',rep:'Témoignage direct authentique'},{texte:'Q4 — Évolution état esprit. (4 pts)',rep:'Résigné mai → désespoir déc.'},{texte:'Q5 — Conditions vie soldat. (4 pts)',rep:'Tranchées, bombardements, pertes 25%'}]},{type:'geo',label:'EXERCICE 2 — Géographie (20 pts)',pts:20,questions:[{texte:'Développement construit : espace productif français. (14 pts)',rep:'Ex Sophia Antipolis, acteurs, mondialisation'},{texte:'Q a — Deux métropoles. (2 pts)',rep:'Lille, Nice'},{texte:'Q b — Légende espaces industriels. (3 pts)',rep:'Gris foncé = ancien, clair = dynamique'},{texte:'Q c — Technopôle et ZIP. (1 pt)',rep:'○ technopôles, ■ ZIP'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Deux motivations vote jeune. (2 pts)',rep:'Droit/devoir, décider avenir commun'},{texte:'Q2 — Deux éléments vote libre/secret. (2 pts)',rep:'Isoloir, « fait seul mon choix »'},{texte:'Q3 — Deux raisons détournement jeunes. (2 pts)',rep:'Politiques ignorant jeunes, sujets non évoqués'},{texte:'Q4 — Nom abstention. (1 pt)',rep:'L\'abstention'},{texte:'Q5 — Arguments CMEJ. (3 pts)',rep:'Vote = droit, représentativité, démocratie'}]}]},
+  {id:8, annee:'2022', session:'Métropole (juin)', titre:'22GENHGEMCME1 — Hist: Vote femmes 1944 · Géo: DROM · EMC: Pétition', pdf:'https://pedagogie.ac-strasbourg.fr/fileadmin/pedagogie/histoiregeographie/Examens_et_concours/DNB_2022/22GENHGEMCME1.pdf', tags:[{t:'2022',c:'y22'}], exos:[{type:'hist',label:'EXERCICE 1 — Histoire (20 pts)',pts:20,questions:[{texte:'Q1 — France pas sortie guerre mars 1944. (4 pts)',rep:'Présence prisonniers/déportés, territoire non libéré'},{texte:'Q2 — Deux arguments opposants. (4 pts)',rep:'Déséquilibre femmes/hommes, délai trop court'},{texte:'Q3 — Pourquoi vote femmes non discutable. (4 pts)',rep:'France résiste unie, femmes ont remplacé hommes'},{texte:'Q4 — Décision issue débat. (4 pts)',rep:'Amendement adopté, femmes voteront dès Libération'},{texte:'Q5 — Retour démocratie et avancée. (4 pts)',rep:'Rétablissement élections + suffrage universel aux femmes'}]},{type:'geo',label:'EXERCICE 2 — Géographie (20 pts)',pts:20,questions:[{texte:'Développement construit : aménagement ultramarins. (14 pts)',rep:'Spécificités : insularité, éloignement, aménagements'},{texte:'Q1 — Trois DROM. (3 pts)',rep:'Guyane, Martinique, Guadeloupe'},{texte:'Q2 — Figuré DROM. (1 pt)',rep:'Carré'},{texte:'Q3 — Deux océans. (2 pts)',rep:'Atlantique, Pacifique'},{texte:'Q4 — Deux trajets aériens. (2 pts)',rep:'Guyane→Paris, Guyane→Martinique'},{texte:'Q5 — Brésil sur carte B. (1 pt)',rep:'À placer au sud de Guyane'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Deux expressions correspondant dessin. (2 pts)',rep:'Démocratie représentative, démocratie participative'},{texte:'Q2 — Pourquoi garanti par Constitution. (4 pts)',rep:'Art 2 : gouvernement du peuple, Art 3 : souveraineté peuple'},{texte:'Q3 — Arguments pétition CVC. (4 pts)',rep:'Pétition = volonté collective, élus représentent camarades'}]}]},
+  {id:9, annee:'2020', session:'Amérique du Nord', titre:'20GENHGEMCAN1 — Géo: Outremer · Hist: Régime nazi · EMC: Laïcité', pdf:'https://www.education.gouv.fr/media/115747/download', tags:[{t:'2020',c:''}], exos:[{type:'geo',label:'EXERCICE 1 — Géographie (20 pts)',pts:20,questions:[{texte:'Q1 — Difficultés ultramarins. (6 pts)',rep:'PIB inférieur, chômage élevé, mortalité infantile'},{texte:'Q2 — Comparaison voisins. (6 pts)',rep:'DROM mieux développés que Haïti/Comores'},{texte:'Q3 — Deux espaces reliés Guadeloupe. (2 pts)',rep:'Europe, Caraïbe'},{texte:'Q4 — Avantages aéroport. (6 pts)',rep:'Tourisme, emplois, désenclavement'}]},{type:'hist',label:'EXERCICE 2 — Histoire (20 pts)',pts:20,questions:[{texte:'Développement construit : régime nazi. (14 pts)',rep:'Totalitaire (parti unique, Gestapo), antisémite (Nuremberg), expansionniste'},{texte:'Frise 1930-1939. (6 pts)',rep:'Hitler 1933, Front populaire 1936'}]},{type:'emc',label:'EXERCICE 3 — EMC (10 pts)',pts:10,questions:[{texte:'Q1 — Objectifs enseignement laïque. (2 pts)',rep:'Forger personnalité, libre arbitre, protéger prosélytisme'},{texte:'Q2 — Égalité articles 9 et 14. (2 pts)',rep:'Art 9 = égalité F/H, Art 14 = égalité traitement quelle que soit religion'},{texte:'Q3 — Garantie liberté religieuse. (2 pts)',rep:'Libre arbitre, étude objective des religions'},{texte:'Q4 — Expliquez à Inès. (4 pts)',rep:'Interdit signes religieux portés ≠ étude pédagogique des religions'}]}]},
+  {id:10, annee:'2022', session:'Métropole (septembre)', titre:'22GENHGEMCME (sept.) — PDF officiel', pdf:'https://hg.ac-besancon.fr/wp-content/uploads/sites/63/2022/10/22GENHGEMCM-sujet-sept.pdf', tags:[{t:'2022',c:'y22'}], exos:[{type:'hist',label:'EXERCICE — Voir PDF',pts:20,questions:[{texte:'⚠ Téléchargez le PDF pour accéder aux vraies questions.',rep:'Ouvrez le PDF officiel'}]},{type:'geo',label:'Géographie — voir PDF',pts:20,questions:[{texte:'⚠ Voir PDF officiel.',rep:'Voir PDF'}]},{type:'emc',label:'EMC — voir PDF',pts:10,questions:[{texte:'⚠ Voir PDF officiel.',rep:'Voir PDF'}]}]}
+];
+
+function buildLanding() {
+  const grid = document.getElementById('grid');
+  SUJETS.forEach((s, i) => {
+    const div = document.createElement('div');
+    div.className = 'sitem';
+    div.innerHTML = '<div class="sitem-num">S' + String(i+1).padStart(2,'0') + ' · ' + s.annee + '</div>'
+      + '<div class="sitem-info">'
+      + '<div class="sitem-titre">' + s.session + '</div>'
+      + '<div class="sitem-sub">' + s.titre + '</div>'
+      + '<div class="sitem-tags">' + (s.tags||[]).map(t=>'<span class="ctag ' + (t.c||'') + '">' + t.t + '</span>').join('') + '</div>'
+      + '</div>'
+      + '<div class="sitem-btns">'
+      + '<a class="card-dl" href="' + s.pdf + '" target="_blank" onclick="event.stopPropagation()">⬇ PDF</a>'
+      + '<button class="card-open" onclick="event.stopPropagation();ouvrirSujet(' + i + ')">Commencer →</button>'
+      + '</div>';
+    grid.appendChild(div);
+  });
+}
+
+function ouvrirSujet(idx) {
+  const s = SUJETS[idx];
+  document.getElementById('landing').style.display = 'none';
+  const view = document.getElementById('sujetView');
+  view.classList.add('active');
+  document.getElementById('svTitre').innerHTML = 'DNB ' + s.annee + ' — ' + s.session + '<div style="font-size:12px;color:#9090a8;margin-top:3px">' + s.titre + '</div>';
+  document.getElementById('svDl').href = s.pdf;
+
+  let html = '';
+  s.exos.forEach((exo, ei) => {
+    const cls = exo.type === 'hist' ? 'hist' : exo.type === 'geo' ? 'geo' : 'emc';
+    html += `<div class="exo-header"><span class="exo-badge ${cls}">${exo.label}</span><span class="exo-pts">${exo.pts} pts</span></div>`;
+    exo.questions.forEach((q, qi) => {
+      const qid = `q_${s.id}_${ei}_${qi}`;
+      html += `<div class="qblock"><div class="qnum">Q${ei+1}.${qi+1}</div><div class="qtexte">${q.texte}</div><textarea id="ans_${qid}" placeholder="Ta réponse ici..."></textarea><div class="qbtns"><button class="btn-corriger" onclick="corriger(${idx},${ei},${qi},'${qid}')">🤖 Correction IA</button><button class="btn-off" onclick="toggleOff('off_${qid}')">📖 Correction officielle</button></div><div class="corr-off-toggle" id="off_${qid}"><strong>📖 CORRECTION OFFICIELLE</strong><br>${q.rep}</div><div class="corr-panel" id="panel_${qid}"></div></div>`;
+    });
+  });
+  html += `<div class="export-zone"><p>📄 Sauvegarder toutes les corrections IA</p><button class="btn-pdf" onclick="exportPDF(${idx})">📄 Générer PDF</button><button class="sv-dl" style="background:#e87a7a;color:#09090f" onclick="effacerCorrections(${idx})">🗑 Effacer corrections</button></div>`;
+  document.getElementById('svContent').innerHTML = html;
+  window.scrollTo(0,0);
+}
+
+function retour() { document.getElementById('landing').style.display = 'block'; document.getElementById('sujetView').classList.remove('active'); window.scrollTo(0,0); }
+function toggleOff(id) { document.getElementById(id).classList.toggle('show'); }
+
+async function corriger(sIdx, ei, qi, qid) {
+  const s = SUJETS[sIdx];
+  const q = s.exos[ei].questions[qi];
+  const ans = document.getElementById('ans_'+qid).value.trim();
+  if (!ans) { alert("Écris ta réponse d'abord !"); return; }
+  const panel = document.getElementById('panel_'+qid);
+  const btn = panel.previousElementSibling?.querySelector('.btn-corriger');
+  panel.classList.add('show');
+  panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction experte en cours...</div>';
+  if (btn) btn.disabled = true;
+
+  const exo_type = s.exos[ei].type || 'hist';
+  const methodoLabel = exo_type==='hist' ? 'Histoire' : exo_type==='geo' ? 'Géographie' : 'EMC';
+  const methodoDetail = exo_type==='hist'
+    ? "nature/auteur/date du document, citations précises, croisement de documents, paragraphes construits avec connecteurs logiques"
+    : exo_type==='geo'
+    ? "données chiffrées et indicateurs, localisation précise, légende cartographique, vocabulaire géographique spécialisé"
+    : "analyse rigoureuse du document, mobilisation des notions civiques (démocratie, citoyenneté, droits/devoirs), argumentaire structuré";
+
+  const system = `Tu es un correcteur expert du DNB en ${methodoLabel}, exigeant et bienveillant comme un professeur expérimenté.
+
+Ta correction doit être APPROFONDIE. Réponds UNIQUEMENT en JSON valide avec cette structure exacte :
+{
+  "note": "X/${q.pts}",
+  "cours_su": "Oui" ou "Partiel" ou "Non",
+  "transfert": "Oui" ou "Partiel" ou "Non",
+  "methode": "Oui" ou "Partiel" ou "Non",
+  "correction_experte": "Rédige ici LA correction modèle complète que l'élève aurait dû écrire, avec les notions clés, le vocabulaire précis, les exemples attendus. 3 à 6 phrases.",
+  "analyse_eleve": "Analyse précise de ce que l'élève a bien fait et ce qui manque ou est inexact.",
+  "pistes": "2 ou 3 conseils concrets et actionnables pour progresser sur ce type de question."
+}
+
+Critères :
+- cours_su : connaissances du cours mobilisées ?
+- transfert : application au document/contexte spécifique ?
+- methode : respect de la méthode ${methodoLabel} (${methodoDetail}) ?`;
+
+  const prompt = `QUESTION (${q.pts} pts) : ${q.texte}
+
+ÉLÉMENTS DE CORRECTION ATTENDUS : ${q.rep}
+
+RÉPONSE DE L'ÉLÈVE : ${ans}
+
+Évalue avec rigueur et produis une correction experte complète.`;
+
+  try {
+    const txt = await callIA(prompt, system);
+    const json = safeJSON(txt);
+    if (!json) throw new Error('Réponse IA non parsable');
+
+    const badge = (val) => {
+      const ok = val === 'Oui';
+      const partiel = val === 'Partiel';
+      const bg = ok ? 'rgba(94,207,177,.15)' : partiel ? 'rgba(245,166,35,.15)' : 'rgba(232,122,122,.15)';
+      const col = ok ? 'var(--teal)' : partiel ? 'var(--amber)' : 'var(--red)';
+      const icon = ok ? '✓' : partiel ? '◑' : '✗';
+      return `<span style="background:${bg};color:${col};border:1px solid ${col};border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700;">${icon} ${val}</span>`;
+    };
+
+    panel.innerHTML = `
+      <div class="corr-ia">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
+          <div class="corr-note">✓ Note : ${json.note || '?'}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+            <span style="font-size:10px;color:var(--muted);margin-right:2px;">Cours</span>${badge(json.cours_su||'?')}
+            <span style="font-size:10px;color:var(--muted);margin-left:6px;">Transfert</span>${badge(json.transfert||'?')}
+            <span style="font-size:10px;color:var(--muted);margin-left:6px;">Méthode</span>${badge(json.methode||'?')}
+          </div>
+        </div>
+        <div style="margin-bottom:10px;">
+          <div style="font-size:10px;color:var(--amber);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">📝 Correction modèle</div>
+          <div style="background:rgba(245,166,35,.06);border-left:3px solid var(--amber);border-radius:0 6px 6px 0;padding:10px 13px;font-size:13px;color:var(--text);line-height:1.6;">${json.correction_experte || ''}</div>
+        </div>
+        <div style="margin-bottom:10px;">
+          <div style="font-size:10px;color:var(--teal);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">🔍 Analyse de ta réponse</div>
+          <div class="corr-txt" style="font-size:13px;">${json.analyse_eleve || ''}</div>
+        </div>
+        ${json.pistes ? `<div>
+          <div style="font-size:10px;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;">🎯 Pour progresser</div>
+          <div class="corr-conseil" style="font-size:13px;color:var(--dim);">${json.pistes}</div>
+        </div>` : ''}
+      </div>
+      <div class="corr-off"><strong>📖 CORRECTION OFFICIELLE</strong><br>${q.rep}</div>
+      <button class="btn-copy" onclick="copier(this)">📋 Copier</button>`;
+  } catch(e) {
+    panel.innerHTML = '<div class="erreur">Erreur: '+e.message+'</div>';
+  }
+  if (btn) btn.disabled = false;
+}
+
+async function copier(btn) { await navigator.clipboard.writeText(btn.closest('.corr-panel').innerText); btn.textContent = '✓ Copié !'; setTimeout(()=>btn.textContent='📋 Copier',1500); }
+function effacerCorrections(sIdx) { if(confirm('Effacer ?')){ delete STORE[SUJETS[sIdx].id]; localStorage.setItem(_STORE_KEY, JSON.stringify(STORE)); alert('Corrections effacées.'); } }
+function exportPDF(sIdx) { const s = SUJETS[sIdx]; const data = STORE[s.id]; if(!data?.length){ alert("Corrige au moins une question d'abord."); return; } let html = `<html><head><meta charset="UTF-8"><style>body{font-family:Arial;padding:2rem;}h1{color:#b87800;} .ia{background:#fffbf0;border-left:3px solid #f5a623;padding:8px;} .off{background:#fff0f0;border-left:3px solid #e74c3c;padding:8px;}</style></head><body><h1>DNB ${s.annee} — ${s.session}</h1>`; data.forEach(c=>{ html+=`<h2>${c.exo} — Q${c.qi}</h2><div class="ia">🤖 ${c.correctionIA}</div><div class="off">📖 ${c.correctionOff}</div>`; }); html+=`</body></html>`; const win=window.open('','_blank'); win.document.write(html); win.document.close(); win.print(); }
+
+buildLanding();
+console.log('✅ 10 sujets chargés');
+</script>
+</body>
+</html>
