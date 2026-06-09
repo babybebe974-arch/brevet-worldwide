@@ -481,17 +481,19 @@ async function corrigerDictee(sIdx, did) {
   if (!texteEleve) { alert('Ecris ta dictee dabord !'); return; }
 
   var panel = document.getElementById('panel_' + did);
-  var btn = panel.previousElementSibling;
+  var btn = document.querySelector('[onclick*="' + did + '"]');
   panel.classList.add('show');
-  panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction en cours...</div>';
+  panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction IA en cours...</div>';
   if (btn) btn.disabled = true;
 
   var system = 'Tu es correcteur expert DNB FRANCAIS DICTEE, exigeant et bienveillant.'
-    + ' Compare le texte officiel et le texte eleve avec precision absolue.'
-    + ' NOTATION sur 10 pts : -0.5 par faute, meme faute repetee = -0.5 une fois.'
-    + ' COURS SU : les regles de base sont-elles maitrisees ? (Oui/Partiel/Non)'
-    + ' Pour CHAQUE faute : forme incorrecte, forme correcte, regle precise.'
-    + ' CORRECTION MODELE : reecrire les 2-3 phrases les plus fautives corrigees.'
+    + ' Compare mot par mot le texte officiel et le texte eleve.'
+    + ' BAREME DICTEE : note sur 10 pts. -0.5 par faute. Meme faute repetee = -0.5 une seule fois. Note minimale = 0.'
+    + ' CATEGORIES de fautes : lexicale, accord sujet-verbe, accord nom-adjectif, participe passe, homophone, ponctuation.'
+    + ' Pour CHAQUE faute : cite la forme incorrecte, donne la forme correcte, enonce la regle precise.'
+    + ' COURS SU : evalue si les regles de base sont maitrisees (Oui/Partiel/Non).'
+    + ' CORRECTION MODELE : recris les 2-3 phrases les plus fautives dans leur version correcte.'
+    + ' PISTES : cite les 2-3 regles prioritaires a retravailler (ex: accord participe passe avec avoir).'
     + ' Reponds UNIQUEMENT en JSON valide sans markdown :'
     + ' {"note":X,"sur":10,"cours_su":"Oui/Partiel/Non","fautes":{"lexicale":N,"sujet_verbe":N,"nom_adj":N,"participe":N,"homophone":N,"ponctuation":N},"total_fautes":N,"liste_fautes":[{"incorrect":"...","correct":"...","regle":"..."}],"correction_modele":"phrases corrigees...","regles":"regles a retravailler","commentaire":"bilan general"}';
 
@@ -544,9 +546,9 @@ async function corriger(sIdx, qi, qid) {
   if (!ans) { alert('Ecris ta reponse dabord !'); return; }
 
   var panel = document.getElementById('panel_' + qid);
-  var btn = panel.previousElementSibling;
+  var btn = document.querySelector('[onclick*="' + qid + '"]');
   panel.classList.add('show');
-  panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction en cours...</div>';
+  panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction IA en cours...</div>';
   if (btn) btn.disabled = true;
 
   var pts = q.pts;
@@ -620,7 +622,7 @@ async function corrigerRedac(sIdx) {
   if (!ans) { alert('Ecris ta redaction dabord !'); return; }
 
   var panel = document.getElementById('panel_redac_' + sIdx);
-  var btn = panel.previousElementSibling;
+  var btn = document.querySelector('[onclick*="corrigerRedac(' + sIdx + ')"]');
   panel.classList.add('show');
   panel.innerHTML = '<div class="loading"><span class="dot"></span>Correction en cours...</div>';
   if (btn) btn.disabled = true;
