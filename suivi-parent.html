@@ -17,8 +17,8 @@ a.back{color:#5ecfb1;text-decoration:none;font-size:13px;}
 /* ONGLETS ELEVE */
 .eleve-tabs{display:flex;gap:8px;margin-bottom:1.5rem;}
 .etab{padding:10px 32px;border-radius:50px;border:2px solid #2a2a38;cursor:pointer;font-weight:700;font-size:14px;background:#111118;color:#9090a8;}
-.etab.w{border-color:#7eb8f5;color:#09090f;background:#7eb8f5;}
-.etab.n{border-color:#f59eb8;color:#09090f;background:#f59eb8;}
+.etab.e1{border-color:#7eb8f5;color:#09090f;background:#7eb8f5;}
+.etab.e2{border-color:#f59eb8;color:#09090f;background:#f59eb8;}
 
 /* ALERTE */
 .alerte{background:rgba(232,122,122,.15);border:2px solid #e87a7a;border-radius:10px;padding:14px 18px;margin-bottom:1.5rem;font-size:14px;color:#e87a7a;display:none;}
@@ -88,8 +88,20 @@ a.back{color:#5ecfb1;text-decoration:none;font-size:13px;}
 .btn-danger{border-color:rgba(232,122,122,.4);color:#e87a7a;}
 .btn-danger:hover{background:rgba(232,122,122,.1);}
 </style>
+<script src="monetization.js"></script>
+<script src="proxy-client.js"></script>
+<style>
+#trial-banner{width:100%;height:40px;background:#e8c87a;display:none;align-items:center;justify-content:center;gap:24px;position:sticky;top:0;z-index:9999;font-family:Arial,sans-serif;}
+#trial-banner .tb-left{font-size:13px;font-weight:700;color:#09090f;}
+#trial-banner .tb-btn{background:#09090f;color:#e8c87a;border:none;border-radius:6px;padding:5px 14px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;}
+#trial-banner .tb-btn:hover{opacity:.8;}
+</style>
 </head>
 <body>
+<div id="trial-banner">
+  <span class="tb-left">🆓 Essai gratuit — <span id="tbDays">J-2</span> jours restants</span>
+  <button class="tb-btn" onclick="window.location.href='https://wise.com/pay/r/UeBUFQoUY_B5FYE'">💳 Débloquer l'accès (29€/an)</button>
+</div>
 <div class="box">
 
   <div class="header">
@@ -101,8 +113,8 @@ a.back{color:#5ecfb1;text-decoration:none;font-size:13px;}
   </div>
 
   <div class="eleve-tabs">
-    <button class="etab w" id="tabW">🌊 Wassil</button>
-    <button class="etab" id="tabN">⚡ Nawal</button>
+    <button class="etab e1" id="tabW">👤 Élève 1</button>
+    <button class="etab" id="tabN">👤 Élève 2</button>
   </div>
 
   <div class="alerte" id="alerte"></div>
@@ -137,7 +149,7 @@ a.back{color:#5ecfb1;text-decoration:none;font-size:13px;}
   <div class="btn-row">
     <button class="btn" id="btnRefresh">🔄 Actualiser</button>
     <button class="btn" id="btnExport">📤 Exporter</button>
-    <button class="btn btn-danger" id="btnReset">⚠ Réinitialiser</button>
+    <button class="btn btn-danger" id="btnReset">🗑 Initialiser les données</button>
   </div>
 
 </div>
@@ -232,7 +244,7 @@ function renderAlerte() {
   var diff = Math.floor((Date.now()-new Date(all[0].date))/(1000*60*60*24));
   if(diff >= 2) {
     el.style.display='block';
-    el.innerHTML = '⚠️ <strong>'+(eleve==='wassil'?'Wassil':'Nawal')+'</strong> n\'a pas travaillé depuis <strong>'+diff+' jours</strong>. Dernière session : '+fmtDate(all[0].date);
+    el.innerHTML = '⚠️ <strong>'+(eleve==='eleve1'?'Élève 1':'Élève 2')+'</strong> n\'a pas travaillé depuis <strong>'+diff+' jours</strong>. Dernière session : '+fmtDate(all[0].date);
   } else {
     el.style.display='none';
   }
@@ -267,7 +279,7 @@ function renderNoteGlobale() {
     +'<div class="note-denom">/10</div>'
     +'</div>'
     +'<div class="note-infos">'
-    +'<div class="note-titre">Note globale de '+(eleve==='wassil'?'Wassil':'Nawal')+' — moyenne des 10 dernières sessions</div>'
+    +'<div class="note-titre">Note globale de '+(eleve==='eleve1'?'Élève 1':'Élève 2')+' — moyenne des 10 dernières sessions</div>'
     +'<div class="note-sub">'
     +'<strong>'+moyPct+'%</strong> de bonnes réponses en moyenne<br>'
     +'<strong>'+nb+'</strong> session'+(nb>1?'s':'')+' enregistrée'+(nb>1?'s':'')+' · Dernière : <strong>'+fmtDate(dern.date)+'</strong><br>'
@@ -408,8 +420,8 @@ function renderSessions() {
 // ─── Main ───
 function setEleve(e) {
   eleve = e;
-  document.getElementById('tabW').className='etab'+(e==='wassil'?' w':'');
-  document.getElementById('tabN').className='etab'+(e==='nawal'?' n':'');
+  document.getElementById('tabW').className='etab'+(e==='eleve1'?' e1':'');
+  document.getElementById('tabN').className='etab'+(e==='eleve2'?' e2':'');
   chapMatiere = 'francais';
   render();
 }
@@ -434,19 +446,40 @@ function exporterJSON() {
 }
 
 function reinitialiser() {
-  if(!confirm('Supprimer toutes les données de '+(eleve==='wassil'?'Wassil':'Nawal')+' ?')) return;
+  if(!confirm('Supprimer toutes les données de '+(eleve==='eleve1'?'Élève 1':'Élève 2')+' ?')) return;
   MATIERES.forEach(function(m){ localStorage.removeItem('suivi_sessions_'+m.id+'_'+eleve); });
   render();
 }
 
 window.onload = function() {
-  document.getElementById('tabW').addEventListener('click',function(){setEleve('wassil');});
-  document.getElementById('tabN').addEventListener('click',function(){setEleve('nawal');});
+  document.getElementById('tabW').addEventListener('click',function(){setEleve('eleve1');});
+  document.getElementById('tabN').addEventListener('click',function(){setEleve('eleve2');});
   document.getElementById('btnRefresh').addEventListener('click',render);
   document.getElementById('btnExport').addEventListener('click',exporterJSON);
   document.getElementById('btnReset').addEventListener('click',reinitialiser);
-  setEleve('wassil');
+  setEleve('eleve1');
 };
+</script>
+<script>
+(function(){
+  var KEY_TS='brevet_trial_start';
+  var KEY_OK='brevet_access';
+  var TRIAL=48*60*60*1000;
+  function tick(){
+    if(localStorage.getItem(KEY_OK)==='1')return;
+    var ts=localStorage.getItem(KEY_TS);
+    if(!ts){localStorage.setItem(KEY_TS,Date.now()+'');ts=Date.now();}
+    else ts=parseInt(ts);
+    var rem=TRIAL-(Date.now()-ts);
+    if(rem<=0)return;
+    var days=Math.ceil(rem/86400000);
+    var el=document.getElementById('tbDays');
+    if(el)el.textContent='J-'+days;
+    document.getElementById('trial-banner').style.display='flex';
+  }
+  tick();
+  setInterval(tick,60000);
+})();
 </script>
 </body>
 </html>

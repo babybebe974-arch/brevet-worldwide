@@ -47,8 +47,20 @@ h1 em{color:var(--blue);font-style:italic;}
 .toast.show{opacity:1;}
 textarea{font-family:'DM Sans',sans-serif;}
 </style>
+<script src="monetization.js"></script>
+<script src="proxy-client.js"></script>
+<style>
+#trial-banner{width:100%;height:40px;background:#e8c87a;display:none;align-items:center;justify-content:center;gap:24px;position:sticky;top:0;z-index:9999;font-family:Arial,sans-serif;}
+#trial-banner .tb-left{font-size:13px;font-weight:700;color:#09090f;}
+#trial-banner .tb-btn{background:#09090f;color:#e8c87a;border:none;border-radius:6px;padding:5px 14px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;}
+#trial-banner .tb-btn:hover{opacity:.8;}
+</style>
 </head>
 <body>
+<div id="trial-banner">
+  <span class="tb-left">🆓 Essai gratuit — <span id="tbDays">J-2</span> jours restants</span>
+  <button class="tb-btn" onclick="window.location.href='https://wise.com/pay/r/UeBUFQoUY_B5FYE'">💳 Débloquer l'accès (29€/an)</button>
+</div>
 <div id="home">
   <div class="badge">🎤 Brevet Blanc 2026 · Correcteur IA</div>
   <h1>Oral Blanc <em>· 3 + 7 questions</em></h1>
@@ -451,6 +463,27 @@ function resetChrono() { clearInterval(chronoInterval); running = false; chronoS
 function updateChrono() { const m = Math.floor(chronoSecs / 60); const s = chronoSecs % 60; document.getElementById('chrono').textContent = `${m}:${String(s).padStart(2, '0')}`; }
 function goHome() { document.getElementById('oral-page').style.display = 'none'; document.getElementById('home').style.display = 'flex'; if (chronoInterval) clearInterval(chronoInterval); running = false; }
 function showToast(msg, type) { const el = document.getElementById('toast'); el.textContent = msg; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 3000); }
+</script>
+<script>
+(function(){
+  var KEY_TS='brevet_trial_start';
+  var KEY_OK='brevet_access';
+  var TRIAL=48*60*60*1000;
+  function tick(){
+    if(localStorage.getItem(KEY_OK)==='1')return;
+    var ts=localStorage.getItem(KEY_TS);
+    if(!ts){localStorage.setItem(KEY_TS,Date.now()+'');ts=Date.now();}
+    else ts=parseInt(ts);
+    var rem=TRIAL-(Date.now()-ts);
+    if(rem<=0)return;
+    var days=Math.ceil(rem/86400000);
+    var el=document.getElementById('tbDays');
+    if(el)el.textContent='J-'+days;
+    document.getElementById('trial-banner').style.display='flex';
+  }
+  tick();
+  setInterval(tick,60000);
+})();
 </script>
 </body>
 </html>

@@ -97,8 +97,20 @@ textarea::placeholder{color:var(--muted);}
 .btn-pdf{background:var(--s2);border:1px solid var(--gold);color:var(--gold);font-family:'Syne',sans-serif;font-weight:700;font-size:11px;padding:7px 14px;border-radius:6px;cursor:pointer;}
 .btn-pdf:hover{background:rgba(232,200,122,.1);}
 </style>
+<script src="monetization.js"></script>
+<script src="proxy-client.js"></script>
+<style>
+#trial-banner{width:100%;height:40px;background:#e8c87a;display:none;align-items:center;justify-content:center;gap:24px;position:sticky;top:0;z-index:9999;font-family:Arial,sans-serif;}
+#trial-banner .tb-left{font-size:13px;font-weight:700;color:#09090f;}
+#trial-banner .tb-btn{background:#09090f;color:#e8c87a;border:none;border-radius:6px;padding:5px 14px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;}
+#trial-banner .tb-btn:hover{opacity:.8;}
+</style>
 </head>
 <body>
+<div id="trial-banner">
+  <span class="tb-left">🆓 Essai gratuit — <span id="tbDays">J-2</span> jours restants</span>
+  <button class="tb-btn" onclick="window.location.href='https://wise.com/pay/r/UeBUFQoUY_B5FYE'">💳 Débloquer l'accès (29€/an)</button>
+</div>
 
 <div class="landing" id="landing">
   <div class="eyebrow">Brevet 2026 · DNB</div>
@@ -344,10 +356,60 @@ RÉPONSE DE L'ÉLÈVE : ${ans}
 
 async function copier(btn) { await navigator.clipboard.writeText(btn.closest('.corr-panel').innerText); btn.textContent = '✓ Copié !'; setTimeout(()=>btn.textContent='📋 Copier',1500); }
 function effacerCorrections(sIdx) { if(confirm('Effacer ?')){ delete STORE[SUJETS[sIdx].id]; localStorage.setItem(_STORE_KEY, JSON.stringify(STORE)); alert('Corrections effacées.'); } }
-function exportPDF(sIdx) { const s = SUJETS[sIdx]; const data = STORE[s.id]; if(!data?.length){ alert("Corrige au moins une question d'abord."); return; } let html = `<html><head><meta charset="UTF-8"><style>body{font-family:Arial;padding:2rem;}h1{color:#b87800;} .ia{background:#fffbf0;border-left:3px solid #f5a623;padding:8px;} .off{background:#fff0f0;border-left:3px solid #e74c3c;padding:8px;}</style></head><body><h1>DNB ${s.annee} — ${s.session}</h1>`; data.forEach(c=>{ html+=`<h2>${c.exo} — Q${c.qi}</h2><div class="ia">🤖 ${c.correctionIA}</div><div class="off">📖 ${c.correctionOff}</div>`; }); html+=`</body></html>`; const win=window.open('','_blank'); win.document.write(html); win.document.close(); win.print(); }
+function exportPDF(sIdx) { const s = SUJETS[sIdx]; const data = STORE[s.id]; if(!data?.length){ alert("Corrige au moins une question d'abord."); return; } let html = `<html><head><meta charset="UTF-8"><style>body{font-family:Arial;padding:2rem;}h1{color:#b87800;} .ia{background:#fffbf0;border-left:3px solid #f5a623;padding:8px;} .off{background:#fff0f0;border-left:3px solid #e74c3c;padding:8px;}</style><script src="monetization.js"></script>
+<script src="proxy-client.js"></script>
+<style>
+#trial-banner{width:100%;height:40px;background:#e8c87a;display:none;align-items:center;justify-content:center;gap:24px;position:sticky;top:0;z-index:9999;font-family:Arial,sans-serif;}
+#trial-banner .tb-left{font-size:13px;font-weight:700;color:#09090f;}
+#trial-banner .tb-btn{background:#09090f;color:#e8c87a;border:none;border-radius:6px;padding:5px 14px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;}
+#trial-banner .tb-btn:hover{opacity:.8;}
+</style>
+</head><body><h1>DNB ${s.annee} — ${s.session}</h1>`; data.forEach(c=>{ html+=`<h2>${c.exo} — Q${c.qi}</h2><div class="ia">🤖 ${c.correctionIA}</div><div class="off">📖 ${c.correctionOff}</div>`; }); html+=`<script>
+(function(){
+  var KEY_TS='brevet_trial_start';
+  var KEY_OK='brevet_access';
+  var TRIAL=48*60*60*1000;
+  function tick(){
+    if(localStorage.getItem(KEY_OK)==='1')return;
+    var ts=localStorage.getItem(KEY_TS);
+    if(!ts){localStorage.setItem(KEY_TS,Date.now()+'');ts=Date.now();}
+    else ts=parseInt(ts);
+    var rem=TRIAL-(Date.now()-ts);
+    if(rem<=0)return;
+    var days=Math.ceil(rem/86400000);
+    var el=document.getElementById('tbDays');
+    if(el)el.textContent='J-'+days;
+    document.getElementById('trial-banner').style.display='flex';
+  }
+  tick();
+  setInterval(tick,60000);
+})();
+</script>
+</body></html>`; const win=window.open('','_blank'); win.document.write(html); win.document.close(); win.print(); }
 
 buildLanding();
 console.log('✅ 10 sujets chargés');
+</script>
+<script>
+(function(){
+  var KEY_TS='brevet_trial_start';
+  var KEY_OK='brevet_access';
+  var TRIAL=48*60*60*1000;
+  function tick(){
+    if(localStorage.getItem(KEY_OK)==='1')return;
+    var ts=localStorage.getItem(KEY_TS);
+    if(!ts){localStorage.setItem(KEY_TS,Date.now()+'');ts=Date.now();}
+    else ts=parseInt(ts);
+    var rem=TRIAL-(Date.now()-ts);
+    if(rem<=0)return;
+    var days=Math.ceil(rem/86400000);
+    var el=document.getElementById('tbDays');
+    if(el)el.textContent='J-'+days;
+    document.getElementById('trial-banner').style.display='flex';
+  }
+  tick();
+  setInterval(tick,60000);
+})();
 </script>
 </body>
 </html>

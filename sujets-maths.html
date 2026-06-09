@@ -75,8 +75,20 @@ a.back{color:#5ecfb1;text-decoration:none;font-size:13px;}
 .pdf-content .a-pdf{color:#5ecfb1;font-size:12px;margin-top:4px;}
 .btn-close-pdf{margin-top:1.5rem;padding:8px 20px;border-radius:8px;border:1px solid #2a2a38;background:#1a1a24;color:#9090a8;cursor:pointer;}
 </style>
+<script src="monetization.js"></script>
+<script src="proxy-client.js"></script>
+<style>
+#trial-banner{width:100%;height:40px;background:#e8c87a;display:none;align-items:center;justify-content:center;gap:24px;position:sticky;top:0;z-index:9999;font-family:Arial,sans-serif;}
+#trial-banner .tb-left{font-size:13px;font-weight:700;color:#09090f;}
+#trial-banner .tb-btn{background:#09090f;color:#e8c87a;border:none;border-radius:6px;padding:5px 14px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;}
+#trial-banner .tb-btn:hover{opacity:.8;}
+</style>
 </head>
 <body>
+<div id="trial-banner">
+  <span class="tb-left">🆓 Essai gratuit — <span id="tbDays">J-2</span> jours restants</span>
+  <button class="tb-btn" onclick="window.location.href='https://wise.com/pay/r/UeBUFQoUY_B5FYE'">💳 Débloquer l'accès (29€/an)</button>
+</div>
 
 <!-- LANDING -->
 <div id="landing">
@@ -983,7 +995,15 @@ function exportPDF(sIdx) {
     + '.rep-pistes{background:#fff8e6;border:1px solid #f5a623;border-radius:6px;padding:8px;margin:6px 0;}'
     + '.rep-off{background:#e6f9ee;border:1px solid #34c76b;border-radius:6px;padding:8px;margin:6px 0;font-size:12px;}'
     + '.score{font-size:18px;font-weight:bold;color:#b87800;margin:16px 0;}'
-    + '</style></head><body>'
+    + '</style><script src="monetization.js"></script>
+<script src="proxy-client.js"></script>
+<style>
+#trial-banner{width:100%;height:40px;background:#e8c87a;display:none;align-items:center;justify-content:center;gap:24px;position:sticky;top:0;z-index:9999;font-family:Arial,sans-serif;}
+#trial-banner .tb-left{font-size:13px;font-weight:700;color:#09090f;}
+#trial-banner .tb-btn{background:#09090f;color:#e8c87a;border:none;border-radius:6px;padding:5px 14px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;}
+#trial-banner .tb-btn:hover{opacity:.8;}
+</style>
+</head><body>'
     + '<h1>📐 Corrections Maths — ' + s.annee + ' ' + s.session + '</h1>'
     + '<div class="score">Score : ' + totalObt.toFixed(1) + ' / ' + totalMax + '</div>';
   data.forEach(function(c) {
@@ -996,7 +1016,28 @@ function exportPDF(sIdx) {
       + (c.pistes   ? '<div class="rep-pistes">🎯 <strong>Pistes :</strong> ' + c.pistes + '</div>' : '')
       + '<div class="rep-off">📖 <strong>Correction officielle :</strong><br>' + c.correctionOff + '</div>';
   });
-  html += '</body></html>';
+  html += '<script>
+(function(){
+  var KEY_TS='brevet_trial_start';
+  var KEY_OK='brevet_access';
+  var TRIAL=48*60*60*1000;
+  function tick(){
+    if(localStorage.getItem(KEY_OK)==='1')return;
+    var ts=localStorage.getItem(KEY_TS);
+    if(!ts){localStorage.setItem(KEY_TS,Date.now()+'');ts=Date.now();}
+    else ts=parseInt(ts);
+    var rem=TRIAL-(Date.now()-ts);
+    if(rem<=0)return;
+    var days=Math.ceil(rem/86400000);
+    var el=document.getElementById('tbDays');
+    if(el)el.textContent='J-'+days;
+    document.getElementById('trial-banner').style.display='flex';
+  }
+  tick();
+  setInterval(tick,60000);
+})();
+</script>
+</body></html>';
   var blob = new Blob([html], {type:'text/html'});
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a');
@@ -1009,6 +1050,27 @@ function exportPDF(sIdx) {
 }
 
 window.onload = buildGrid;
+</script>
+<script>
+(function(){
+  var KEY_TS='brevet_trial_start';
+  var KEY_OK='brevet_access';
+  var TRIAL=48*60*60*1000;
+  function tick(){
+    if(localStorage.getItem(KEY_OK)==='1')return;
+    var ts=localStorage.getItem(KEY_TS);
+    if(!ts){localStorage.setItem(KEY_TS,Date.now()+'');ts=Date.now();}
+    else ts=parseInt(ts);
+    var rem=TRIAL-(Date.now()-ts);
+    if(rem<=0)return;
+    var days=Math.ceil(rem/86400000);
+    var el=document.getElementById('tbDays');
+    if(el)el.textContent='J-'+days;
+    document.getElementById('trial-banner').style.display='flex';
+  }
+  tick();
+  setInterval(tick,60000);
+})();
 </script>
 </body>
 </html>
