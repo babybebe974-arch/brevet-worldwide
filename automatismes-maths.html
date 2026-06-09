@@ -17,11 +17,12 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
 .page-title span{color:var(--acc);}
 .eleve-bar{display:flex;gap:8px;background:var(--s2);border-radius:50px;padding:4px;width:fit-content;}
 .eleve-btn{padding:7px 22px;border-radius:50px;border:none;cursor:pointer;font-family:'Syne',sans-serif;font-weight:700;font-size:13px;background:transparent;color:var(--dim);}
-.eleve-btn.e1{background:var(--blue-w);color:#09090f;}
-.eleve-btn.e2{background:var(--pink-n);color:#09090f;}
+.eleve-btn.aw{background:var(--blue-w);color:#09090f;}
+.eleve-btn.an{background:var(--pink-n);color:#09090f;}
 .container{max-width:960px;margin:0 auto;padding:24px;}
 .phase{display:none;}.phase.active{display:block;}
 
+/* WARNING SPACED LEARNING */
 .warning-box{background:rgba(232,200,122,.1);border-left:4px solid var(--gold);border-radius:8px;padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--gold);}
 .warning-box strong{color:var(--gold);font-family:'Syne',sans-serif;}
 .warning-box p{margin:4px 0;}
@@ -85,6 +86,9 @@ textarea.rep::placeholder{color:var(--muted);}
 .faibles-box{background:var(--s2);border:1px solid rgba(232,66,74,.3);border-radius:8px;padding:12px;margin:12px 0;text-align:left;}
 .faibles-box h4{color:var(--acc2);font-size:12px;font-family:'Syne',sans-serif;margin-bottom:6px;}
 .faibles-box li{font-size:12px;color:var(--dim);padding:2px 0;}
+.part-tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap;}
+.ptab{padding:5px 14px;border-radius:20px;border:1px solid var(--br);background:var(--s2);color:var(--dim);font-size:11px;cursor:pointer;font-family:'Syne',sans-serif;}
+.ptab.active{border-color:var(--acc);color:var(--acc);}
 </style>
 </head>
 <body>
@@ -94,18 +98,19 @@ textarea.rep::placeholder{color:var(--muted);}
     <div class="page-title"><span>Automatismes</span> Mathématiques</div>
     <span style="font-size:1.5rem">📐</span>
     <div class="eleve-bar">
-      <button class="eleve-btn e1" id="btn1">👤 Élève 1</button>
-      <button class="eleve-btn" id="btn2">👤 Élève 2</button>
+      <button class="eleve-btn aw" id="btnW">🌊 Wassil</button>
+      <button class="eleve-btn" id="btnN">⚡ Nawal</button>
     </div>
   </div>
 </div>
 <div class="container">
   <div class="phase active" id="phaseSelect">
     
+    <!-- ⚠️ WARNING SPACED LEARNING ⚠️ -->
     <div class="warning-box" id="warningBox">
       <span class="close-warning" onclick="document.getElementById('warningBox').style.display='none';">&times;</span>
       <strong>🧠 Mode Spaced Learning (révision circulaire)</strong>
-      <p>✅ Pour activer la <strong>répétition espacée</strong> :</p>
+      <p>✅ Pour activer la <strong>répétition espacée</strong> (révision des leçons anciennes + nouvelles) :</p>
       <p>👉 <strong>Sélectionnez TOUS les chapitres que vous avez déjà vus depuis le début de l'année</strong> (même les anciens).</p>
       <p>📌 L'ordinateur piochera automatiquement : <strong>20 cartes des chapitres choisis + 10 cartes des erreurs + 10 cartes d'autres chapitres</strong>.</p>
       <p>💡 <strong>Plus vous sélectionnez de chapitres, plus la révision est efficace !</strong></p>
@@ -161,7 +166,7 @@ textarea.rep::placeholder{color:var(--muted);}
   </div>
 </div>
 <script>
-const CHAPITRES_MA = {
+var CHAPITRES_MA = {
   1:{titre:"Nombres entiers et décimaux",cartes:[{q:"Nombre premier ?",r:"Exactement 2 diviseurs : 1 et lui-même."},{q:"Divisibilité par 2",r:"Dernier chiffre : 0,2,4,6,8"},{q:"Divisibilité par 3",r:"Somme des chiffres divisible par 3"},{q:"Divisibilité par 9",r:"Somme des chiffres divisible par 9"},{q:"Divisibilité par 5",r:"Dernier chiffre : 0 ou 5"},{q:"PGCD ?",r:"Plus Grand Commun Diviseur"},{q:"PPCM ?",r:"Plus Petit Commun Multiple"},{q:"60 en facteurs premiers",r:"2² x 3 x 5"},{q:"72 en facteurs premiers",r:"2³ x 3²"},{q:"Nombre rationnel ?",r:"S'écrit p/q avec q différent de 0"}]},
   2:{titre:"Nombres relatifs",cartes:[{q:"(-) x (-) = ?",r:"(+)"},{q:"(+) x (-) = ?",r:"(-)"},{q:"(-7) + (+3) = ?",r:"-4"},{q:"(-5) - (-3) = ?",r:"-2"},{q:"(-2)³ = ?",r:"-8"},{q:"Valeur absolue de -7",r:"7"},{q:"Comparer -3 et -5",r:"-3 > -5"},{q:"(-4) x (+3) = ?",r:"-12"},{q:"(-12) ÷ (-4) = ?",r:"+3"},{q:"(-3)+(-5) = ?",r:"-8"}]},
   3:{titre:"Fractions",cartes:[{q:"1/3 + 1/4 = ?",r:"7/12"},{q:"2/5 + 1/3 = ?",r:"11/15"},{q:"2/3 x 3/4 = ?",r:"1/2"},{q:"2/3 ÷ 4/5 = ?",r:"5/6"},{q:"Simplifier 18/24",r:"3/4"},{q:"Fraction irréductible",r:"PGCD(num, dénom) = 1"},{q:"0,75 en fraction",r:"3/4"},{q:"1/8 en décimal",r:"0,125"},{q:"Comparer 3/4 et 5/7",r:"3/4 > 5/7"},{q:"Même dénominateur : additionner",r:"Additionner les numérateurs"}]},
@@ -171,110 +176,134 @@ const CHAPITRES_MA = {
   7:{titre:"Proportionnalité",cartes:[{q:"30% de 80",r:"24"},{q:"+15% de 200",r:"230"},{q:"-20% de 150",r:"120"},{q:"Échelle 1/500 : 8cm -> réel",r:"40 m"},{q:"Taux 80 à 100",r:"+25%"},{q:"Taux 100 à 80",r:"-20%"},{q:"2 hausses 10%",r:"+21%"},{q:"HT=200, TVA 20% -> TTC",r:"240"},{q:"Coeff. pour +35%",r:"1,35"},{q:"Coeff. pour -25%",r:"0,75"}]},
   8:{titre:"Statistiques",cartes:[{q:"Moy. de 12,15,18,9,6",r:"12"},{q:"Médiane de 3,7,9,12,15",r:"9"},{q:"Médiane de 2,4,6,8",r:"5"},{q:"Étendue de 3,7,9,12,15",r:"12"},{q:"Moyenne pondérée",r:"Somme(val x eff) / eff total"},{q:"Diagramme en bâtons",r:"Données discrètes"},{q:"Histogramme",r:"Données continues"},{q:"Fréquence relative",r:"Effectif / effectif total"},{q:"Q1 ?",r:"25% des données inférieures"},{q:"Q3 ?",r:"75% des données inférieures"}]},
   9:{titre:"Probabilités",cartes:[{q:"P(A) = ?",r:"cas favorables / cas totaux"},{q:"P(4) avec un dé",r:"1/6"},{q:"P(pair) avec un dé",r:"1/2"},{q:"Événement certain",r:"P=1"},{q:"Événement impossible",r:"P=0"},{q:"P(A') = ?",r:"1-P(A)"},{q:"P(A ou B) incompatibles",r:"P(A)+P(B)"},{q:"P(A et B) indépendants",r:"P(A)xP(B)"},{q:"Règle de l'arbre",r:"Multiplier branche, additionner branches"},{q:"Tirage avec remise",r:"Probabilité constante"}]},
-  10:{titre:"Fonctions : généralités",cartes:[{q:"f(3) pour f(x)=2x+1",r:"7"},{q:"f(-2) pour f(x)=x²-3",r:"1"},{q:"Antécédent de 5 par f(x)=2x+1",r:"x=2"},{q:"Image de x par f",r:"f(x)"},{q:"Fonction croissante",r:"f augmente quand x augmente"},{q:"Fonction décroissante",r:"f diminue quand x augmente"},{q:"Maximum",r:"Valeur la plus haute"},{q:"Minimum",r:"Valeur la plus basse"},{q:"Domaine de définition",r:"Ensemble des x où f(x) existe"},{q:"Tableau de valeurs",r:"x en haut, f(x) en bas"}]}
+  10:{titre:"Fonctions : généralités",cartes:[{q:"f(3) pour f(x)=2x+1",r:"7"},{q:"f(-2) pour f(x)=x²-3",r:"1"},{q:"Antécédent de 5 par f(x)=2x+1",r:"x=2"},{q:"Image de x par f",r:"f(x)"},{q:"Fonction croissante",r:"f augmente quand x augmente"},{q:"Fonction décroissante",r:"f diminue quand x augmente"},{q:"Maximum",r:"Valeur la plus haute"},{q:"Minimum",r:"Valeur la plus basse"},{q:"Domaine de définition",r:"Ensemble des x où f(x) existe"},{q:"Tableau de valeurs",r:"x en haut, f(x) en bas"}]},
+  11:{titre:"Fonctions linéaires et affines",cartes:[{q:"f(x)=ax : droite ?",r:"Par l'origine"},{q:"f(x)=ax+b",r:"a=pente, b=ordonnée origine"},{q:"Coeff directeur a",r:"(y2-y1)/(x2-x1)"},{q:"Ordonnée origine b",r:"f(0)=b"},{q:"Droites parallèles",r:"Même a, b différent"},{q:"Intersection 2 droites",r:"Résoudre f(x)=g(x)"},{q:"Droite par (0;3) et (2;7)",r:"f(x)=2x+3"},{q:"Droite horizontale",r:"f(x)=b"},{q:"Équation réduite",r:"y=ax+b"},{q:"Droites perpendiculaires",r:"Produit des a = -1"}]},
+  12:{titre:"Théorème de Pythagore",cartes:[{q:"Pythagore",r:"hyp²=a²+b²"},{q:"Réciproque Pythagore",r:"Si hyp²=a²+b² alors rectangle"},{q:"3,4,5 rectangle ?",r:"Oui : 25=9+16"},{q:"Hyp si a=6 b=8",r:"10"},{q:"Côté si hyp=13 a=5",r:"12"},{q:"Contrapposée",r:"Si différent alors non rectangle"},{q:"Diagonale carré côté a",r:"a x racine(2)"},{q:"Hauteur éqlatéral côté a",r:"a x racine(3) / 2"},{q:"Erreur classique",r:"Hypoténuse = PLUS GRAND côté"},{q:"Aire triangle rectangle a=6 b=8",r:"24"}]},
+  13:{titre:"Théorème de Thalès",cartes:[{q:"Thalès D//BC",r:"AM/AB=AN/AC=MN/BC"},{q:"Réciproque",r:"Rapports égaux => parallèles"},{q:"Théorème des milieux",r:"DE//BC et DE=BC/2"},{q:"Homothétie k : longueurs",r:"Multipliées par |k|"},{q:"Homothétie k : aires",r:"Multipliées par k²"},{q:"Agrandissement",r:"k>1"},{q:"Réduction",r:"0<k<1"},{q:"Condition réciproque",r:"Points alignés + rapports égaux"},{q:"Configuration Thalès",r:"2 sécantes + 2 parallèles"},{q:"Calculer longueur inconnue",r:"Mettre en place le rapport"}]},
+  14:{titre:"Trigonométrie",cartes:[{q:"cos = ?",r:"adjacent / hypoténuse"},{q:"sin = ?",r:"opposé / hypoténuse"},{q:"tan = ?",r:"opposé / adjacent"},{q:"SOH CAH TOA",r:"Sin=Opp/Hyp, Cos=Adj/Hyp, Tan=Opp/Adj"},{q:"cos(30°)",r:"racine(3)/2"},{q:"sin(30°)",r:"0,5"},{q:"cos(45°)",r:"racine(2)/2"},{q:"sin(60°)",r:"racine(3)/2"},{q:"tan(45°)",r:"1"},{q:"sin²A+cos²A",r:"1"}]},
+  15:{titre:"Géométrie : cercle",cartes:[{q:"Circonférence",r:"2πr"},{q:"Aire disque",r:"πr²"},{q:"Angle inscrit demi-cercle",r:"90°"},{q:"Angle centre vs inscrit",r:"Centre = 2 x inscrit"},{q:"Tangente cercle",r:"Perpendiculaire au rayon"},{q:"Diamètre",r:"2r"},{q:"Secteur 90° r=6 : aire",r:"9π"},{q:"Arc 60° r=10 : longueur",r:"10π/3"},{q:"Angles alternes-internes",r:"Égaux si droites parallèles"},{q:"Angles correspondants",r:"Égaux si droites parallèles"}]},
+  16:{titre:"Solides et volumes",cartes:[{q:"Volume pavé",r:"LxlxH"},{q:"Volume cube a",r:"a³"},{q:"Volume cylindre",r:"πr²h"},{q:"Volume cône",r:"(1/3)πr²h"},{q:"Volume sphère",r:"(4/3)πr³"},{q:"Volume pyramide",r:"(1/3)xAirexh"},{q:"Aire lat. cylindre",r:"2πrh"},{q:"1 litre = ?",r:"1 dm³"},{q:"1 m³ = ?",r:"1000 L"},{q:"Patron cylindre",r:"2 disques + 1 rectangle"}]},
+  17:{titre:"Transformations géométriques",cartes:[{q:"Translation",r:"Glissement, même forme"},{q:"Symétrie axiale",r:"Reflet par rapport à une droite"},{q:"Symétrie centrale",r:"Rotation 180°"},{q:"Conservation isométrie",r:"Distances, angles, aires"},{q:"Homothétie",r:"Centre + rapport k"},{q:"Homothétie k=-1",r:"Symétrie centrale"},{q:"Vecteur translation",r:"Direction, sens, longueur"},{q:"Image symétrie axiale",r:"Même distance, autre côté"},{q:"2 translations successives",r:"Une seule translation"},{q:"Rotation",r:"Même forme, angle donné"}]},
+  18:{titre:"Repérage et vecteurs",cartes:[{q:"Milieu de AB",r:"((xA+xB)/2;(yA+yB)/2)"},{q:"Distance AB",r:"racine((x2-x1)²+(y2-y1)²)"},{q:"Vecteur AB",r:"(xB-xA;yB-yA)"},{q:"Norme (a;b)",r:"racine(a²+b²)"},{q:"Vecteurs égaux",r:"Même direction, sens, norme"},{q:"Vecteurs opposés",r:"Même norme, sens contraire"},{q:"Vecteur nul",r:"(0;0)"},{q:"(a;b)+(c;d)",r:"(a+c;b+d)"},{q:"Colinéarité (a;b)(c;d)",r:"ad-bc=0"},{q:"Vect. dir. y=ax+b",r:"(1;a)"}]},
+  19:{titre:"Systèmes d'équations",cartes:[{q:"Substitution",r:"Exprimer une inconnue, substituer"},{q:"Combinaison",r:"Additionner/soustraire"},{q:"x+y=5 et x-y=1",r:"x=3, y=2"},{q:"2x+y=7 et x-y=2",r:"x=3, y=1"},{q:"Sans solution",r:"Droites parallèles"},{q:"Infinité solutions",r:"Droites confondues"},{q:"Interprétation graphique",r:"Point d'intersection"},{q:"x+y=10 et 2x+y=15",r:"x=5, y=5"},{q:"3x-y=4 et x+2y=6",r:"x=2, y=2"},{q:"Solution unique",r:"Droites sécantes"}]},
+  20:{titre:"Algorithmique et Scratch",cartes:[{q:"Algorithme ?",r:"Suite finie d'instructions"},{q:"SI condition ALORS",r:"Structure conditionnelle"},{q:"Boucle Pour",r:"Répétitions connues"},{q:"Boucle Tant que",r:"Répétitions inconnues"},{q:"Variable",r:"Emplacement mémoire"},{q:"Affectation",r:"x = valeur"},{q:"Scratch : avancer 10 pas",r:"Déplace le lutin"},{q:"Scratch : centre écran",r:"(0;0)"},{q:"Scratch : carré",r:"Répéter 4 : avancer + tourner 90°"},{q:"Scratch : tourner 90°",r:"Pivote sens horaire"}]},
+  21:{titre:"Calcul numérique",cartes:[{q:"Priorité des opérations",r:"Parenthèses, puissances, x÷, +−"},{q:"a(b+c)",r:"ab+ac"},{q:"15% de 60",r:"9"},{q:"2/3 de 90",r:"60"},{q:"13² = ?",r:"169"},{q:"15² = ?",r:"225"},{q:"Racine(144)",r:"12"},{q:"Racine(225)",r:"15"},{q:"0,1² = ?",r:"0,01"},{q:"1,5² = ?",r:"2,25"}]},
+  22:{titre:"Grandeurs et mesures",cartes:[{q:"3,5 km en m",r:"3500"},{q:"2h30 en min",r:"150"},{q:"Vitesse = ?",r:"d/t"},{q:"72 km/h en m/s",r:"20"},{q:"15 m/s en km/h",r:"54"},{q:"Masse volumique",r:"m/V"},{q:"1 litre = ?",r:"1 dm³"},{q:"1 m³ = ?",r:"1000 L"},{q:"5 cm² en mm²",r:"500"},{q:"2 m² en cm²",r:"20000"}]},
+  23:{titre:"Droites remarquables",cartes:[{q:"Médiane",r:"Sommet -> milieu côté, centre G"},{q:"Médiatrice",r:"Perp. milieu côté, centre cercle"},{q:"Hauteur",r:"Perp. sommet, orthocentre H"},{q:"Centre de gravité G",r:"2/3 de chaque médiane"},{q:"Cercle circonscrit",r:"Passe par les 3 sommets"},{q:"Cercle inscrit",r:"Tangent aux 3 côtés"},{q:"Orthocentre triangle rect.",r:"Au sommet de l'angle droit"},{q:"Bissectrice",r:"Coupe l'angle en 2 égaux"},{q:"Triangle éqlatéral G,H,O",r:"Confondus"},{q:"Somme angles triangle",r:"180°"}]},
+  24:{titre:"Inéquations et intervalles",cartes:[{q:"2x-3>7",r:"x>5"},{q:"-3x>=9",r:"x<=-3"},{q:"[2;5] = ?",r:"2<=x<=5"},{q:"]2;5[ = ?",r:"2<x<5"},{q:"3x+1<=7",r:"x<=2"},{q:"-x+4<10",r:"x>-6"},{q:"[1;3]∪[5;7]",r:"x dans [1;3] ou [5;7]"},{q:"[1;5]∩[3;8]",r:"[3;5]"},{q:"|x|<3",r:"-3<x<3"},{q:"|x-2|<=1",r:"1<=x<=3"}]},
+  25:{titre:"Suites numériques",cartes:[{q:"Suite arithmétique",r:"+ raison r"},{q:"Suite géométrique",r:"x raison q"},{q:"Terme général arith.",r:"u0 + n x r"},{q:"Terme général géom.",r:"u0 x q^n"},{q:"Reconnaître arith.",r:"Différence constante"},{q:"Reconnaître géom.",r:"Rapport constant"},{q:"1,4,9,16,25...",r:"Carrés des entiers"},{q:"Suite arith. croissante",r:"r>0"},{q:"Suite arith. décroissante",r:"r<0"},{q:"Suite géom. q>1 u0>0",r:"Croissante"}]},
+  26:{titre:"Révision générale DNB",cartes:[{q:"Problème géométrie : 1er réflexe",r:"Faire un schéma"},{q:"Vérifier un résultat",r:"Ordre de grandeur + substituer"},{q:"-10% puis +10%",r:"Pas le même : 0,9x1,1=0,99"},{q:"Erreur Pythagore",r:"Hypoténuse = plus grand côté"},{q:"Erreur fractions",r:"On simplifie x÷, pas +−"},{q:"Rédiger démo.",r:"Hypo, théorème, calcul, concl."},{q:"Arrondir 3,4567 au centième",r:"3,46"},{q:"Valeur exacte",r:"Ex: 2 racine(3)"},{q:"Unité aire",r:"cm², m²..."},{q:"Unité volume",r:"cm³, m³..."}]}
 };
 </script>
 <script>
-let eleve = 'eleve1';
+
+let eleve = 'wassil';
 let session = [], idx = 0;
 let score = { ok:0, total:0, chTaux:{} };
 let timerInt = null, tps = 45*60;
 
 const DATA = CHAPITRES_MA;
-const kProg = () => 'auto_ma_prog_' + eleve;
-const kRat = () => 'auto_ma_rat_' + eleve;
+const kProg  = () => 'auto_ma_prog_' + eleve;
+const kRat   = () => 'auto_ma_rat_' + eleve;
 const kSuivi = () => 'suivi_sessions_maths_' + eleve;
 
-function getProg() { return JSON.parse(localStorage.getItem(kProg()) || '{}'); }
-function getRat() { return JSON.parse(localStorage.getItem(kRat()) || '{}'); }
+function getProg()  { return JSON.parse(localStorage.getItem(kProg())  || '{}'); }
+function getRat()   { return JSON.parse(localStorage.getItem(kRat())   || '{}'); }
 function getScore(ch, q) { return getProg()[ch+'_'+q.substring(0,28)]?.score || 0; }
 function setScore(ch, q, v) {
   const p = getProg();
-  p[ch+'_'+q.substring(0,28)] = { score: Math.min(3, Math.max(0, v)), date: new Date().toISOString() };
+  p[ch+'_'+q.substring(0,28)] = { score:Math.min(3,Math.max(0,v)), date:new Date().toISOString() };
   localStorage.setItem(kProg(), JSON.stringify(p));
 }
-
 function getFaibles() {
-  const sessions = JSON.parse(localStorage.getItem(kSuivi()) || '[]').slice(0,5);
+  const sessions = JSON.parse(localStorage.getItem(kSuivi())||'[]').slice(0,5);
   const taux = {};
   sessions.forEach(s => {
-    if (s.chapitresTaux) Object.entries(s.chapitresTaux).forEach(([ch, t]) => {
-      if (!taux[ch]) taux[ch] = [];
-      taux[ch].push(t);
+    if (s.chapitresTaux) Object.entries(s.chapitresTaux).forEach(([ch,t]) => {
+      if (!taux[ch]) taux[ch] = []; taux[ch].push(t);
     });
   });
   return Object.entries(taux).filter(([,v]) => v.reduce((a,b)=>a+b,0)/v.length < 60).map(([ch]) => parseInt(ch));
 }
-
 function setEleve(e) {
   eleve = e;
-  document.getElementById('btn1').className = 'eleve-btn' + (e === 'eleve1' ? ' e1' : '');
-  document.getElementById('btn2').className = 'eleve-btn' + (e === 'eleve2' ? ' e2' : '');
-  buildGrid();
-  updateStats();
+  document.getElementById('btnW').className = 'eleve-btn' + (e==='wassil'?' aw':'');
+  document.getElementById('btnN').className = 'eleve-btn' + (e==='nawal'?' an':'');
+  buildGrid(); updateStats();
 }
-
 function buildGrid() {
   const faibles = getFaibles();
-  const g = document.getElementById('chapGrid');
-  g.innerHTML = '';
+  const g = document.getElementById('chapGrid'); g.innerHTML = '';
   Object.entries(DATA).forEach(([n, ch]) => {
     const isFaible = faibles.includes(parseInt(n));
     const d = document.createElement('div');
-    d.className = 'ch-item' + (isFaible ? ' faible' : '');
-    d.id = 'ci' + n;
+    d.className = 'ch-item' + (isFaible?' faible':'');
+    d.id = 'ci'+n;
     d.onclick = () => { d.classList.toggle('selected'); updateStats(); };
-    d.innerHTML = '<span class="ch-num">'+n+'</span><span style="font-size:12px">'+ch.titre+'</span>' + (isFaible ? '<span class="ch-warn">⚠</span>' : '');
+    d.innerHTML = '<span class="ch-num">'+n+'</span><span style="font-size:12px">'+ch.titre+'</span>'+(isFaible?'<span class="ch-warn">⚠</span>':'');
     g.appendChild(d);
   });
 }
 
-function getSel() { return Array.from(document.querySelectorAll('#chapGrid .ch-item.selected')).map(el => parseInt(el.id.replace('ci', ''))); }
-function selectAll(v) { Object.keys(DATA).forEach(n => document.getElementById('ci'+n)?.classList.toggle('selected', v)); updateStats(); }
-function selFaibles() { selectAll(false); getFaibles().forEach(n => document.getElementById('ci'+n)?.classList.add('selected')); updateStats(); }
+function getSel() { return Array.from(document.querySelectorAll('#chapGrid .ch-item.selected')).map(el=>parseInt(el.id.replace('ci',''))); }
+function selectAll(v) { Object.keys(DATA).forEach(n=>document.getElementById('ci'+n)?.classList.toggle('selected',v)); updateStats(); }
+function selFaibles() { selectAll(false); getFaibles().forEach(n=>document.getElementById('ci'+n)?.classList.add('selected')); updateStats(); }
 function resetProg() { if(confirm('Reset progression ?')){ localStorage.removeItem(kProg()); localStorage.removeItem(kRat()); updateStats(); } }
-
 function updateStats() {
   const sel = getSel();
-  const toutes = sel.flatMap(n => (DATA[n]?.cartes || []).map(c => ({...c, ch: n})));
-  const mait = toutes.filter(c => getScore(c.ch, c.q) >= 3).length;
-  const pct = toutes.length ? Math.round(mait / toutes.length * 100) : 0;
+  const toutes = sel.flatMap(n=>(DATA[n]?.cartes||[]).map(c=>({...c,ch:n})));
+  const mait = toutes.filter(c=>getScore(c.ch,c.q)>=3).length;
+  const pct = toutes.length ? Math.round(mait/toutes.length*100) : 0;
   document.getElementById('stCartes').textContent = toutes.length;
   document.getElementById('stMait').textContent = mait;
-  document.getElementById('stPct').textContent = pct + '%';
-  document.getElementById('btnStart').disabled = toutes.length === 0;
-  document.getElementById('stRegle').textContent = toutes.length <= 40 ? toutes.length + ' (toutes)' : '20-10-10';
+  document.getElementById('stPct').textContent = pct+'%';
+  document.getElementById('btnStart').disabled = toutes.length===0;
+  document.getElementById('stRegle').textContent = toutes.length<=40 ? toutes.length+' (toutes)' : '20-10-10';
 }
-
 function melanger(a) { for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; }
-
 function genSession() {
   const sel = getSel();
-  const principal = sel.flatMap(n => (DATA[n]?.cartes || []).map(c => ({...c, ch: n, type: 'principal'})));
+  const principal = sel.flatMap(n=>(DATA[n]?.cartes||[]).map(c=>({...c,ch:n,type:'principal'})));
   const dedup = arr => { const ids=new Set(); return arr.filter(c=>{if(ids.has(c.q))return false;ids.add(c.q);return true;}); };
-  if (principal.length <= 40) return melanger(dedup(principal));
-  const nouv = principal.filter(c => getScore(c.ch, c.q) === 0);
-  const enCours = principal.filter(c => getScore(c.ch, c.q) > 0 && getScore(c.ch, c.q) < 3);
-  const mait = principal.filter(c => getScore(c.ch, c.q) >= 3);
-  const vingt = melanger(dedup([...nouv, ...enCours, ...mait])).slice(0,20);
+  if (principal.length<=40) return melanger(dedup(principal));
+  const nouv = principal.filter(c=>getScore(c.ch,c.q)===0);
+  const enCours = principal.filter(c=>getScore(c.ch,c.q)>0&&getScore(c.ch,c.q)<3);
+  const mait = principal.filter(c=>getScore(c.ch,c.q)>=3);
+  const vingt = melanger(dedup([...nouv,...enCours,...mait])).slice(0,20);
   const rat = getRat();
-  let dixRat = Object.entries(rat).filter(([,d])=>d.count>=1).sort((a,b)=>b[1].count-a[1].count).slice(0,10).map(([,d])=>({...d.carte, type:'ratee'}));
-  if (dixRat.length < 10) {
-    const deja = new Set([...vingt, ...dixRat].map(c => c.q));
-    dixRat = [...dixRat, ...melanger([...enCours, ...nouv]).filter(c => !deja.has(c.q)).slice(0, 10 - dixRat.length).map(c => ({...c, type:'ratee'}))];
+  let dixRat = Object.entries(rat).filter(([,d])=>d.count>=1).sort((a,b)=>b[1].count-a[1].count).slice(0,10).map(([,d])=>({...d.carte,type:'ratee'}));
+  if (dixRat.length<10) {
+    const deja = new Set([...vingt,...dixRat].map(c=>c.q));
+    dixRat = [...dixRat,...melanger([...enCours,...nouv]).filter(c=>!deja.has(c.q)).slice(0,10-dixRat.length).map(c=>({...c,type:'ratee'}))];
   }
-  const autres = Object.entries(DATA).filter(([n]) => !sel.includes(parseInt(n))).flatMap(([n,ch]) => ch.cartes.map(c => ({...c, ch: parseInt(n), type:'revision'})));
+  const autres = Object.entries(DATA).filter(([n])=>!sel.includes(parseInt(n))).flatMap(([n,ch])=>ch.cartes.map(c=>({...c,ch:parseInt(n),type:'revision'})));
   let dixRev = melanger([...autres]).slice(0,10);
-  if (dixRev.length < 10) {
-    const deja = new Set([...vingt, ...dixRat].map(c => c.q));
-    dixRev = [...dixRev, ...melanger([...principal]).filter(c => !deja.has(c.q)).slice(0, 10 - dixRev.length).map(c => ({...c, type:'revision'}))];
+  if (dixRev.length<10) {
+    const deja = new Set([...vingt,...dixRat].map(c=>c.q));
+    dixRev = [...dixRev,...melanger([...principal]).filter(c=>!deja.has(c.q)).slice(0,10-dixRev.length).map(c=>({...c,type:'revision'}))];
   }
-  return melanger(dedup([...vingt, ...dixRat, ...dixRev])).slice(0,40);
+  return melanger(dedup([...vingt,...dixRat,...dixRev])).slice(0,40);
 }
 
+// ══════════════ NORMALISATION AVEC RESPECT DES PARENTHÈSES ══════════════
 function normaliserReponse(str) {
   if (!str) return '';
-  return str.toLowerCase().trim().replace(/,/g, '.').replace(/\s+/g, ' ').replace(/[×\*·]/g, 'x').replace(/\^/g, '**').replace(/²/g, '^2').replace(/³/g, '^3').replace(/∞/g, 'inf').replace(/\s*(km\/h|m\/s|km|m|cm|mm|l|dm³|cm³|m³|litres|points|pts)\b/gi, '').replace(/\s*([+\-x÷/])\s*/g, '$1').replace(/\.$/, '').trim();
+  // On ne supprime PAS les parenthèses, on les conserve telles quelles
+  // Mais on normalise les espaces, les symboles, etc.
+  return str
+    .toLowerCase()
+    .trim()
+    .replace(/,/g, '.')           // virgule décimale -> point
+    .replace(/\s+/g, ' ')         // espaces multiples -> un espace
+    .replace(/[×\*·]/g, 'x')      // signe multiplication -> x
+    .replace(/\^/g, '**')         // puissance ^ -> **
+    .replace(/²/g, '^2')
+    .replace(/³/g, '^3')
+    .replace(/∞/g, 'inf')
+    .replace(/\s*(km\/h|m\/s|km|m|cm|mm|l|dm³|cm³|m³|litres|points|pts)\b/gi, '')
+    .replace(/\s*([+\-x÷/])\s*/g, '$1')
+    .replace(/\.$/, '')
+    .trim();
 }
 
 function extraireValeurNumerique(str) {
@@ -282,15 +311,31 @@ function extraireValeurNumerique(str) {
   return match ? parseFloat(match[1]) : null;
 }
 
+// Comparaison STRICTE des parenthèses : on vérifie que la chaîne normalisée
+// (sans les espaces superflus) est identique, SAUF si les deux valeurs numériques
+// sont égales (tolérance 0.001) – auquel cas on accepte même si les parenthèses diffèrent
+// (ex: (2+3) vs 5). Mais pour les expressions littérales, les parenthèses doivent correspondre.
 function comparerExpressions(r, a) {
   const numR = extraireValeurNumerique(r);
   const numA = extraireValeurNumerique(a);
-  if (numR !== null && numA !== null && Math.abs(numR - numA) <= 0.001) return true;
+  
+  // Tolérance numérique stricte 0.001
+  if (numR !== null && numA !== null) {
+    if (Math.abs(numR - numA) <= 0.001) return true;
+  }
+  
   const rNorm = normaliserReponse(r);
   const aNorm = normaliserReponse(a);
+  
+  // Comparaison exacte après normalisation (préserve parenthèses)
   if (rNorm === aNorm) return true;
+  
+  // Pour les signes (+) et (-)
   if (aNorm === '(+)' && (rNorm === '+' || rNorm === 'plus')) return true;
   if (aNorm === '(-)' && (rNorm === '-' || rNorm === 'moins')) return true;
+  
+  // Pour les fractions : si la réponse est une fraction et que sa valeur numérique
+  // correspond à la valeur attendue, on accepte (ex: 3/4 vs 0.75)
   if (rNorm.includes('/')) {
     const parts = rNorm.split('/');
     if (parts.length === 2) {
@@ -298,31 +343,76 @@ function comparerExpressions(r, a) {
       if (!isNaN(val) && Math.abs(val - numA) <= 0.001) return true;
     }
   }
+  
+  // Tolérance pour les formes développées vs factorisées ? Non, on veut être exigeant.
+  // On ne permet pas l'ordre différent des facteurs (supprimé).
+  
   return false;
 }
 
+// Évaluation principale avec seuil 50% et vérification des mots-clés
 function evaluer(rep, att) {
-  if (!rep || rep.length < 2) return { ok: false, t: 0, m: 'Écris une réponse.' };
+  if (!rep || rep.length < 2) {
+    return { ok: false, t: 0, m: 'Écris une réponse.' };
+  }
+  
   const reponse = rep.trim();
   const attendu = att.trim();
-  if (comparerExpressions(reponse, attendu)) return { ok: true, t: 100, m: 'Parfait !' };
+  
+  // Vérification stricte (parenthèses, forme exacte)
+  if (comparerExpressions(reponse, attendu)) {
+    return { ok: true, t: 100, m: 'Parfait !' };
+  }
+  
+  // Si la réponse est une expression numérique différente mais numériquement égale,
+  // on a déjà accepté plus haut. Sinon, on continue avec l'analyse par mots-clés.
+  
+  // MOYEN : mots de PLUS de 4 lettres
   const motsAtt = attendu.split(/[\s,;.()+->×x]+/).filter(m => m.length > 4);
   const motsRep = reponse.split(/[\s,;.()+->×x]+/).filter(m => m.length > 4);
+  
   let motsOk = 0;
-  motsAtt.forEach(ma => { if (motsRep.some(mr => mr.includes(ma.slice(0,4)) || ma.includes(mr.slice(0,4)))) motsOk++; });
-  let taux = motsAtt.length ? Math.round(motsOk / motsAtt.length * 100) : 50;
+  motsAtt.forEach(ma => {
+    if (motsRep.some(mr => mr.includes(ma.slice(0, 4)) || ma.includes(mr.slice(0, 4)))) {
+      motsOk++;
+    }
+  });
+  
+  let taux = motsAtt.length ? Math.round((motsOk / motsAtt.length) * 100) : 50;
+  
+  // Bonus réduit (+10) si peu de mots et déjà un bon début
   if (motsRep.length <= 4 && taux >= 45) taux = Math.min(100, taux + 10);
-  const essentiels = motsAtt.slice(0,3).filter(m => motsRep.some(mr => mr.includes(m.slice(0,4))));
+  
+  const essentiels = motsAtt.slice(0, 3).filter(m => 
+    motsRep.some(mr => mr.includes(m.slice(0, 4)))
+  );
   if (essentiels.length >= 2) taux = Math.min(100, taux + 5);
+  
+  // Vérification numérique (au cas où)
   const numRep = extraireValeurNumerique(reponse);
   const numAtt = extraireValeurNumerique(attendu);
   if (numRep !== null && numAtt !== null && Math.abs(numRep - numAtt) <= 0.001) {
+    // Si la valeur numérique est correcte mais que la forme est différente,
+    // on accepte avec un score de 80% (sauf si déjà mieux)
     if (taux < 80) taux = 80;
     return { ok: true, t: taux, m: taux >= 90 ? 'Parfait !' : (taux >= 80 ? 'Bien !' : 'Presque !') };
   }
-  const motsTrouves = motsAtt.filter(m => motsRep.some(mr => mr.includes(m.slice(0,4)))).length;
-  if (motsTrouves < motsAtt.length / 2) return { ok: false, t: Math.min(taux, 50), m: 'Il manque des éléments essentiels.' };
-  if (taux >= 50) return { ok: true, t: taux, m: taux >= 80 ? 'Parfait !' : (taux >= 70 ? 'Bien !' : 'Presque !') };
+  
+  // Exiger au moins 50% des mots-clés
+  const motsTrouves = motsAtt.filter(m => 
+    motsRep.some(mr => mr.includes(m.slice(0, 4)))
+  ).length;
+  
+  if (motsTrouves < motsAtt.length / 2) {
+    return { ok: false, t: Math.min(taux, 50), m: 'Il manque des éléments essentiels.' };
+  }
+  
+  // SEUIL À 50%
+  if (taux >= 50) {
+    const message = taux >= 80 ? 'Parfait !' : (taux >= 70 ? 'Bien !' : 'Presque !');
+    return { ok: true, t: taux, m: message };
+  }
+  
   return { ok: false, t: taux, m: 'À retravailler.' };
 }
 
@@ -330,107 +420,95 @@ function demarrer() {
   try {
     session = genSession();
     if (!session.length) { alert('Aucune carte disponible.'); return; }
-    idx = 0; score = { ok:0, total:0, chTaux:{} };
-    tps = 45*60; showPhase('phaseSession'); startTimer(); affQ();
-  } catch(e) { alert('Erreur: ' + e.message); }
+    idx=0; score={ok:0,total:0,chTaux:{}};
+    tps=45*60; showPhase('phaseSession'); startTimer(); affQ();
+  } catch(e) { alert('Erreur : ' + e.message); console.error(e); }
 }
-
 function affQ() {
-  if (idx >= session.length) { fin(); return; }
-  const c = session[idx];
-  document.getElementById('progFill').style.width = Math.round(idx/session.length*100) + '%';
-  document.getElementById('qCount').textContent = 'Q ' + (idx+1) + '/' + session.length;
-  const tLabel = c.type === 'ratee' ? '🔴 À retravailler' : (c.type === 'revision' ? '🔵 Révision' : '🟡 Chapitre choisi');
-  const tCls = c.type === 'ratee' ? 'tp-r' : (c.type === 'revision' ? 'tp-n' : 'tp-p');
-  document.getElementById('qArea').innerHTML = '<div class="q-card"><div class="q-meta"><span class="q-badge ch">' + (DATA[c.ch]?.titre || '') + '</span><span class="q-badge ' + tCls + '">' + tLabel + '</span><span class="q-badge ch">Niv ' + getScore(c.ch, c.q) + '/3</span></div><div class="q-text">' + c.q + '</div><textarea class="rep" id="repIn" placeholder="Ta réponse..." rows="3"></textarea><div class="q-btns"><button class="btn-verif" id="btnVerif">✔ Vérifier</button></div></div>';
-  document.getElementById('fbArea').innerHTML = '';
-  document.getElementById('nextWrap').style.display = 'none';
+  if (idx>=session.length){fin();return;}
+  const c=session[idx];
+  document.getElementById('progFill').style.width=Math.round(idx/session.length*100)+'%';
+  document.getElementById('qCount').textContent='Q '+(idx+1)+'/'+session.length;
+  const tLabel=c.type==='ratee'?'🔴 À retravailler':c.type==='revision'?'🔵 Révision':'🟡 Chapitre choisi';
+  const tCls=c.type==='ratee'?'tp-r':c.type==='revision'?'tp-n':'tp-p';
+  document.getElementById('qArea').innerHTML =
+    '<div class="q-card"><div class="q-meta"><span class="q-badge ch">'+(DATA[c.ch]?.titre||'')+'</span>'
+    +'<span class="q-badge '+tCls+'">'+tLabel+'</span><span class="q-badge ch">Niv '+getScore(c.ch,c.q)+'/3</span></div>'
+    +'<div class="q-text">'+c.q+'</div>'
+    +'<textarea class="rep" id="repIn" placeholder="Ta réponse..." rows="3"></textarea>'
+    +'<div class="q-btns"><button class="btn-verif" id="btnVerif">✔ Vérifier</button></div></div>';
+  document.getElementById('fbArea').innerHTML='';
+  document.getElementById('nextWrap').style.display='none';
   document.getElementById('btnVerif').addEventListener('click', verif);
-  setTimeout(() => document.getElementById('repIn')?.focus(), 80);
-  document.getElementById('repIn').addEventListener('keydown', e => { if(e.key === 'Enter' && e.ctrlKey) verif(); });
+  setTimeout(()=>document.getElementById('repIn')?.focus(),80);
+  document.getElementById('repIn').addEventListener('keydown',e=>{if(e.key==='Enter'&&e.ctrlKey)verif();});
 }
-
 function verif() {
-  const rep = document.getElementById('repIn')?.value.trim();
-  if (!rep) { alert('Écris une réponse.'); return; }
-  const c = session[idx];
-  const ev = evaluer(rep, c.r);
-  if (ev.ok) score.ok++;
-  score.total++;
-  if (!score.chTaux[c.ch]) score.chTaux[c.ch] = { ok:0, t:0 };
-  score.chTaux[c.ch].t++;
-  if (ev.ok) score.chTaux[c.ch].ok++;
-  let s = getScore(c.ch, c.q);
-  s = ev.ok ? Math.min(s+1,3) : Math.max(0,s-1);
-  setScore(c.ch, c.q, s);
-  const rat = getRat();
-  const id = c.q.slice(0,40);
-  if (!ev.ok) { rat[id] = { count: (rat[id]?.count||0)+1, carte: c }; }
-  else if (rat[id]) { rat[id].count = Math.max(0, (rat[id].count||1)-1); if (!rat[id].count) delete rat[id]; }
-  localStorage.setItem(kRat(), JSON.stringify(rat));
-  const cls = ev.t >= 65 ? 'fb-ok' : (ev.t >= 40 ? 'fb-mid' : 'fb-bad');
-  const ico = ev.t >= 65 ? '✅' : (ev.t >= 40 ? '⚠️' : '❌');
-  document.getElementById('fbArea').innerHTML = '<div class="feedback show"><div class="' + cls + '">' + ico + ' ' + ev.m + ' — ' + ev.t + '%</div><div class="fb-rep"><strong>📖 Réponse attendue</strong>' + c.r + '</div></div>';
-  idx++;
-  document.getElementById('nextWrap').style.display = 'block';
-  document.getElementById('btnVerif').disabled = true;
+  const rep=document.getElementById('repIn')?.value.trim();
+  if(!rep){alert('Écris une réponse.');return;}
+  const c=session[idx]; const ev=evaluer(rep,c.r);
+  if(ev.ok) score.ok++; score.total++;
+  if(!score.chTaux[c.ch]) score.chTaux[c.ch]={ok:0,t:0};
+  score.chTaux[c.ch].t++; if(ev.ok) score.chTaux[c.ch].ok++;
+  let s=getScore(c.ch,c.q); s=ev.ok?Math.min(s+1,3):Math.max(0,s-1); setScore(c.ch,c.q,s);
+  const rat=getRat(); const id=c.q.slice(0,40);
+  if(!ev.ok){rat[id]={count:(rat[id]?.count||0)+1,carte:c};}
+  else if(rat[id]){rat[id].count=Math.max(0,(rat[id].count||1)-1);if(!rat[id].count)delete rat[id];}
+  localStorage.setItem(kRat(),JSON.stringify(rat));
+  const cls=ev.t>=65?'fb-ok':ev.t>=40?'fb-mid':'fb-bad';
+  const ico=ev.t>=65?'✅':ev.t>=40?'⚠️':'❌';
+  document.getElementById('fbArea').innerHTML='<div class="feedback show"><div class="'+cls+'">'+ico+' '+ev.m+' — '+ev.t+'%</div><div class="fb-rep"><strong>📖 Réponse attendue</strong>'+c.r+'</div></div>';
+  idx++; document.getElementById('nextWrap').style.display='block';
+  document.getElementById('btnVerif').disabled=true;
 }
-
-function startTimer() {
+function startTimer(){
   clearInterval(timerInt);
-  timerInt = setInterval(() => {
-    if (tps <= 0) { clearInterval(timerInt); fin(); return; }
-    tps--;
-    const m = Math.floor(tps/60), s = tps%60;
-    const el = document.getElementById('timerVal');
-    if (el) { el.textContent = String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0'); el.className = 'timer-val' + (tps < 300 ? ' urgent' : ''); }
-  }, 1000);
+  timerInt=setInterval(()=>{
+    if(tps<=0){clearInterval(timerInt);fin();return;} tps--;
+    const m=Math.floor(tps/60),s=tps%60;
+    const el=document.getElementById('timerVal');
+    if(el){el.textContent=String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');el.className='timer-val'+(tps<300?' urgent':'');}
+  },1000);
 }
-
-function fin() {
+function fin(){
   clearInterval(timerInt);
   const totalQuestions = score.total;
   const bonnesReponses = score.ok;
   const pct = totalQuestions ? Math.round(bonnesReponses / totalQuestions * 100) : 0;
-  const chapitres = getSel().map(n => DATA[n]?.titre).filter(Boolean);
-  const chapitresTaux = {};
-  Object.entries(score.chTaux).forEach(([ch,d]) => { chapitresTaux[DATA[ch]?.titre || 'Ch'+ch] = Math.round(d.ok/d.t*100); });
-  const sessions = JSON.parse(localStorage.getItem(kSuivi()) || '[]');
-  sessions.unshift({ id: Date.now(), date: new Date().toISOString(), matiere: 'maths', eleve, pourcentage: pct, noteSur: totalQuestions, noteObtenue: bonnesReponses, chapitres, chapitresTaux });
-  localStorage.setItem(kSuivi(), JSON.stringify(sessions.slice(0,200)));
+  const chapitres=getSel().map(n=>DATA[n]?.titre).filter(Boolean);
+  const chapitresTaux={};
+  Object.entries(score.chTaux).forEach(([ch,d])=>{chapitresTaux[DATA[ch]?.titre||'Ch'+ch]=Math.round(d.ok/d.t*100);});
+  const sessions=JSON.parse(localStorage.getItem(kSuivi())||'[]');
+  sessions.unshift({id:Date.now(),date:new Date().toISOString(),matiere:'maths',eleve,pourcentage:pct,noteSur:totalQuestions,noteObtenue:bonnesReponses,chapitres,chapitresTaux});
+  localStorage.setItem(kSuivi(),JSON.stringify(sessions.slice(0,200)));
   showPhase('phaseRes');
-  const cls = pct >= 80 ? 'ex' : (pct >= 60 ? 'bi' : 'ef');
-  const msg = pct >= 80 ? '🌟 Excellent !' : (pct >= 60 ? '👍 Bien joué !' : (pct >= 40 ? '💪 Courage !' : '📚 Continue.'));
-  document.getElementById('scoreGrand').className = 'score-grand ' + cls;
+  const cls=pct>=80?'ex':pct>=60?'bi':'ef';
+  const msg=pct>=80?'🌟 Excellent !':pct>=60?'👍 Bien joué !':pct>=40?'💪 Courage !':'📚 Continue.';
+  document.getElementById('scoreGrand').className='score-grand '+cls;
   document.getElementById('scoreGrand').textContent = bonnesReponses + '/' + totalQuestions;
   document.getElementById('scoreDetail').textContent = bonnesReponses + ' bonnes réponses sur ' + totalQuestions + ' (' + pct + '%)';
-  document.getElementById('msgFin').textContent = msg;
-  const faibles = Object.entries(chapitresTaux).filter(([,t]) => t < 60).map(([ch]) => ch);
-  if (faibles.length) {
-    document.getElementById('faiblesRes').innerHTML = '<div class="faibles-box"><h4>⚠ Chapitres à retravailler (< 60%)</h4><ul>' + faibles.map(f => '<li>• ' + f + '</li>').join('') + '</ul></div>';
+  document.getElementById('msgFin').textContent=msg;
+  const faibles=Object.entries(chapitresTaux).filter(([,t])=>t<60).map(([ch])=>ch);
+  if(faibles.length){
+    document.getElementById('faiblesRes').innerHTML='<div class="faibles-box"><h4>⚠ Chapitres à retravailler (< 60%)</h4><ul>'+faibles.map(f=>'<li>• '+f+'</li>').join('')+'</ul></div>';
   }
 }
-
-function showPhase(id) {
-  ['phaseSelect', 'phaseSession', 'phaseRes'].forEach(p => document.getElementById(p).className = 'phase' + (p === id ? ' active' : ''));
-}
-
+function showPhase(id){['phaseSelect','phaseSession','phaseRes'].forEach(p=>document.getElementById(p).className='phase'+(p===id?' active':''));}
 function initApp() {
-  setEleve('eleve1');
+  setEleve('wassil');
   document.getElementById('btnStart').addEventListener('click', demarrer);
   document.getElementById('btnAll').addEventListener('click', () => selectAll(true));
   document.getElementById('btnNone').addEventListener('click', () => selectAll(false));
   document.getElementById('btnFaibles').addEventListener('click', selFaibles);
   document.getElementById('btnReset').addEventListener('click', resetProg);
-  document.getElementById('btn1').addEventListener('click', () => setEleve('eleve1'));
-  document.getElementById('btn2').addEventListener('click', () => setEleve('eleve2'));
-  document.getElementById('btnNext').addEventListener('click', () => { document.getElementById('nextWrap').style.display = 'none'; affQ(); });
+  document.getElementById('btnW').addEventListener('click', () => setEleve('wassil'));
+  document.getElementById('btnN').addEventListener('click', () => setEleve('nawal'));
+  document.getElementById('btnNext').addEventListener('click', () => { document.getElementById('nextWrap').style.display='none'; affQ(); });
   document.getElementById('btnNouv').addEventListener('click', () => location.reload());
-  document.getElementById('btnSuivi').addEventListener('click', () => window.location.href = 'suivi-parent.html');
+  document.getElementById('btnSuivi').addEventListener('click', () => window.location.href='suivi-parent.html');
 }
+if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initApp); } else { initApp(); }
 
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initApp);
-else initApp();
 </script>
 </body>
 </html>
